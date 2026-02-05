@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "skills": {
+    "clawdex": {
+      "version": "1.0.2",
+      "installedAt": 1770086008304
+    },
+    "proactive-agent": {
+      "version": "1.2.4",
+      "installedAt": 1770103873735
+    },
+    "yahoo-finance": {
+      "version": "1.0.0",
+      "installedAt": 1770123907012
+    },
+    "elite-longterm-memory": {
+      "version": "0.1.0",
+      "installedAt": 1770125376822
+    },
+    "context-recovery": {
+      "version": "1.0.0",
+      "installedAt": 1770125378476
+    },
+    "progressive-memory": {
+      "version": "0.1.0",
+      "installedAt": 1770125379886
+    },
+    "moltbook-curator": {
+      "version": "1.1.0",
+      "installedAt": 1770125381716
+    },
+    "stock-analysis": {
+      "version": "6.2.0",
+      "installedAt": 1770169648926
+    },
+    "options-strategy-advisor": {
+      "version": "0.1.0",
+      "installedAt": 1770170039623
+    },
+    "technical-analyst": {
+      "version": "0.1.0",
+      "installedAt": 1770170043936
+    },
+    "moltbook-interact": {
+      "version": "1.0.1",
+      "installedAt": 1770194305784
+    }
+  }
+}
