@@ -1,0 +1,227 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "yfinance>=0.2.36",
+#     "rich>=13.7.0",
+# ]
+# ///
+"""
+Yahoo Finance CLI - TQQQ with KRW conversion support
+"""
+import sys
+import yfinance as yf
+from rich.console import Console
+from rich.table import Table
+from rich import box
+
+console = Console()
+
+def get_exchange_rate():
+    """Get current USD/KRW exchange rate from real-time API"""
+    import subprocess
+    try:
+        # Use real-time exchange rate API
+        result = subprocess.run(
+            ['python3', '/Users/ramsbaby/openclaw/scripts/get-exchange-rate.py'],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        if result.returncode == 0:
+            rate = float(result.stdout.strip())
+            return rate
+    except:
+        pass
+    
+    # Fallback: Yahoo Finance
+    try:
+        ticker = yf.Ticker("KRW=X")
+        rate = ticker.info.get('regularMarketPrice') or ticker.info.get('previousClose')
+        return rate if rate else 1450.0
+    except:
+        return 1450.0  # final fallback
+
+def format_krw(usd_price, rate):
+    """Format price in KRW like Toss Securities"""
+    if usd_price is None:
+        return "N/A"
+    krw = usd_price * rate
+    return f"₩{krw:,.0f}"
+
+def price_command(symbol: str, show_krw: bool = True):
+    """Quick price check with KRW conversion"""
+    ticker = yf.Ticker(symbol)
+    info = ticker.info
+    
+    # Check market state
+    market_state = info.get('marketState', 'REGULAR')
+    
+    # Get regular market price
+    regular_price = info.get('regularMarketPrice') or info.get('currentPrice')
+    prev_close = info.get('regularMarketPreviousClose') or info.get('previousClose')
+    
+    # Get pre-market / after-hours prices
+    pre_price = info.get('preMarketPrice')
+    post_price = info.get('postMarketPrice')
+    pre_change_pct = info.get('preMarketChangePercent')
+    post_change_pct = info.get('postMarketChangePercent')
+    
+    # Determine which price to show as "current"
+    if market_state == 'PRE' and pre_price:
+        price = pre_price
+        price_label = "프리마켓 (실시간)"
+        extra_info = f"정규장 종가: ${regular_price:,.2f}" if regular_price else None
+    elif market_state == 'POST' and post_price:
+        price = post_price
+        price_label = "애프터마켓 (실시간)"
+        extra_info = f"정규장 종가: ${regular_price:,.2f}" if regular_price else None
+    else:
+        price = regular_price
+        price_label = "현재가 (USD)"
+        extra_info = None
+    
+    if price is None:
+        console.print(f"[red]❌ {symbol} 데이터를 가져올 수 없습니다[/red]")
+        return
+    
+    change = price - prev_close if prev_close else 0
+    change_pct = (change / prev_close * 100) if prev_close else 0
+    
+    # Get exchange rate for KRW conversion
+    rate = get_exchange_rate() if show_krw else 1
+    
+    # Color based on change
+    color = "green" if change >= 0 else "red"
+    arrow = "▲" if change >= 0 else "▼"
+    
+    # Market state indicator
+    state_emoji = {"PRE": "🌅", "POST": "🌙", "REGULAR": "☀️", "CLOSED": "😴"}.get(market_state, "")
+    
+    table = Table(title=f"📈 {symbol} {state_emoji} {market_state}", box=box.ROUNDED)
+    table.add_column("항목", style="cyan")
+    table.add_column("값", style="white")
+    
+    table.add_row(price_label, f"[bold]${price:,.2f}[/bold]")
+    if show_krw:
+        table.add_row("현재가 (KRW)", format_krw(price, rate))
+    if extra_info:
+        table.add_row("정규장 종가", f"${regular_price:,.2f}")
+    table.add_row("전일 종가", f"${prev_close:,.2f}" if prev_close else "N/A")
+    table.add_row("변동 (전일比)", f"[{color}]{arrow} ${abs(change):,.2f} ({change_pct:+.2f}%)[/{color}]")
+    
+    # Additional info
+    day_high = info.get('dayHigh') or info.get('regularMarketDayHigh')
+    day_low = info.get('dayLow') or info.get('regularMarketDayLow')
+    volume = info.get('volume') or info.get('regularMarketVolume')
+    
+    if day_high and day_low:
+        table.add_row("일중 범위", f"${day_low:,.2f} ~ ${day_high:,.2f}")
+        if show_krw:
+            table.add_row("일중 범위 (KRW)", f"{format_krw(day_low, rate)} ~ {format_krw(day_high, rate)}")
+    if volume:
+        table.add_row("거래량", f"{volume:,}")
+    
+    if show_krw:
+        table.add_row("환율", f"$1 = ₩{rate:,.2f}")
+    
+    console.print(table)
+    
+    # Check for significant change (±4%)
+    if abs(change_pct) >= 4:
+        console.print(f"\n[bold yellow]⚠️ {abs(change_pct):.1f}% 변동 - 주의 필요![/bold yellow]")
+
+def quote_command(symbol: str):
+    """Detailed quote"""
+    ticker = yf.Ticker(symbol)
+    info = ticker.info
+    rate = get_exchange_rate()
+    
+    table = Table(title=f"📊 {symbol} 상세 시세", box=box.ROUNDED)
+    table.add_column("항목", style="cyan")
+    table.add_column("USD", style="white")
+    table.add_column("KRW", style="yellow")
+    
+    fields = [
+        ('현재가', 'regularMarketPrice'),
+        ('전일 종가', 'regularMarketPreviousClose'),
+        ('시가', 'regularMarketOpen'),
+        ('고가', 'regularMarketDayHigh'),
+        ('저가', 'regularMarketDayLow'),
+        ('52주 고가', 'fiftyTwoWeekHigh'),
+        ('52주 저가', 'fiftyTwoWeekLow'),
+    ]
+    
+    for label, key in fields:
+        val = info.get(key)
+        if val:
+            table.add_row(label, f"${val:,.2f}", format_krw(val, rate))
+    
+    volume = info.get('regularMarketVolume')
+    if volume:
+        table.add_row("거래량", f"{volume:,}", "-")
+    
+    mkt_cap = info.get('marketCap')
+    if mkt_cap:
+        table.add_row("시가총액", f"${mkt_cap/1e9:,.2f}B", f"₩{mkt_cap*rate/1e12:,.2f}조")
+    
+    console.print(table)
+    console.print(f"\n[dim]환율: $1 = ₩{rate:,.2f}[/dim]")
+
+def compare_command(symbols: str):
+    """Compare multiple symbols"""
+    symbol_list = [s.strip().upper() for s in symbols.split(',')]
+    rate = get_exchange_rate()
+    
+    table = Table(title="📈 종목 비교", box=box.ROUNDED)
+    table.add_column("종목", style="cyan")
+    table.add_column("현재가 (USD)", style="white")
+    table.add_column("현재가 (KRW)", style="yellow")
+    table.add_column("변동률", style="white")
+    
+    for symbol in symbol_list:
+        try:
+            ticker = yf.Ticker(symbol)
+            info = ticker.info
+            price = info.get('regularMarketPrice')
+            prev = info.get('regularMarketPreviousClose')
+            
+            if price and prev:
+                change_pct = (price - prev) / prev * 100
+                color = "green" if change_pct >= 0 else "red"
+                table.add_row(
+                    symbol,
+                    f"${price:,.2f}",
+                    format_krw(price, rate),
+                    f"[{color}]{change_pct:+.2f}%[/{color}]"
+                )
+        except Exception as e:
+            table.add_row(symbol, "Error", "-", "-")
+    
+    console.print(table)
+    console.print(f"\n[dim]환율: $1 = ₩{rate:,.2f}[/dim]")
+
+def main():
+    if len(sys.argv) < 2:
+        console.print("[yellow]사용법: yf <symbol> 또는 yf <command> <args>[/yellow]")
+        console.print("Commands: price, quote, compare")
+        console.print("Examples:")
+        console.print("  yf TQQQ")
+        console.print("  yf quote AAPL")
+        console.print("  yf compare TQQQ,QQQ,SPY")
+        return
+    
+    arg1 = sys.argv[1].lower()
+    
+    if arg1 == 'price' and len(sys.argv) >= 3:
+        price_command(sys.argv[2].upper())
+    elif arg1 == 'quote' and len(sys.argv) >= 3:
+        quote_command(sys.argv[2].upper())
+    elif arg1 == 'compare' and len(sys.argv) >= 3:
+        compare_command(sys.argv[2])
+    else:
+        # Default: treat as symbol
+        price_command(sys.argv[1].upper())
+
+if __name__ == "__main__":
+    main()
