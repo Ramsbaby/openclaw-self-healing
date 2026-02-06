@@ -1,0 +1,10 @@
+{"timestamp":1770377533,"metric":"http_check","result":"200","duration":0}
+{"timestamp":1770377533,"metric":"health_check","result":"healthy","duration":0}
+{"timestamp":1770380841,"metric":"http_check","result":"200","duration":0}
+{"timestamp":1770380841,"metric":"health_check","result":"healthy","duration":0}
+{"timestamp":1770381249,"metric":"http_check","result":"200","duration":0}
+{"timestamp":1770381249,"metric":"health_check","result":"healthy","duration":0}
+{"timestamp":1770381523,"metric":"http_check","result":"200","duration":0}
+{"timestamp":1770381523,"metric":"health_check","result":"healthy","duration":0}
+{"timestamp":1770384617,"metric":"http_check","result":"200","duration":0}
+{"timestamp":1770384617,"metric":"health_check","result":"healthy","duration":0}

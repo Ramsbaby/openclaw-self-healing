@@ -14,7 +14,7 @@ const { exec } = require('child_process');
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || '';
 const STOP_LOSS_PRICE = parseFloat(process.env.TQQQ_STOP_LOSS || '47.00');
 const TICKER = 'TQQQ';
-const DISCORD_CHANNEL = '1468429321738911947'; // #jarvis-health
+const DISCORD_CHANNEL = '1469190686145384513'; // #jarvis-market
 
 // 상태
 let lastPrice = null;

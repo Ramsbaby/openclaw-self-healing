@@ -1,0 +1,65 @@
+# OpenClaw Self-Healing System - .gitignore
+
+# Environment files (IMPORTANT: Never commit .env with secrets!)
+.env
+.env.local
+.env.*.local
+
+# Log files
+*.log
+logs/
+*.log.*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Alert tracking files
+.emergency-alert-sent
+*.tmp
+
+# Metrics files (optional: commit if you want to track metrics in repo)
+.healthcheck-metrics.json
+.emergency-recovery-metrics.json
+
+# tmux logs
+claude-session-*.log
+
+# Test outputs
+/tmp/healthcheck-test.log
+/tmp/emergency-alert.txt
+
+# Node modules (if using npm scripts)
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+openclaw.json.bak

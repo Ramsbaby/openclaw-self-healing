@@ -3,16 +3,12 @@
 이 파일은 AI의 "RAM" — 컴팩션 후에도 살아남는 작업 상태
 
 ## Current Task
-🔄 크론 Discord 전환 + 응답 스타일 개선 진행 중
+✅ 완료: 퇴근 브리핑 정상 작동 확인 (17:01 #jarvis-health 전달)
 
-**정우님 지적:**
-1. 크론이 Telegram으로 가고 있음 (Discord로 변경 필요)
-2. 제 응답이 빈 줄 없이 붙어서 가독성 떨어짐
-
-**진행 중:**
-1. 모든 크론 27개를 Discord로 전환 (channel: "discord", to: "user:364093757018079234")
-2. AGENTS.md에 Discord 영역 구분 규칙 추가
-3. 응답 스타일 개선 (헤더/테이블/리스트 앞뒤 무조건 빈 줄)
+**확인 완료:**
+- 퇴근 브리핑: 17:01 KST에 #jarvis-health로 정상 전달됨
+- 로그 에러는 무시해도 됨 (실제 전달 성공)
+- #jarvis-external-usage: 삭제 예정 채널
 
 ## Key Context
 **정우님 요청:**

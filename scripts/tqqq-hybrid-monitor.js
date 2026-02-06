@@ -20,7 +20,7 @@ const STOP_LOSS_PRICE = parseFloat(process.env.TQQQ_STOP_LOSS || '47.00');
 const TICKER = 'TQQQ';
 
 // Discord 알림 설정
-const DISCORD_CHANNEL = '1468429321738911947'; // #jarvis-health
+const DISCORD_CHANNEL = '1469190686145384513'; // #jarvis-market
 
 // 상태 관리
 let lastPrice = null;
