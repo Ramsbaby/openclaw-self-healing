@@ -307,3 +307,31 @@ EOF
 
 # Run main function
 main
+
+# ============================================
+# v1.1.0: Incident Documentation (ContextVault feedback)
+# ============================================
+log_incident() {
+    local incident_file="${OPENCLAW_DIR}/memory/incidents/$(date +%Y-%m-%d_%H%M%S).md"
+    mkdir -p "$(dirname "$incident_file")"
+    
+    cat > "$incident_file" << EOF
+# Incident Report - $(date '+%Y-%m-%d %H:%M:%S')
+
+## Trigger
+- Health check failed 3 times
+- Last error: $(tail -5 "${OPENCLAW_DIR}/logs/gateway.log" 2>/dev/null | head -3)
+
+## Claude Diagnosis
+$(tmux capture-pane -t emergency-recovery -p 2>/dev/null | tail -50)
+
+## Resolution
+- Status: $1
+- Duration: $2 seconds
+
+## Prevention
+- TODO: Add prevention steps based on root cause
+EOF
+    
+    echo "📝 Incident logged: $incident_file"
+}
