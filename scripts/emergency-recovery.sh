@@ -12,8 +12,8 @@ cleanup() {
     if [ -n "${TMUX_SESSION:-}" ]; then
         tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
     fi
-    # Remove lock file if exists
-    rm -f /tmp/openclaw-emergency-recovery.lock 2>/dev/null || true
+    # Remove lock file if exists (uses $LOCKFILE set later, fallback to default)
+    rm -f "${LOCKFILE:-$HOME/openclaw/memory/.emergency-recovery.lock}" 2>/dev/null || true
     exit $exit_code
 }
 trap cleanup EXIT INT TERM
@@ -34,16 +34,19 @@ REPORT_FILE="$LOG_DIR/emergency-recovery-report-$TIMESTAMP.md"
 SESSION_LOG="$LOG_DIR/claude-session-$TIMESTAMP.log"
 TMUX_SESSION="emergency_recovery_$TIMESTAMP"
 
-# Secure session log
+# Create log directory FIRST (before any file operations)
+mkdir -p "$LOG_DIR"
+chmod 700 "$LOG_DIR" 2>/dev/null || true
+
+# Secure session log (after directory exists)
 touch "$SESSION_LOG"
 chmod 600 "$SESSION_LOG"
 
+# Secure lock file location (not world-readable /tmp)
+LOCKFILE="$LOG_DIR/.emergency-recovery.lock"
+
 # Performance metrics
 METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
-
-# Create log directory if not exists
-mkdir -p "$LOG_DIR"
-chmod 700 "$LOG_DIR" 2>/dev/null || true
 
 # Load environment variables
 if [ -f "$HOME/openclaw/.env" ]; then
@@ -268,8 +271,12 @@ main() {
     local current_output
     current_output=$(tmux capture-pane -t "$TMUX_SESSION" -p 2>/dev/null | tail -20 || echo "")
     
-    # 완료 시그널 체크
-    if echo "$current_output" | grep -qE "(completed|finished|done|✅|successfully|REPORT_FILE)"; then
+    # 완료 시그널 체크 (더 정교한 패턴)
+    # - "Recovery completed" 또는 "recovery complete"
+    # - "Task finished" 또는 "task complete"
+    # - 리포트 파일 생성 언급
+    # - 명시적 성공 메시지
+    if echo "$current_output" | grep -qiE "(recovery (completed|complete|finished)|task (completed|complete|finished)|wrote.*report|gateway.*restored|http 200|✅.*(success|recover|complete))"; then
       log "✅ Claude appears to have completed (detected completion signal)"
       break
     fi
@@ -285,6 +292,10 @@ main() {
       idle_count=0
       last_output="$current_output"
     fi
+    
+    # 중간 캡처 (매 폴링마다 누적)
+    tmux capture-pane -t "$TMUX_SESSION" -p >> "$SESSION_LOG" 2>/dev/null || true
+    echo "--- poll at ${elapsed}s ---" >> "$SESSION_LOG"
     
     log "... still working (${elapsed}s elapsed, idle: ${idle_count})"
   done

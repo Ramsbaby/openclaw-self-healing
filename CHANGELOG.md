@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2] - 2026-02-06
+
+### Fixed
+- **Critical**: SESSION_LOG creation now happens AFTER directory creation (was failing on fresh installs)
+- **Security**: Lock file moved from `/tmp` to `$LOG_DIR` (prevents DoS)
+- **Logic**: Completion detection pattern refined (prevents false positives like "done checking")
+- **Data**: Session output now captured during polling (no more lost output)
+
 ## [1.3.1] - 2026-02-06
 
 ### Fixed
