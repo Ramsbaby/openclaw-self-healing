@@ -106,7 +106,29 @@ Unlike simple watchdogs that just restart processes, **this system understands _
 
 ---
 
-## 🚀 Quick Start (5 minutes)
+## ⚡ One-Click Install (Recommended)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash
+```
+
+**That's it.** The installer will:
+- ✅ Check prerequisites (tmux, Claude CLI, OpenClaw)
+- ✅ Download and install all scripts
+- ✅ Set up the LaunchAgent
+- ✅ Configure environment
+
+Custom workspace? Use:
+```bash
+curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash -s -- --workspace ~/my-openclaw
+```
+
+---
+
+## 🚀 Manual Installation (5 minutes)
+
+<details>
+<summary>Click to expand manual installation steps</summary>
 
 ### Prerequisites
 
@@ -160,6 +182,8 @@ kill -9 $(pgrep -f openclaw-gateway)
 # Wait 3 minutes, then check if it auto-recovered
 curl http://localhost:18789/
 ```
+
+</details>
 
 ---
 
