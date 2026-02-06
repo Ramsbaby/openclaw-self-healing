@@ -7,6 +7,7 @@ set -euo pipefail
 # ============================================
 # Cleanup trap (ensure tmux session is killed on exit)
 # ============================================
+# shellcheck disable=SC2329
 cleanup() {
     local exit_code=$?
     if [ -n "${TMUX_SESSION:-}" ]; then
@@ -14,7 +15,7 @@ cleanup() {
     fi
     # Remove lock file if exists (uses $LOCKFILE set later, fallback to default)
     rm -f "${LOCKFILE:-$HOME/openclaw/memory/.emergency-recovery.lock}" 2>/dev/null || true
-    exit $exit_code
+    exit "$exit_code"
 }
 trap cleanup EXIT INT TERM
 

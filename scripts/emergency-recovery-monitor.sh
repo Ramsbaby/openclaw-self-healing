@@ -75,7 +75,7 @@ send_alert() {
   timestamp=$(basename "$latest_log" | sed 's/emergency-recovery-//;s/.log//')
   
   # Discord 알림 메시지 생성
-  cat > $ALERT_TMP << EOF
+  cat > "$ALERT_TMP" << EOF
 🚨 **긴급: OpenClaw 자가복구 실패**
 
 **시간:** $timestamp
@@ -99,7 +99,7 @@ send_alert() {
 EOF
 
   local alert_msg
-  alert_msg=$(cat $ALERT_TMP)
+  alert_msg=$(cat "$ALERT_TMP")
   
   # Discord 직접 호출 (webhook 있을 경우)
   if [ -n "$DISCORD_WEBHOOK" ]; then
@@ -114,12 +114,12 @@ EOF
       log "✅ Discord notification sent (HTTP $response_code)"
     else
       log "⚠️ Discord notification failed (HTTP $response_code), falling back to stdout"
-      cat $ALERT_TMP
+      cat "$ALERT_TMP"
     fi
   else
     # Webhook 없으면 stdout 출력 (크론이 message tool로 전달)
     log "INFO: DISCORD_WEBHOOK_URL not set, printing to stdout"
-    cat $ALERT_TMP
+    cat "$ALERT_TMP"
   fi
 }
 

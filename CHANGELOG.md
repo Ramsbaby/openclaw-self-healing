@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.3] - 2026-02-06
+
+### Fixed
+- ShellCheck warnings: proper quoting for variables
+- SC2329 false positive suppressed (trap indirect call)
+
 ## [1.3.2] - 2026-02-06
 
 ### Fixed
