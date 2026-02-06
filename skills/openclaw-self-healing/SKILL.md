@@ -1,6 +1,6 @@
 ---
 name: openclaw-self-healing
-version: 1.2.1
+version: 1.3.4
 description: 4-tier autonomous self-healing system for OpenClaw Gateway. Features Claude Code as Level 3 emergency doctor for AI-powered diagnosis and repair. Includes Watchdog, Health Check, Claude Recovery, and Discord Alert levels.
 metadata:
   {
