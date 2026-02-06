@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-BACKUP_DIR=~/clawd/backups
+BACKUP_DIR=~/openclaw/backups
 DATE=$(date +%Y%m%d-%H%M)
 BACKUP_NAME="backup-${DATE}-DAILY"
 LOG_FILE=~/.openclaw/logs/backup.log
