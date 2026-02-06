@@ -18,3 +18,10 @@
 - Level 2: Health Check (300s HTTP + 3 retries)
 - Level 3: Claude Recovery (30min AI diagnosis)
 - Level 4: Discord Alert (human escalation)
+
+## [1.2.2] - 2026-02-06
+
+### Added
+- Demo GIF showing 4-tier recovery in action
+- Visual documentation in README
+- `assets/` directory for media files
