@@ -278,6 +278,13 @@
 - v1.2.0 - 기능 개선
 - v1.2.1 (2026-02-06 22:05) - 보안 수정 (cleanup trap, chmod 700, LINUX_SETUP.md)
 - v1.2.2 (2026-02-06 22:55) - 마케팅 번들 완성 (5개 플랫폼 초안, Demo GIF)
+- **v1.3.0 (2026-02-06 23:20) - One-Click Installer** (`curl -sSL .../install.sh | bash`)
+
+**Hacker News 포스팅:**
+- 제목: "Show HN: Self-healing AI system using Claude Code as emergency doctor"
+- 상태: Live (2026-02-06 23:27 KST 포스팅)
+- 계정: ramsbaby (첫 제출)
+- 시간대: 비최적 (KST 심야 = US 아침)
 
 **커뮤니티 반응:**
 - Moltbook: 의미 있는 기술 질문 2개 (reasoning, guardrails)
