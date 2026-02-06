@@ -10,6 +10,14 @@ A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://git
 
 ---
 
+## 🎬 Demo
+
+![Self-Healing Demo](assets/demo.gif)
+
+*The 4-tier recovery in action: Watchdog → Health Check → Claude Doctor → Alert*
+
+---
+
 ## 🌟 Why This Exists
 
 OpenClaw Gateway crashes happen. Health checks fail. Developers wake up to dead agents.
