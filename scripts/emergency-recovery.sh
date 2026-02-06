@@ -8,6 +8,7 @@ LOG_FILE=~/openclaw/memory/emergency-recovery-$TIMESTAMP.log
 REPORT_FILE=~/openclaw/memory/emergency-recovery-report-$TIMESTAMP.md
 TMUX_SESSION="emergency_recovery_$TIMESTAMP"
 RECOVERY_TIMEOUT=1800  # 30분
+DISCORD_WEBHOOK="https://discord.com/api/webhooks/1468429341154214049/arTEGUkhIZ5bpE63AefMnyneomjwf1zDzCpzCwbdlzKpH7KgNzcMpFNX9G-DPW5HRojU"
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
@@ -68,15 +69,28 @@ log() {
   log "Terminating Claude session..."
   tmux kill-session -t "$TMUX_SESSION" 2>/dev/null
   
-  # 7. Discord 알림 (실패 시만)
-  if [ "$SUCCESS" = false ]; then
+  # 7. Discord 알림
+  if [ "$SUCCESS" = true ]; then
+    log "✅ Sending success notification to Discord..."
+    curl -X POST "$DISCORD_WEBHOOK" \
+      -H "Content-Type: application/json" \
+      -d "{\"content\": \"✅ **Level 3 Emergency Recovery 성공!**\n\nGateway가 Claude에 의해 복구되었습니다.\n- 복구 시간: $TIMESTAMP\n- HTTP 상태: $HTTP_CODE\n- 로그: \`$LOG_FILE\`\"}" \
+      2>/dev/null
+  else
     log "🚨 Sending failure notification to Discord..."
-    
-    # OpenClaw message tool로 알림 (스크립트에서는 직접 호출 불가, 로그만 기록)
+
+    FAILURE_MSG="🚨 **Level 3 Emergency Recovery 실패!**\n\n**모든 자동 복구 시스템이 실패했습니다:**\n- Level 1 (Auto-Retry): ❌\n- Level 2 (Health Check): ❌\n- Level 3 (Claude Recovery): ❌\n\n**수동 개입 필요**\n- HTTP 상태: $HTTP_CODE\n- 로그: \`$LOG_FILE\`\n- Claude 세션: \`~/openclaw/memory/claude-session-$TIMESTAMP.log\`\n- 복구 리포트: \`$REPORT_FILE\` (생성된 경우)"
+
+    curl -X POST "$DISCORD_WEBHOOK" \
+      -H "Content-Type: application/json" \
+      -d "{\"content\": \"$FAILURE_MSG\"}" \
+      2>/dev/null
+
+    # 로그에도 기록
     cat >> "$LOG_FILE" << EOF
 
 === MANUAL INTERVENTION REQUIRED ===
-Level 1 (Watchdog) ❌
+Level 1 (Auto-Retry) ❌
 Level 2 (Health Check) ❌
 Level 3 (Claude Recovery) ❌
 
@@ -85,8 +99,6 @@ Level 3 (Claude Recovery) ❌
 Claude 세션: ~/openclaw/memory/claude-session-$TIMESTAMP.log
 복구 리포트: $REPORT_FILE (Claude가 생성했을 경우)
 EOF
-    
-    # Discord 알림은 별도 크론으로 처리 (로그 모니터링)
   fi
   
   log "=== Emergency Recovery Completed ==="

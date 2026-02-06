@@ -60,37 +60,46 @@
   - 이후 18시간 단식
 - 주말: 2~3끼 자유롭게
 
-### Investment Portfolio (2026-02-06 07:57 Updated)
+### Investment Portfolio (2026-02-06 09:53 Updated)
 
-**⚡ 공격적 복구 전략 (필승의지) ⚡**
+**현재 상황: 재진입 대기 (고용지표 발표 후)**
 
-**Phase 1: 시험 진입 (진행 중)**
-- 진입가: $47.64 (2026-02-06 07:57)
-- 투자금: $3,000 (63주)
-- 손절선: **$45.00** (Hard Stop, -5.5%)
-- 목표가:
-  - 1차: $52.00 (+9.2%) → 절반 익절
-  - 2차: $55.00 (+15.5%) → 전량 익절
+**손절 완료 (2026-02-06 07:01)**
+- 손절가: $46.4 (정확한 체결가)
+- 손절 주수: 193주 (전량)
+- 총 손실: -₩1,000,000
+- 현금: $9,000 (₩13,114,170)
 
-**Phase 2: 추가 진입 대기**
-- 조건 1: TQQQ $45.00 터치 시 → $3,000 추가
-- 조건 2: TQQQ $50.00 돌파 시 → $3,000 추가
+**재진입 전략 확정 (2026-02-06 09:53)**
+- **진입 타이밍:** 오늘 22:30 고용지표 발표 직후
+- **투자금:** $9,000 전액 (시나리오별 조정)
+- **목표:** 손실 -₩1M 복구
+- **방법:** 분할 매수 (3단계)
+- **손절선:** 시나리오별 설정 (엄수 필수)
 
-**Phase 3: 현금 보존**
-- $3,000 (33%) 무조건 현금 유지
-- 최악의 경우 복구 자금
+**시나리오 (22:30 발표 기준):**
+- A: 지표 좋음 (100K+) → $47-48 진입, $4-5K
+- B: 지표 나쁨 (<50K) → $43-44 진입, $6-7K
+- C: 지표 예상치 (50K) → $45-46 진입, $5K
 
-**이전 손실 (교훈)**
-- 손절: 193주 @ $47 (2026-02-06 07:01)
-- 손실: -₩1,000,000 (-7%)
-- 교훈: 손절선 엄수, 분할 매수, 감정 제어
+**교훈 (2회 연속 손절 + 재진입 학습)**
+1. 손절선 절대 지키기 (2회 성공 검증됨)
+2. 변수 제거 후 진입 (고용지표 대기)
+3. 감정 통제 (13시간 휴식)
+4. 분할 매수로 위험 분산
 
-**복구 목표:**
-- Phase 1 성공 시: +$450 (₩656,000) = 손실 66% 복구
-- 최종 목표: 100만원 완전 복구 + 추가 수익
-- 타임라인: 2-4주
+**자비스 역할:**
+- 22:25 Discord 알림 (크론 ID: 25ac4d97-fca2-4e97-a114-8be984c6f623)
+- 22:30 즉시 분석 브리핑 (크론 ID: 930def2b-03af-472c-8220-340ebce23681)
+- 24/7 Stop-Loss 모니터링: **Finnhub WebSocket 데몬**
+  - tmux 세션: `tqqq-monitor`
+  - 스크립트: `~/openclaw/scripts/tqqq-finnhub-monitor.js`
+  - 실시간 데이터: 프리마켓 + 정규장 + 애프터마켓
+  - Stop-Loss: $47.00 (자동 알림 → #jarvis-health)
+  - 로그: `~/openclaw/logs/tqqq-monitor.log`
+  - 확인: `tmux attach -t tqqq-monitor` (detach: Ctrl+B, D)
 
-**상태:** 🔥 공격적 복구 중 (바닥 근처 재진입)
+**상태:** ⏳ 고용지표 대기 중 (22:30 KST)
 
 ---
 
@@ -128,6 +137,21 @@
 - ❌ Apple Reminders (`remindctl`): 사용 안 함 (Apple 기기만 동기화)
 - 기본 목록 ID: `MDE3MjE5NzU0MjA3NTAxOTg4ODc6MDow`
 - Calendar 조회: `gog cal` (today/week)
+
+### Real-time Stock API
+**실시간 주식 데이터 (지연 없음)**
+- **Finnhub API**: REST + WebSocket (무료 플랜 실시간 지원)
+  - API Key: `d62ho41r01qlugeq3ge0d62ho41r01qlugeq3geg`
+  - REST: `https://finnhub.io/api/v1/quote?symbol=TQQQ&token=...`
+  - WebSocket: `wss://ws.finnhub.io?token=...`
+- **Polygon API**: REST + WebSocket (무료 플랜 제한)
+  - API Key: `9REVz_WVUWBX7DkFydWqeXCPw_YYLj2a`
+  - ⚠️ 실시간 trade 엔드포인트는 유료 플랜 필요
+- **스크립트**:
+  - 실시간 모니터: `~/openclaw/scripts/tqqq-realtime-monitor.js` (Finnhub REST)
+  - 하이브리드 모니터: `~/openclaw/scripts/tqqq-hybrid-monitor.js` (Finnhub WS + Polygon)
+  - Yahoo Finance: `~/openclaw/skills/yahoo-finance/yf` (⚠️ 15분 지연)
+- **TQQQ 크론**: 15분마다 실시간 모니터 실행 (Finnhub)
 
 ---
 
