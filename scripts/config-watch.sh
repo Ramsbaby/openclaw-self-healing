@@ -19,6 +19,11 @@ while true; do
     if [ -n "$LAST_HASH" ] && [ "$CURRENT_HASH" != "$LAST_HASH" ]; then
       echo "[$(date '+%Y-%m-%d %H:%M:%S')] Config changed detected!"
       "$BACKUP_SCRIPT" "auto-watch" || true
+      # 최근 10개만 보관
+      HISTORY_DIR="$HOME/openclaw/config-history"
+      if [ -d "$HISTORY_DIR" ]; then
+        cd "$HISTORY_DIR" && ls -t | tail -n +11 | xargs rm -f 2>/dev/null || true
+      fi
       echo ""
     fi
     

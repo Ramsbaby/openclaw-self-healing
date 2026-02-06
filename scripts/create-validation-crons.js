@@ -86,7 +86,7 @@ function createValidationCron(target) {
     '월간 비용 추적',
     'TQQQ 15분 모니터링'
   ];
-  const targetChannel = mainCrons.includes(target.name) ? '1468386844621144065' : '1468429321738911947';
+  const targetChannel = mainCrons.includes(target.name) ? '1468386844621144065' : '1469190688083280065';
   
   const job = {
     name: `🔍 Validation: ${target.name}`,

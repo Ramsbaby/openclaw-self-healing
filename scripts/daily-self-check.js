@@ -35,7 +35,7 @@ const CONFIG = {
   SIMILARITY_THRESHOLD: 0.65, // Slightly higher for faster detection
 
   // Discord
-  DISCORD_WEBHOOK: 'https://discord.com/api/webhooks/1468429341154214049/arTEGUkhIZ5bpE63AefMnyneomjwf1zDzCpzCwbdlzKpH7KgNzcMpFNX9G-DPW5HRojU',
+  DISCORD_WEBHOOK: 'https://discord.com/api/webhooks/1469274752517537960/8qaedz2GgFICpNGME316opmDNuiMrw72ZHPGSr83iCOi-H_uvr6h5V-EKGqjQ_AjrAPh',
 };
 
 // ============================================================================

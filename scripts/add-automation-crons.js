@@ -33,7 +33,7 @@ const NEW_JOBS = [
 실행 후 결과 요약만 간단히 보고 (한국어로).
 패턴 발견 시 주요 개선 제안 포함.`,
     model: 'anthropic/claude-haiku-4-5-20251001',
-    channel: '1468429321738911947' // openclaw-health
+    channel: '1469190688083280065' // jarvis-system
   },
   {
     name: '일일 자가 체크',
@@ -56,7 +56,7 @@ const NEW_JOBS = [
 - 반복 패턴 발견 시: 구체적 개선 제안
 - 패턴 없음: NO_REPLY`,
     model: 'anthropic/claude-haiku-4-5-20251001',
-    channel: '1468429321738911947' // openclaw-health
+    channel: '1469190688083280065' // jarvis-system
   }
 ];
 
