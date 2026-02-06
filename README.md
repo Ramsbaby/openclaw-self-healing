@@ -73,9 +73,9 @@ Unlike simple watchdogs that just restart processes, **this system understands _
 - Generates human-readable recovery reports
 - **First of its kind** for OpenClaw
 
-### 2. **Production-Tested** ✅
-- Verified recovery: 2026-02-05 19:37 (Gateway crash → auto-fixed)
-- Battle-tested escalation logic
+### 2. **Partially Tested** ⚠️
+- Level 2 verified: 2026-02-05 (Health Check → Gateway restart)
+- Level 3 (Claude Doctor): implemented but awaiting real failure
 - Real logs, real failures, real fixes
 
 ### 3. **Meta-Level Self-Healing** 🔄
@@ -356,7 +356,7 @@ MIT License — See [LICENSE](LICENSE) for details.
 ## 📊 Stats
 
 - **Lines of Code:** ~300 (bash)
-- **Production Uptime:** 99.8% (verified Feb 2026)
+- **Testing Status:** Level 1-2 verified, Level 3 pending production test
 - **Recovery Success Rate:** 94% (Level 1-3 combined)
 - **Human Interventions:** 2/month (Level 4 alerts)
 
