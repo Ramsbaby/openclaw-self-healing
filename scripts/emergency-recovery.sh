@@ -5,6 +5,20 @@ set -euo pipefail
 # Claude Code PTY 세션으로 자동 진단 및 복구 시도
 
 # ============================================
+# Cleanup trap (ensure tmux session is killed on exit)
+# ============================================
+cleanup() {
+    local exit_code=$?
+    if [ -n "${TMUX_SESSION:-}" ]; then
+        tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
+    fi
+    # Remove lock file if exists
+    rm -f /tmp/openclaw-emergency-recovery.lock 2>/dev/null || true
+    exit $exit_code
+}
+trap cleanup EXIT INT TERM
+
+# ============================================
 # Configuration (Override via environment)
 # ============================================
 RECOVERY_TIMEOUT="${EMERGENCY_RECOVERY_TIMEOUT:-1800}"  # 30분
@@ -25,6 +39,7 @@ METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
 
 # Create log directory if not exists
 mkdir -p "$LOG_DIR"
+chmod 700 "$LOG_DIR" 2>/dev/null || true
 
 # Load environment variables
 if [ -f "$HOME/openclaw/.env" ]; then

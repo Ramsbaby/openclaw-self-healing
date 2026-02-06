@@ -13,6 +13,7 @@ ALERT_WINDOW_MINUTES="${EMERGENCY_ALERT_WINDOW:-30}"
 
 # Create log directory if not exists
 mkdir -p "$LOG_DIR"
+chmod 700 "$LOG_DIR" 2>/dev/null || true
 
 # Load environment variables
 if [ -f "$HOME/openclaw/.env" ]; then
