@@ -27,8 +27,12 @@ fi
 # Discord webhook from environment variable (optional)
 DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
 
+# Secure temp file
+ALERT_TMP=$(mktemp -t emergency-alert.XXXXXX)
+chmod 600 "$ALERT_TMP"
+
 # Cleanup on exit
-trap 'rm -f /tmp/emergency-alert.txt' EXIT
+trap 'rm -f "$ALERT_TMP"' EXIT
 
 # ============================================
 # Functions
@@ -71,7 +75,7 @@ send_alert() {
   timestamp=$(basename "$latest_log" | sed 's/emergency-recovery-//;s/.log//')
   
   # Discord 알림 메시지 생성
-  cat > /tmp/emergency-alert.txt << EOF
+  cat > $ALERT_TMP << EOF
 🚨 **긴급: OpenClaw 자가복구 실패**
 
 **시간:** $timestamp
@@ -95,7 +99,7 @@ send_alert() {
 EOF
 
   local alert_msg
-  alert_msg=$(cat /tmp/emergency-alert.txt)
+  alert_msg=$(cat $ALERT_TMP)
   
   # Discord 직접 호출 (webhook 있을 경우)
   if [ -n "$DISCORD_WEBHOOK" ]; then
@@ -110,12 +114,12 @@ EOF
       log "✅ Discord notification sent (HTTP $response_code)"
     else
       log "⚠️ Discord notification failed (HTTP $response_code), falling back to stdout"
-      cat /tmp/emergency-alert.txt
+      cat $ALERT_TMP
     fi
   else
     # Webhook 없으면 stdout 출력 (크론이 message tool로 전달)
     log "INFO: DISCORD_WEBHOOK_URL not set, printing to stdout"
-    cat /tmp/emergency-alert.txt
+    cat $ALERT_TMP
   fi
 }
 

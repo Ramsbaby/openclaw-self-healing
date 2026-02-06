@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.1] - 2026-02-06
+
+### Fixed
+- **Dead code removed**: Unused `log_incident()` function removed from emergency-recovery.sh
+- **Claude completion polling**: No longer waits full 30 minutes; detects completion via output polling (saves up to 25 minutes)
+- **Secure temp files**: Uses `mktemp` instead of predictable `/tmp` paths
+- **Session log permissions**: `chmod 600` on Claude session logs
+
+### Security
+- Temp file race condition fixed
+- Log file permissions hardened
+
 ## [1.3.0] - 2026-02-06
 
 ### Added

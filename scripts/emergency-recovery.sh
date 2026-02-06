@@ -34,6 +34,10 @@ REPORT_FILE="$LOG_DIR/emergency-recovery-report-$TIMESTAMP.md"
 SESSION_LOG="$LOG_DIR/claude-session-$TIMESTAMP.log"
 TMUX_SESSION="emergency_recovery_$TIMESTAMP"
 
+# Secure session log
+touch "$SESSION_LOG"
+chmod 600 "$SESSION_LOG"
+
 # Performance metrics
 METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
 
@@ -247,9 +251,49 @@ main() {
     exit 1
   fi
   
-  # 5. Claude 작업 대기
-  log "Waiting ${RECOVERY_TIMEOUT}s for Claude to complete recovery..."
-  sleep "$RECOVERY_TIMEOUT"
+  # 5. Claude 작업 대기 (폴링으로 조기 완료 감지)
+  log "Waiting for Claude to complete recovery (max ${RECOVERY_TIMEOUT}s)..."
+  
+  local poll_interval=30
+  local elapsed=0
+  local last_output=""
+  local idle_count=0
+  local max_idle=6  # 3분간 출력 없으면 완료로 간주
+  
+  while [ $elapsed -lt "$RECOVERY_TIMEOUT" ]; do
+    sleep "$poll_interval"
+    elapsed=$((elapsed + poll_interval))
+    
+    # 현재 출력 캡처
+    local current_output
+    current_output=$(tmux capture-pane -t "$TMUX_SESSION" -p 2>/dev/null | tail -20 || echo "")
+    
+    # 완료 시그널 체크
+    if echo "$current_output" | grep -qE "(completed|finished|done|✅|successfully|REPORT_FILE)"; then
+      log "✅ Claude appears to have completed (detected completion signal)"
+      break
+    fi
+    
+    # 출력 변화 체크 (idle detection)
+    if [ "$current_output" = "$last_output" ]; then
+      idle_count=$((idle_count + 1))
+      if [ $idle_count -ge $max_idle ]; then
+        log "⚠️ Claude idle for $((idle_count * poll_interval))s, assuming completion"
+        break
+      fi
+    else
+      idle_count=0
+      last_output="$current_output"
+    fi
+    
+    log "... still working (${elapsed}s elapsed, idle: ${idle_count})"
+  done
+  
+  if [ $elapsed -ge "$RECOVERY_TIMEOUT" ]; then
+    log "⚠️ Recovery timeout reached (${RECOVERY_TIMEOUT}s)"
+  else
+    log "✅ Claude completed in ${elapsed}s (saved $((RECOVERY_TIMEOUT - elapsed))s)"
+  fi
   
   # 6. tmux 세션 캡처
   log "Capturing Claude session output..."
@@ -322,31 +366,3 @@ EOF
 
 # Run main function
 main
-
-# ============================================
-# v1.1.0: Incident Documentation (ContextVault feedback)
-# ============================================
-log_incident() {
-    local incident_file="${OPENCLAW_DIR}/memory/incidents/$(date +%Y-%m-%d_%H%M%S).md"
-    mkdir -p "$(dirname "$incident_file")"
-    
-    cat > "$incident_file" << EOF
-# Incident Report - $(date '+%Y-%m-%d %H:%M:%S')
-
-## Trigger
-- Health check failed 3 times
-- Last error: $(tail -5 "${OPENCLAW_DIR}/logs/gateway.log" 2>/dev/null | head -3)
-
-## Claude Diagnosis
-$(tmux capture-pane -t emergency-recovery -p 2>/dev/null | tail -50)
-
-## Resolution
-- Status: $1
-- Duration: $2 seconds
-
-## Prevention
-- TODO: Add prevention steps based on root cause
-EOF
-    
-    echo "📝 Incident logged: $incident_file"
-}
