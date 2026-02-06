@@ -3,12 +3,26 @@
 # OpenClaw Emergency Recovery (Level 3 Self-Healing)
 # Claude Code PTY 세션으로 자동 진단 및 복구 시도
 
+# Load environment variables
+if [ -f "$HOME/openclaw/.env" ]; then
+  source "$HOME/openclaw/.env"
+elif [ -f "$HOME/.openclaw/.env" ]; then
+  source "$HOME/.openclaw/.env"
+fi
+
 TIMESTAMP=$(date +%Y-%m-%d-%H%M)
 LOG_FILE=~/openclaw/memory/emergency-recovery-$TIMESTAMP.log
 REPORT_FILE=~/openclaw/memory/emergency-recovery-report-$TIMESTAMP.md
 TMUX_SESSION="emergency_recovery_$TIMESTAMP"
 RECOVERY_TIMEOUT=1800  # 30분
-DISCORD_WEBHOOK="https://discord.com/api/webhooks/1468429341154214049/arTEGUkhIZ5bpE63AefMnyneomjwf1zDzCpzCwbdlzKpH7KgNzcMpFNX9G-DPW5HRojU"
+
+# Discord webhook from environment variable
+DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL}"
+
+# Validate webhook URL
+if [ -z "$DISCORD_WEBHOOK" ]; then
+  echo "WARNING: DISCORD_WEBHOOK_URL not set. Notifications will not be sent."
+fi
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"

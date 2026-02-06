@@ -12,11 +12,25 @@ fi
 touch "$LOCKFILE"
 trap "rm -f $LOCKFILE" EXIT
 
+# Load environment variables
+if [ -f "$HOME/openclaw/.env" ]; then
+  source "$HOME/openclaw/.env"
+elif [ -f "$HOME/.openclaw/.env" ]; then
+  source "$HOME/.openclaw/.env"
+fi
+
 LOG_FILE=~/openclaw/memory/healthcheck-$(date +%Y-%m-%d).log
 GATEWAY_URL="http://localhost:18789/"
 MAX_RETRIES=3
 RETRY_DELAY=30
-DISCORD_WEBHOOK="https://discord.com/api/webhooks/1468429341154214049/arTEGUkhIZ5bpE63AefMnyneomjwf1zDzCpzCwbdlzKpH7KgNzcMpFNX9G-DPW5HRojU"
+
+# Discord webhook from environment variable
+DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL}"
+
+# Validate webhook URL
+if [ -z "$DISCORD_WEBHOOK" ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] WARNING: DISCORD_WEBHOOK_URL not set. Notifications will not be sent." | tee -a "$LOG_FILE"
+fi
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
