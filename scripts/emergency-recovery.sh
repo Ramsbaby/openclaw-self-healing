@@ -7,7 +7,7 @@ set -euo pipefail
 # ============================================
 # Cleanup trap (ensure tmux session is killed on exit)
 # ============================================
-# shellcheck disable=SC2329
+# shellcheck disable=SC2329,SC2317
 cleanup() {
     local exit_code=$?
     if [ -n "${TMUX_SESSION:-}" ]; then

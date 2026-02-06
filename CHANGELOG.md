@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.4] - 2026-02-06
+
+### Fixed
+- SC2317 (unreachable code) suppressed for trap cleanup function
+- GitHub Actions CI now passes
+
 ## [1.3.3] - 2026-02-06
 
 ### Fixed
