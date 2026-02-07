@@ -421,6 +421,26 @@ bash ~/openclaw/scripts/self-review-logger.sh \
 
 ---
 
+## 🔧 V5.0.1 핫픽스 (2026-02-07)
+
+비판적 검토 후 발견된 5개 결함 수정:
+
+| 결함 | 수정 |
+|------|------|
+| "자동 메트릭" 거짓 약속 | 문서에서 "호출자 제공" 명시 |
+| 파일 덮어쓰기 | 파일명에 `HHMMSS` 타임스탬프 추가 |
+| 일률적 목표 (15초/500토큰) | `targets-by-cron.yaml` 크론별 매핑 |
+| grep YAML 파싱 취약 | Node.js 정규식 파싱 |
+| 편향 기본값 `false` | `true`로 변경 (보수적 접근) |
+
+**파일:**
+- `scripts/self-review-logger.sh` (v5.0.1)
+- `scripts/weekly-review-collector.sh` (v5.0.1)
+- `templates/targets-by-cron.yaml` (신규)
+- `templates/self-review-v5.0.yaml` (v5.0.1)
+
+---
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
