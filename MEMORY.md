@@ -487,6 +487,100 @@
 
 ---
 
+## 🔬 Benchmarking & AI Agent Evolution (2026-02-07)
+
+### ClawHub 신규 스킬 (발견)
+
+**Agent Orchestrator** by aatmaan1
+- 복잡한 작업을 subtasks로 자동 분해
+- Sub-agents 동적 생성
+- **적용 아이디어:** 자비스 sessions_spawn 전략 고도화
+
+**Capability Evolver** by autogame-17
+- 런타임 기록으로 자체 진화 (protocol-constrained)
+- **적용 아이디어:** Self-Healing System v2.0에 반영
+
+**self-improving-agent** by pskoett
+- 실패와 수정 기록으로 지속적 학습
+- **적용 아이디어:** Memory flush 자동화 + 근본 원인 분석
+
+### 🔴 보안 경고 & 발견
+
+**ClawHavoc Campaign (Koi Security)**
+- 341개 악성 ClawHub 스킬 발견
+- 역쉘 백도어, credential exfiltration, 가짜 AuthTool
+- **해결:** Clawdex 보안 도구로 설치 전 검증
+- **행동:** 자비스 스킬 설치 정책 강화 필수
+
+**Moltbook DB Breach (3일 전)**
+- 모든 AI agent 제어 가능하도록 노출
+- **학점:** API 보안이 생명
+
+### 💡 GitHub Trending 벤치마크
+
+**Claude Code Memory Capture Plugin** (8,130⭐/week)
+- 모든 Claude 작업 자동 기록 → AI 압축 → 미래 세션 주입
+- ✅ **자비스도 동일:** MEMORY.md + memory/*.md + SESSION-STATE.md
+- **개선:** 세션 종료 전 자동 플러시 (current status: manual WAL)
+
+**Dify** (14,168⭐/week)
+- Agentic workflows를 위한 production-ready 플랫폼
+- **적용:** 자비스의 cron + sessions_spawn 구조화
+
+**TypeScript Dominance**
+- Python 넘어섬 (2025년 8월부터)
+- **정리:** 자비스 스킬 개발 시 TS/Node.js 우선
+
+### 🎯 즉시 적용 개선 (HIGH PRIORITY)
+
+1. **Skill Security Scanning** (Medium difficulty)
+   - Action: Clawdex 통합 → skill install 전 자동 검증
+   - Timeline: This week
+
+2. **Context Window Auto-Flush** (Easy)
+   - Action: 70%+ 사용 시 자동 플러시 + 요약
+   - Timeline: Immediate
+
+3. **Memory Capture Automation** (Medium)
+   - Action: SESSION-STATE 플러시 전 전체 기록 자동화
+   - Timeline: This week
+
+4. **Sub-task Auto-Decomposition** (Hard)
+   - Action: 복잡한 작업 감지 → 전문화된 sub-agents 자동 할당
+   - Timeline: Next week
+
+### 📚 연구 과제 (RESEARCH)
+
+- **Minimal Agent (NanoClaw):** 500줄 TS에서 Core 기능만 (실험 가치)
+- **Agent Autonomy Index:** 정우님 개입 없이 자비스 독립성 측정
+- **Moltbook Integration:** 자비스가 다른 agents와 상호작용할 수 있을까?
+- **Self-Evolution Framework:** Failure → Pattern Learning → Auto-improve
+- **Waymo-style World Model:** 정우님 환경의 동적 세계 모델 구축
+
+### 📊 Hacker News Insights (2026-02-07)
+
+**Top Stories:**
+1. Waymo World Model (685 pts) - Attention mechanism in autonomous systems
+2. Microsoft LiteBox (289 pts) - Security-focused library OS
+3. Show HN: Vecti (212 pts) - "Features I actually use" philosophy
+
+**정우님 철학과의 일치:**
+- "필요한 것만" 원칙 (Vecti 개발자와 동일)
+- 극도로 최소화된 구현 (NanoClaw: 500줄)
+
+### 🧠 Reddit Community Signals (r/programming)
+
+**주요 합의:**
+- LLM 코딩은 빠르지만 "증명과 검증"이 모든 일 (현실)
+- 소프트웨어 엔지니어는 절대 LLM으로 대체 불가 (마지막 20%가 가장 어려움)
+- AI가 B2B SaaS를 죽이지 못하는 이유 = 검증의 어려움
+
+**자비스 적용:**
+- 겸손하게, 확신 말고 확인으로
+- 최종 검증은 정우님의 몫 (무조건)
+
+---
+
 ## Notes
 
 - Memory files: `memory/YYYY-MM-DD.md` (daily logs)
