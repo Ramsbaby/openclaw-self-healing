@@ -13,10 +13,11 @@ LOG_FILE="$HOME/.openclaw/logs/launchd-guardian.log"
 PLIST_DIR="$HOME/Library/LaunchAgents"
 USER_ID=$(id -u)
 
-# 감시 대상 서비스 (우선순위 순: watchdog → gateway)
+# 감시 대상 서비스 (우선순위 순: watchdog → gateway → glances)
 SERVICES=(
     "ai.openclaw.watchdog"
     "ai.openclaw.gateway"
+    "ai.openclaw.glances"
 )
 
 log() {
