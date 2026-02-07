@@ -35,7 +35,7 @@
   tokens: 1500
   description: "버블 체크 + 주간 이벤트"
 
-주간_자기평가_감사_V5:
+주간_자기평가_감사_V5_0:
   duration_sec: 120
   tokens: 2000
   description: "Layer 3 외부 검증 (Opus)"
