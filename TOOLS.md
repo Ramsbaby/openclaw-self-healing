@@ -134,16 +134,20 @@ yf compare TQQQ,QQQ  # 종목 비교
 
 **스킬 위치:** `gog tasks` (gog CLI)
 
+**계정:** `your-email@example.com`
+**Keyring:** `keychain` (macOS Keychain 사용)
+
 **사용법:**
 ```bash
-gog tasks lists                           # 목록 보기
-gog tasks list "목록ID"                   # 할 일 보기
-gog tasks add "목록ID" --title "제목" --due "YYYY-MM-DD"  # 추가
-gog tasks done "목록ID" "할일ID"          # 완료
+gog tasks lists --account your-email@example.com                           # 목록 보기
+gog tasks list "목록ID" --account your-email@example.com                   # 할 일 보기
+gog tasks add "목록ID" --title "제목" --due "YYYY-MM-DD" --account your-email@example.com  # 추가
+gog tasks done "목록ID" "할일ID" --account your-email@example.com          # 완료
 ```
 
 **정우님 설정:**
 - 기본 목록 ID: `MDE3MjE5NzU0MjA3NTAxOTg4ODc6MDow`
+- 목록 이름: "내 할 일 목록"
 - Galaxy 폰과 동기화
 - **중요:** 할일/미리알림은 Google Tasks 사용 (Apple Reminders 아님)
 
@@ -167,18 +171,28 @@ remindctl add "목록명" "할 일" --due "날짜시간"      # 추가
 
 ## Google Calendar (일정 관리)
 
-**스킬 위치:** `gog cal` (gog CLI)
+**스킬 위치:** `gog calendar` (gog CLI)
+
+**계정:** `your-email@example.com`
+**Keyring:** `keychain` (macOS Keychain 사용)
 
 **사용법:**
 ```bash
-gog cal today     # 오늘 일정
-gog cal week      # 이번주 일정
+gog calendar calendars --account your-email@example.com         # 캘린더 목록
+gog calendar events --account your-email@example.com --today    # 오늘 일정
+gog calendar events --account your-email@example.com --from today --to "YYYY-MM-DD"  # 기간 일정
 ```
+
+**캘린더 목록:**
+- `your-email@example.com` — 기본 캘린더
+- `family02071296738162305992@group.calendar.google.com` — 가족
+- `ko.south_korea#holiday@group.v.calendar.google.com` — 대한민국 휴일
 
 **특이사항:**
 - Kakao Calendar API와 병행 사용
 - Kakao Calendar: 생성/수정 (ACCESS_TOKEN 필요)
-- Google Calendar: 조회 전용 (gog CLI)
+- Google Calendar: 조회용 (gog CLI)
+- ⚠️ 명령어는 `gog cal` 아니라 `gog calendar`
 
 ---
 
