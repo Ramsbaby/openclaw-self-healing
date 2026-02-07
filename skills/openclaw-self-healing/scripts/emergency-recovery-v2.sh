@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# OpenClaw Emergency Recovery v2.0 (Level 3 Self-Healing)
+# OpenClaw Emergency Recovery v2.0.0 (Level 3 Self-Healing)
 # - Recovery Documentation (persistent learnings)
 # - Reasoning Logs (explainability)
 # - Telegram Alert support
@@ -58,7 +58,7 @@ elif [ -f "$HOME/.openclaw/.env" ]; then
 fi
 
 # Notification webhooks
-DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
+DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
 TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
 TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:-}"
 
@@ -72,10 +72,10 @@ log() {
 
 send_discord_notification() {
   local message="$1"
-  if [ -n "$DISCORD_WEBHOOK" ]; then
+  if [ -n "$DISCORD_WEBHOOK_URL" ]; then
     local response_code
     response_code=$(curl -s -o /dev/null -w "%{http_code}" \
-      -X POST "$DISCORD_WEBHOOK" \
+      -X POST "$DISCORD_WEBHOOK_URL" \
       -H "Content-Type: application/json" \
       -d "{\"content\": \"$message\"}" \
       2>&1 || echo "000")
@@ -218,7 +218,7 @@ extract_learning() {
   
   # Extract key learning from Claude's report and reasoning
   if [ -f "$report_file" ]; then
-    log "Extracting learning from recovery report..."
+    log "Extracting learning from recovery report and reasoning log..."
     
     # Append to persistent learning repository
     {
@@ -237,10 +237,27 @@ extract_learning() {
       echo "### Prevention"
       grep -A 5 "Prevention\|Future\|Recommendation" "$report_file" | head -10 || echo "- TBD"
       echo ""
+      
+      # NEW: Extract reasoning from Claude's reasoning log (v2.0.1)
+      if [ -f "$reasoning_file" ]; then
+        echo "### Claude's Reasoning Process"
+        echo ""
+        echo "**Decision Making:**"
+        grep -A 5 "Decision Making\|Decision\|Choice" "$reasoning_file" | head -10 || echo "- See full reasoning: $reasoning_file"
+        echo ""
+        echo "**Lessons Learned:**"
+        grep -A 5 "Lessons Learned\|Lessons\|Insights" "$reasoning_file" | head -10 || echo "- See full reasoning: $reasoning_file"
+        echo ""
+      else
+        echo "### Claude's Reasoning Process"
+        echo "- Reasoning log not available: $reasoning_file"
+        echo ""
+      fi
+      
       echo "---"
     } >> "$LEARNING_REPO"
     
-    log "✅ Learning appended to $LEARNING_REPO"
+    log "✅ Learning appended to $LEARNING_REPO (including reasoning)"
   else
     log "⚠️ No report file found, skipping learning extraction"
   fi

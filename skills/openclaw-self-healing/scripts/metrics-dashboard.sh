@@ -60,7 +60,7 @@ echo ""
 # Trend (last 7 days)
 echo "📈 7-Day Trend:"
 jq -s --arg week_ago "$(date -v-7d +%s 2>/dev/null || date -d '7 days ago' +%s)" '[.[] | select(.timestamp > ($week_ago | tonumber))] | length' "$METRICS_FILE" | {
-  read count
+  read -r count
   echo "  Last 7 days: $count attempts"
 }
 echo ""
