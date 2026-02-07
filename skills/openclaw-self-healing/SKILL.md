@@ -1,12 +1,12 @@
 ---
 name: openclaw-self-healing
-version: 1.3.4
-description: 4-tier autonomous self-healing system for OpenClaw Gateway. Features Claude Code as Level 3 emergency doctor for AI-powered diagnosis and repair. Includes Watchdog, Health Check, Claude Recovery, and Discord Alert levels.
+version: 2.0.0
+description: 4-tier autonomous self-healing system for OpenClaw Gateway with persistent learning, reasoning logs, and multi-channel alerts. Features Claude Code as Level 3 emergency doctor for AI-powered diagnosis and repair.
 metadata:
   {
     "openclaw":
       {
-        "requires": { "bins": ["tmux", "claude"] },
+        "requires": { "bins": ["tmux", "claude", "jq"] },
         "install":
           [
             {
@@ -22,6 +22,13 @@ metadata:
               "package": "@anthropic-ai/claude-code",
               "bins": ["claude"],
               "label": "Install Claude Code CLI (npm)",
+            },
+            {
+              "id": "jq",
+              "kind": "brew",
+              "package": "jq",
+              "bins": ["jq"],
+              "label": "Install jq (brew) - for metrics dashboard",
             },
           ],
       },
@@ -43,11 +50,14 @@ Level 3: Claude Recovery     → 30min AI-powered diagnosis 🧠
 Level 4: Discord Alert       → Human escalation
 ```
 
-## What's Special
+## What's Special (v2.0)
 
 - **World's first** Claude Code as Level 3 emergency doctor
-- Claude runs in tmux PTY, reads logs, diagnoses, and fixes autonomously
-- Production-tested (verified recovery Feb 5, 2026)
+- **Persistent Learning** - Automatic recovery documentation (symptom → cause → solution → prevention)
+- **Reasoning Logs** - Explainable AI decision-making process
+- **Multi-Channel Alerts** - Discord + Telegram support
+- **Metrics Dashboard** - Success rate, recovery time, trending analysis
+- Production-tested (verified recovery Feb 5-6, 2026)
 - macOS LaunchAgent integration
 
 ## Quick Setup
@@ -96,8 +106,10 @@ tail -f ~/openclaw/memory/healthcheck-$(date +%Y-%m-%d).log
 | Script | Level | Description |
 |--------|-------|-------------|
 | `gateway-healthcheck.sh` | 2 | HTTP 200 check + 3 retries + escalation |
-| `emergency-recovery.sh` | 3 | Claude Code PTY session for AI diagnosis |
-| `emergency-recovery-monitor.sh` | 4 | Discord notification on failure |
+| `emergency-recovery.sh` | 3 | Claude Code PTY session for AI diagnosis (v1) |
+| `emergency-recovery-v2.sh` | 3 | Enhanced with learning + reasoning logs (v2) ⭐ |
+| `emergency-recovery-monitor.sh` | 4 | Discord/Telegram notification on failure |
+| `metrics-dashboard.sh` | - | Visualize recovery statistics (NEW) |
 
 ## Configuration
 

@@ -1,59 +1,107 @@
 # Changelog
 
-## [1.3.1] - 2026-02-06
+All notable changes to OpenClaw Self-Healing System will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.0.0] - 2026-02-07
+
+### Added
+- **Recovery Documentation**: Persistent learning repository (`recovery-learnings.md`)
+  - Automatically extracts symptom, root cause, solution, and prevention from each recovery
+  - Cumulative knowledge base for future incidents
+  - Addresses Moltbook ContextVault feedback
+- **Reasoning Logs**: Separate reasoning process logs (`claude-reasoning-*.md`)
+  - Captures Claude's decision-making process
+  - Explainability and transparency
+  - Helps understand why specific fixes were chosen
+- **Telegram Alert Support**: Alternative notification channel
+  - Configure via `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`
+  - Works alongside Discord notifications
+- **Enhanced Metrics**: Symptom and root cause tracking
+  - Metrics now include problem patterns
+  - Better trending analysis
+  - Identifies recurring issues
+- **Metrics Dashboard**: New `metrics-dashboard.sh` script
+  - Visualizes recovery statistics
+  - Success rate, average recovery time
+  - Top symptoms and root causes
+  - 7-day trend analysis
+
+### Changed
+- Emergency recovery script refactored to v2.0 (`emergency-recovery-v2.sh`)
+- Enhanced Claude instructions for structured reporting
+- Improved log rotation (includes reasoning logs)
+- Updated `.env.example` with Telegram configuration
 
 ### Fixed
-- **Dead code removed**: Unused `log_incident()` function removed from emergency-recovery.sh
-- **Claude completion polling**: No longer waits full 30 minutes; detects completion via output polling (saves up to 25 minutes)
-- **Secure temp files**: Uses `mktemp` instead of predictable `/tmp` paths
-- **Session log permissions**: `chmod 600` on Claude session logs
+- None (initial v2.0 release)
 
-### Security
-- Temp file race condition fixed
-- Log file permissions hardened
+---
 
-## [1.3.0] - 2026-02-06
+## [1.3.4] - 2026-02-06
 
-### Added
-- **One-Click Installer**: `curl -sSL .../install.sh | bash` for instant setup
-- Custom workspace support via `--workspace` flag
-- Automatic prerequisite checking (tmux, Claude CLI, OpenClaw)
-- Interactive setup with colored output
+### Fixed
+- SKILL.md version number sync
 
-### Improved
-- README restructured with one-click install prominently featured
-- Manual installation moved to collapsible section
-- Installation time reduced from 5 minutes to ~30 seconds
-
-## [1.2.1] - 2026-02-06
-
-### Security
-- Added cleanup trap to prevent orphan tmux sessions
-- Changed log permissions to `chmod 700` (was 600)
-- Added `LINUX_SETUP.md` for systemd users
-
-## [1.1.0] - 2026-02-06
+## [1.3.0] - 2026-02-06 23:20
 
 ### Added
-- **Incident Documentation**: Auto-generates incident reports with diagnosis, resolution, and prevention steps (ContextVault feedback)
-- **Reasoning Trace**: Claude's diagnostic process is now captured in incident logs (FiverrClawOfficial feedback)
+- One-Click Installer (`install.sh`)
+  - Single command: `curl -sSL .../install.sh | bash`
+  - Automatic dependency check
+  - LaunchAgent installation
+  - Environment setup
 
-### Improved
-- Better error messages in health check script
-- Added memory/incidents/ directory for historical tracking
+### Changed
+- README restructured: one-click install prominent, manual install in collapsible
 
-## [1.0.0] - 2026-02-06
-
-### Initial Release
-- 4-tier autonomous self-healing architecture
-- Level 1: Watchdog (180s process monitoring)
-- Level 2: Health Check (300s HTTP + 3 retries)
-- Level 3: Claude Recovery (30min AI diagnosis)
-- Level 4: Discord Alert (human escalation)
-
-## [1.2.2] - 2026-02-06
+## [1.2.2] - 2026-02-06 22:55
 
 ### Added
-- Demo GIF showing 4-tier recovery in action
-- Visual documentation in README
-- `assets/` directory for media files
+- Marketing bundle complete (5 platforms: Hacker News, Reddit, Twitter, Discord, Dev.to)
+- Demo GIF for README
+
+## [1.2.1] - 2026-02-06 22:05
+
+### Fixed
+- Security improvements:
+  - Added cleanup trap to prevent resource leaks
+  - Lock file permissions (chmod 700)
+  - Session log permissions (chmod 600)
+- Linux setup documentation (LINUX_SETUP.md)
+
+## [1.2.0] - 2026-02-06 21:00
+
+### Added
+- Enhanced documentation (55KB)
+- GitHub Actions (ShellCheck)
+
+## [1.1.0] - 2026-02-06 20:00
+
+### Changed
+- Documentation improvements
+- Code cleanup
+
+## [1.0.0] - 2026-02-06 21:30
+
+### Added
+- Initial public release
+- 4-tier self-healing architecture:
+  - Level 1: Watchdog (180s process monitoring)
+  - Level 2: Health Check (300s HTTP verification + 3 retries)
+  - Level 3: Claude Emergency Recovery (30min AI-powered diagnosis)
+  - Level 4: Discord Notification (human escalation)
+- macOS LaunchAgent integration
+- Production-tested (verified recovery Feb 5, 2026)
+- World's first Claude Code as emergency doctor
+
+[2.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.4...v2.0.0
+[1.3.4]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.0...v1.3.4
+[1.3.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.2.2...v1.3.0
+[1.2.2]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/releases/tag/v1.0.0
