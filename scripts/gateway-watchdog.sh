@@ -1,5 +1,5 @@
 #!/bin/bash
-# Gateway Watchdog v4 - Self-Healing 강화
+# Gateway Watchdog v5 - Self-Healing 강화
 #
 # v4 개선사항:
 # - 크래시 카운터 자동 감쇠 (6시간 후 리셋, 정상 시 1씩 감소)
@@ -351,8 +351,42 @@ request_restart() {
 
     if [[ "$pid_status" == PID:* ]]; then
         local pid="${pid_status#PID:}"
-        kill -USR1 "$pid" 2>/dev/null || true
-        log "ACTION" "SIGUSR1 전송 (PID: $pid)"
+        
+        # v5: 좀비 프로세스 감지 - HTTP 응답 없으면 SIGKILL 사용
+        local http_status=$(check_http_health)
+        
+        if [[ "$http_status" != "OK" ]]; then
+            # HTTP 응답 없음 = 좀비 상태 의심 → 강제 종료
+            log "ACTION" "좀비 프로세스 의심 (PID: $pid, HTTP: $http_status) - SIGKILL 강제 종료"
+            
+            # 1. SIGTERM 먼저 시도 (graceful)
+            kill -TERM "$pid" 2>/dev/null || true
+            sleep 2
+            
+            # 2. 여전히 살아있으면 SIGKILL
+            if kill -0 "$pid" 2>/dev/null; then
+                log "ACTION" "SIGTERM 무응답 - SIGKILL 강제 종료"
+                kill -9 "$pid" 2>/dev/null || true
+                sleep 1
+            fi
+            
+            # 3. 프로세스 종료 확인
+            if kill -0 "$pid" 2>/dev/null; then
+                log "ERROR" "프로세스 종료 실패 (PID: $pid)"
+            else
+                log "ACTION" "프로세스 종료 완료 (PID: $pid)"
+            fi
+            
+            # 4. launchctl로 재시작
+            sleep 1
+            launchctl kickstart -k "gui/$(id -u)/$LAUNCHD_SERVICE" 2>/dev/null || \
+                launchctl start "$LAUNCHD_SERVICE" 2>/dev/null || true
+            log "ACTION" "launchctl 재시작 실행"
+        else
+            # HTTP 응답 있음 = 정상 상태 → soft restart
+            kill -USR1 "$pid" 2>/dev/null || true
+            log "ACTION" "SIGUSR1 전송 (PID: $pid)"
+        fi
     else
         launchctl kickstart -k "gui/$(id -u)/$LAUNCHD_SERVICE" 2>/dev/null || \
             launchctl start "$LAUNCHD_SERVICE" 2>/dev/null || true
@@ -366,7 +400,7 @@ request_restart() {
 # 메인 로직
 # ============================================================================
 
-log "INFO" "========== Watchdog v4 체크 시작 =========="
+log "INFO" "========== Watchdog v5 체크 시작 =========="
 if $DRY_RUN; then
     log "INFO" "*** DRY-RUN 모드 ***"
 fi
