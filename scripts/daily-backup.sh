@@ -4,6 +4,13 @@
 
 set -euo pipefail
 
+# Load self-review library (V5.0.1 AOP)
+# shellcheck source=/dev/null
+source "$(dirname "$0")/../lib/self-review-lib.sh"
+
+# Self-review metrics
+START_TIME=$(date +%s)
+
 BACKUP_DIR=~/openclaw/backups
 DATE=$(date +%Y%m%d-%H%M)
 BACKUP_NAME="backup-${DATE}-DAILY"
@@ -12,6 +19,9 @@ LOG_FILE=~/.openclaw/logs/backup.log
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
 }
+
+# Main backup logic
+main() {
 
 log "=== Backup Started ==="
 
@@ -53,3 +63,46 @@ fi
 find "$BACKUP_DIR" -name "backup-*.tgz*" -mtime +7 -delete 2>/dev/null || true
 
 log "=== Backup Complete ==="
+
+return 0
+}
+
+# Run main function
+main
+MAIN_EXIT_CODE=$?
+
+# ============================================
+# Self-Review (V5.0.1)
+# ============================================
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
+# Non-AI cron (no OpenClaw API calls) → tokens=0
+INPUT_TOKENS=0
+OUTPUT_TOKENS=0
+
+# Determine status
+if [ $MAIN_EXIT_CODE -eq 0 ]; then
+  STATUS="ok"
+  WHAT_WENT_WRONG="없음"
+  WHY="백업 성공"
+  NEXT_ACTION="없음"
+else
+  STATUS="fail"
+  WHAT_WENT_WRONG="백업 실패 (exit code: $MAIN_EXIT_CODE)"
+  WHY="스크립트 에러"
+  NEXT_ACTION="로그 확인: $LOG_FILE"
+fi
+
+# Log self-review
+sr_log_review \
+  "Daily Backup" \
+  "$DURATION" \
+  "$INPUT_TOKENS" \
+  "$OUTPUT_TOKENS" \
+  "$STATUS" \
+  "$WHAT_WENT_WRONG" \
+  "$WHY" \
+  "$NEXT_ACTION"
+
+exit $MAIN_EXIT_CODE
