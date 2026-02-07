@@ -5,6 +5,18 @@ All notable changes to OpenClaw Self-Healing System will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-02-07
+
+### Fixed
+- **Reasoning log extraction:** Claude's reasoning process (Decision Making, Lessons Learned) is now properly extracted and appended to `recovery-learnings.md` (#Critical)
+- **Version consistency:** Script header version unified to v2.0.0 across all files
+- **Environment variable naming:** `DISCORD_WEBHOOK_URL` consistency improved in `emergency-recovery-v2.sh`
+- **ShellCheck warnings:** `read -r` flag added to `metrics-dashboard.sh` (SC2162)
+
+### Improved
+- **Edge case handling:** Graceful fallback when reasoning log file is missing
+- **Code quality:** ShellCheck recommendations applied
+
 ## [2.0.0] - 2026-02-07
 
 ### Added
