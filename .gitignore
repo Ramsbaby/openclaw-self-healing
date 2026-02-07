@@ -74,3 +74,5 @@ temp/
 
 # 환경별 설정 (템플릿만 커밋)
 # 실제 설정은 .gitignore
+config-history/
+.openclaw/
