@@ -205,3 +205,35 @@ gog cal week      # 이번주 일정
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+---
+
+## 자동 일정 등록 (Kakao Calendar)
+
+**날짜 감지 시 자동 제안:**
+정우님이 대화 중 다음 패턴을 언급하면 일정 등록 제안:
+- "X월 Y일" + 이벤트명 (예: "3월 7일 AWS SAA 시험")
+- "다음 주 화요일" + 이벤트명
+- "2/11 NFP 발표"
+
+**제안 형식:**
+```
+📅 일정 등록할까요?
+- 제목: [이벤트명]
+- 날짜: [YYYY-MM-DD]
+- 시간: [종일 / HH:MM]
+
+등록하시려면 "등록해줘"라고 해주세요.
+```
+
+**등록 명령어:**
+```bash
+bash ~/openclaw/scripts/kakao-calendar-add.sh "제목" "시작(UTC)" "종료(UTC)" true "설명"
+```
+
+**예시:**
+```bash
+bash ~/openclaw/scripts/kakao-calendar-add.sh "NFP 고용지표 발표" "2026-02-11T12:30:00Z" "2026-02-11T13:30:00Z" false "미국 1월 고용지표"
+```
+
+**주의:** UTC 시간으로 변환 필요 (KST -9시간)

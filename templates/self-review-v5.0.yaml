@@ -1,0 +1,66 @@
+# Self-Review V5.0 Template
+# ========================================
+# 핵심 변경: 자동 메트릭 + 편향 인정 + 외부 검증
+# ========================================
+
+# === Layer 1: 자동 수집 (측정 가능한 것만) ===
+# 이 섹션은 크론 실행 시 자동으로 채워짐
+auto_metrics:
+  cron_name: ""           # 크론 이름
+  timestamp: ""           # ISO 8601 형식
+  duration_sec: null      # 응답 시간 (초)
+  tokens_in: null         # 입력 토큰 (API 응답에서)
+  tokens_out: null        # 출력 토큰 (API 응답에서)
+  exit_status: "ok"       # ok | error
+
+# === Layer 2: LLM 자기성찰 (편향 인정) ===
+# 이 섹션은 LLM이 작성 (간결하게!)
+self_reflection:
+  # 무엇이 잘못됐나? (필수 1개+)
+  what_went_wrong: ""
+  
+  # 왜 그랬나? (근본 원인)
+  why: ""
+  
+  # 다음 액션 (구체적, 측정 가능)
+  next_action: ""
+  
+  # 이 액션의 마감일 (YYYY-MM-DD)
+  deadline: ""
+
+# === Layer 2.5: 편향 점검 (V5.0 핵심) ===
+bias_check:
+  # 내가 너무 관대하게 평가하고 있나?
+  am_i_being_too_easy: false
+  
+  # 그렇게 판단한 근거 (필수!)
+  evidence: ""
+  
+  # 정우님이 지적한 적 있는 문제인가?
+  user_flagged_before: false
+
+# === Layer 3: 목표 대비 (자동 계산 가능한 것만) ===
+targets:
+  duration:
+    goal_sec: 15          # 목표: 15초 이내
+    met: null             # 자동 계산: duration_sec < goal_sec
+  
+  tokens:
+    budget: 500           # 예산 토큰
+    usage_pct: null       # 자동 계산: tokens_out / budget * 100
+
+# === 메타데이터 ===
+meta:
+  version: "5.0"
+  reviewed_by: null       # Layer 3 외부 검증 시 채워짐
+  review_date: null
+
+# ========================================
+# 사용법
+# ========================================
+# 1. 크론 종료 시 auto_metrics 자동 채움
+# 2. LLM이 self_reflection + bias_check 작성
+# 3. 주간 외부 검증에서 meta.reviewed_by 채움
+#
+# 저장 위치: memory/self-review/YYYY-MM-DD/CRON_NAME.yaml
+# ========================================

@@ -261,7 +261,7 @@
 **의의:** 정우님의 첫 번째 공개 오픈소스 프로젝트
 
 **GitHub:** https://github.com/Ramsbaby/openclaw-self-healing
-**ClawHub:** `openclaw-self-healing@1.2.1`
+**ClawHub:** `openclaw-self-healing@2.0.1`
 **Moltbook:** Post ID `2512d17b-61ab-4481-9730-7ce97950ed44`
 
 **핵심 기술:**
@@ -277,7 +277,9 @@
 - v1.2.0 - 기능 개선
 - v1.2.1 (2026-02-06 22:05) - 보안 수정 (cleanup trap, chmod 700, LINUX_SETUP.md)
 - v1.2.2 (2026-02-06 22:55) - 마케팅 번들 완성 (5개 플랫폼 초안, Demo GIF)
-- **v1.3.0 (2026-02-06 23:20) - One-Click Installer** (`curl -sSL .../install.sh | bash`)
+- v1.3.0 (2026-02-06 23:20) - One-Click Installer (`curl -sSL .../install.sh | bash`)
+- v2.0.0 (2026-02-07 01:37) - Persistent Learning + Reasoning Logs + Telegram Alert + Metrics Dashboard
+- **v2.0.1 (2026-02-07 10:50) - Critical Bug Fix** (reasoning_file 로직 구현, 3-layer 검증 완료)
 
 **Hacker News 포스팅:**
 - 제목: "Show HN: Self-healing AI system using Claude Code as emergency doctor"
@@ -362,21 +364,28 @@
   - 로그 정리: `6bcf25e1-6588-46f7-8a32-4a5557a4f055`
 - **비판적 평가 결과**: 6.8/10 → 8.6/10 → **9.2/10** (production-ready)
 
-### 2026-02-05: 품질 체크 V4.0 전환 완료
-- **V3.3 → V4.0 업그레이드** (정우님 지적: "V3.3은 옛날버전 왜존재?")
-- **V4.0 주요 개선**:
-  - **목표 대비 측정** — <15초, 0회 재시도, >95% 정확도
-  - **의사결정 추론 (CoT)** — 도구 선택/접근 방법/트레이드오프 명시
-  - **실패율 계산** — X회 호출 / Y회 실패 (Z%)
-  - **토큰 예산 관리** — 예산 대비 사용률
-- **정리 완료**:
-  - V3.2, V3.3 파일 삭제 ✅
-  - symlink → V4.0으로 변경 ✅
-  - AGENTS.md 업데이트 ✅
-- **틀 있는 곳**: `~/openclaw/templates/self-review-v4.0.md`
-- **매주 살펴보기 크론**: 매주 일요일 23:30, Opus + Thinking High
-- **크론 ID**: `6b9054f4-8afb-4c56-a875-8648a661653a`
-- **가르침 있는 곳**: AGENTS.md "🔍 품질 체크 V4.0" 부분
+### 2026-02-07: 자기평가 V5.0 도입 🎉
+- **V4.0 → V5.0 업그레이드** (정우님 요청: "비판적 시각으로 재설계")
+- **V5.0 핵심 변경**:
+  - **Layer 1:** 자동 메트릭 수집 (duration, tokens만 - 측정 가능한 것만)
+  - **Layer 2:** LLM 자기성찰 + **bias_check** (편향 인정 필수)
+  - **Layer 3:** 외부 검증 (주간 Opus 리뷰, ~$0.60/월)
+  - **Layer 4:** PDCA 사이클 통합
+- **업계 베스트 프랙티스 반영**:
+  - Microsoft Azure 5 Pillars (Metrics, Logs, Traces, Evaluations, Governance)
+  - LLM-as-a-Judge 편향 연구 (Self-enhancement bias 인정)
+  - OpenTelemetry semantic conventions
+- **파일 구조**:
+  - 템플릿: `~/openclaw/templates/self-review-v5.0.yaml`
+  - 스크립트: `~/openclaw/scripts/self-review-logger.sh`
+  - 문서: `~/openclaw/docs/self-review-v5.0.md`
+  - 저장: `~/openclaw/memory/self-review/YYYY-MM-DD/`
+- **주간 검증 크론**: `6b9054f4-8afb-4c56-a875-8648a661653a` (Opus)
+- **마이그레이션**: Week 1~5 로드맵 진행 중
+
+### 2026-02-05: 품질 체크 V4.0 (deprecated)
+- **V5.0으로 대체됨** (2026-02-07)
+- V4.0 템플릿은 참고용으로 보존
 
 ### 2026-02-04: 품질 체크 V3.3 만들기 (deprecated)
 - **V3.2 → V3.3 고침** (정우님 말씀: "자기만족이지 자기개선이 아니다")
