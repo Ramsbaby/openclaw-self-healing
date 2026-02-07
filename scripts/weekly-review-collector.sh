@@ -1,75 +1,140 @@
 #!/bin/bash
 # Weekly Review Collector for V5.0 Layer 3
+# =========================================
 # 지난 7일간의 self-review 데이터를 수집하여 요약
+# Node.js 기반 YAML 파싱 (grep보다 안전)
+# =========================================
 
 set -euo pipefail
+
+REVIEW_DIR=~/openclaw/memory/self-review
 
 echo "# 주간 자기평가 요약 (V5.0 Layer 3)"
 echo "# 생성일: $(date '+%Y-%m-%d %H:%M')"
 echo "# 분석 대상: 지난 7일"
 echo ""
 
-REVIEW_DIR=~/openclaw/memory/self-review
-TOTAL_REVIEWS=0
-DURATION_FAILURES=0
-EASY_REVIEWS=0
+# Node.js로 YAML 파싱 (js-yaml 없이 간단한 파싱)
+node << 'NODEJS_SCRIPT'
+const fs = require('fs');
+const path = require('path');
 
-echo "## 📊 통계"
-echo ""
+const reviewDir = process.env.HOME + '/openclaw/memory/self-review';
 
-# 지난 7일 데이터 수집
-for i in {0..6}; do
-  DATE=$(date -v-${i}d '+%Y-%m-%d' 2>/dev/null || date -d "-${i} days" '+%Y-%m-%d')
-  DAY_DIR="$REVIEW_DIR/$DATE"
+// 지난 7일 날짜 생성
+const dates = [];
+for (let i = 0; i < 7; i++) {
+  const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+  dates.push(d.toISOString().split('T')[0]);
+}
+
+let totalReviews = 0;
+let scoreSum = 0;
+let lowScores = 0;  // < 7점
+let tooEasyCount = 0;
+const problems = [];
+const improvements = [];
+
+// 간단한 YAML 값 추출 (정규식 기반)
+function extractValue(content, key) {
+  const regex = new RegExp(`^\\s*${key}:\\s*["']?([^"'\\n]+)["']?`, 'm');
+  const match = content.match(regex);
+  return match ? match[1].trim() : null;
+}
+
+function extractNumber(content, key) {
+  const val = extractValue(content, key);
+  return val ? parseFloat(val) : null;
+}
+
+function extractBoolean(content, key) {
+  const val = extractValue(content, key);
+  return val === 'true';
+}
+
+for (const date of dates) {
+  const dayDir = path.join(reviewDir, date);
   
-  if [ -d "$DAY_DIR" ]; then
-    COUNT=$(ls -1 "$DAY_DIR"/*.yaml 2>/dev/null | wc -l | tr -d ' ')
-    TOTAL_REVIEWS=$((TOTAL_REVIEWS + COUNT))
-    
-    # 목표 미달 카운트
-    FAILED=$(grep -l "met: false" "$DAY_DIR"/*.yaml 2>/dev/null | wc -l | tr -d ' ')
-    DURATION_FAILURES=$((DURATION_FAILURES + FAILED))
-    
-    # 너무 관대한 평가 카운트
-    EASY=$(grep -l "am_i_being_too_easy: true" "$DAY_DIR"/*.yaml 2>/dev/null | wc -l | tr -d ' ')
-    EASY_REVIEWS=$((EASY_REVIEWS + EASY))
-  fi
-done
-
-echo "- 총 자기평가 수: $TOTAL_REVIEWS"
-echo "- 목표 미달 (duration): $DURATION_FAILURES"
-echo "- 관대한 평가 인정: $EASY_REVIEWS"
-echo ""
-
-# 개선 항목 수집
-echo "## 🔧 개선 항목 목록"
-echo ""
-
-for i in {0..6}; do
-  DATE=$(date -v-${i}d '+%Y-%m-%d' 2>/dev/null || date -d "-${i} days" '+%Y-%m-%d')
-  DAY_DIR="$REVIEW_DIR/$DATE"
+  if (!fs.existsSync(dayDir)) continue;
   
-  if [ -d "$DAY_DIR" ]; then
-    for file in "$DAY_DIR"/*.yaml 2>/dev/null; do
-      if [ -f "$file" ]; then
-        CRON=$(grep "cron_name:" "$file" | cut -d'"' -f2)
-        WRONG=$(grep "what_went_wrong:" "$file" | cut -d'"' -f2)
-        ACTION=$(grep "next_action:" "$file" | cut -d'"' -f2)
-        
-        if [ "$WRONG" != "없음" ] && [ -n "$WRONG" ]; then
-          echo "### $DATE - $CRON"
-          echo "- 문제: $WRONG"
-          echo "- 액션: $ACTION"
-          echo ""
-        fi
-      fi
-    done
-  fi
-done
+  const files = fs.readdirSync(dayDir).filter(f => f.endsWith('.yaml'));
+  
+  for (const file of files) {
+    const content = fs.readFileSync(path.join(dayDir, file), 'utf8');
+    totalReviews++;
+    
+    // 점수 추출
+    const score = extractNumber(content, 'score');
+    if (score !== null) {
+      scoreSum += score;
+      if (score < 7) lowScores++;
+    }
+    
+    // 편향 체크
+    if (extractBoolean(content, 'am_i_being_too_easy')) {
+      tooEasyCount++;
+    }
+    
+    // 문제점 수집
+    const cronName = extractValue(content, 'cron_name');
+    const wrong = extractValue(content, 'what_went_wrong');
+    const action = extractValue(content, 'next_action');
+    
+    if (wrong && wrong !== '없음' && wrong !== 'N/A') {
+      problems.push({ date, cronName, wrong, action });
+    }
+  }
+}
 
-echo "## 🎯 외부 검증 질문"
+// 통계 출력
+console.log('## 📊 통계\n');
+console.log(`- 총 자기평가 수: ${totalReviews}`);
+console.log(`- 평균 점수: ${totalReviews > 0 ? (scoreSum / totalReviews).toFixed(1) : 'N/A'}`);
+console.log(`- 목표 미달 (< 7점): ${lowScores}`);
+console.log(`- 관대함 인정 (am_i_being_too_easy): ${tooEasyCount}`);
+console.log('');
+
+// 문제점 목록
+console.log('## 🔧 발견된 문제점\n');
+if (problems.length === 0) {
+  console.log('_문제점 없음 (⚠️ 너무 관대한 것은 아닌지 확인 필요)_\n');
+} else {
+  for (const p of problems.slice(0, 10)) {  // 최대 10개
+    console.log(`### ${p.date} - ${p.cronName || 'Unknown'}`);
+    console.log(`- 문제: ${p.wrong}`);
+    console.log(`- 액션: ${p.action || '없음'}`);
+    console.log('');
+  }
+}
+
+// 패턴 분석
+console.log('## 🔍 패턴 분석\n');
+
+// 같은 문제 반복 체크
+const wrongCounts = {};
+for (const p of problems) {
+  const key = p.wrong.toLowerCase().substring(0, 30);
+  wrongCounts[key] = (wrongCounts[key] || 0) + 1;
+}
+const repeated = Object.entries(wrongCounts).filter(([k, v]) => v >= 2);
+if (repeated.length > 0) {
+  console.log('### ⚠️ 반복되는 문제');
+  for (const [problem, count] of repeated) {
+    console.log(`- "${problem}..." (${count}회)`);
+  }
+  console.log('');
+}
+
+// 외부 검증 질문
+console.log('## 🎯 Layer 3 검증 질문\n');
+console.log('1. 이번 주 자기평가들이 너무 관대했는가?');
+console.log(`   - 관대함 인정률: ${totalReviews > 0 ? ((tooEasyCount / totalReviews) * 100).toFixed(0) : 0}%`);
+console.log('2. 같은 실수가 반복되고 있는가?');
+console.log(`   - 반복 패턴: ${repeated.length}개 발견`);
+console.log('3. 개선 항목이 실제로 적용됐는가?');
+console.log('4. 다음 주 집중해야 할 영역은?');
+NODEJS_SCRIPT
+
 echo ""
-echo "1. 이번 주 자기평가들이 너무 관대했는가?"
-echo "2. 같은 실수가 반복되고 있는가?"
-echo "3. 개선 항목이 실제로 적용됐는가?"
-echo "4. 다음 주 집중해야 할 영역은?"
+echo "---"
+echo "_Generated by weekly-review-collector.sh (V5.0)_"

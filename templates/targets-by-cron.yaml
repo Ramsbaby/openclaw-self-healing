@@ -1,0 +1,170 @@
+# 크론별 목표 매핑 (V5.0)
+# =========================================
+# 각 크론의 특성에 맞는 목표 설정
+# 일률적 목표는 무의미한 거짓 판정을 생성함
+# =========================================
+
+# === 복잡한 크론 (긴 응답 허용) ===
+모닝_브리핑:
+  duration_sec: 60
+  tokens: 1200
+  description: "출근 경로 + 날씨 + 일정 + 시스템"
+
+퇴근_브리핑:
+  duration_sec: 60
+  tokens: 1200
+  description: "귀가 경로 + 날씨 + 시장 + 일정"
+
+트렌드_헌터:
+  duration_sec: 120
+  tokens: 2000
+  description: "5개 소스 수집 + 분석"
+
+자비스_정보_탐험:
+  duration_sec: 180
+  tokens: 3000
+  description: "6개 플랫폼 + 벤치마킹"
+
+일일_주식_브리핑:
+  duration_sec: 45
+  tokens: 800
+  description: "시장 환경 + 포트폴리오"
+
+주간_요약_리포트:
+  duration_sec: 90
+  tokens: 1500
+  description: "버블 체크 + 주간 이벤트"
+
+주간_자기평가_감사_V5:
+  duration_sec: 120
+  tokens: 2000
+  description: "Layer 3 외부 검증 (Opus)"
+
+일일_자가개선_야간_점검:
+  duration_sec: 60
+  tokens: 1000
+  description: "memory 정리 + 시스템 체크"
+
+Nightly_Build:
+  duration_sec: 90
+  tokens: 1000
+  description: "자동화 + 문서 정리"
+
+# === 중간 크론 ===
+TQQQ_5분_모니터링:
+  duration_sec: 10
+  tokens: 300
+  description: "캐시 기반 빠른 조회"
+
+크론_감시_리포트:
+  duration_sec: 45
+  tokens: 600
+  description: "크론 상태 + 분석"
+
+GitHub_감시:
+  duration_sec: 20
+  tokens: 400
+  description: "변경사항 체크"
+
+외부_API_사용량_모니터링:
+  duration_sec: 20
+  tokens: 400
+  description: "API 사용량 리포트"
+
+실적_발표_캘린더:
+  duration_sec: 30
+  tokens: 500
+  description: "주간 실적 일정"
+
+주간_비용_추적:
+  duration_sec: 30
+  tokens: 500
+  description: "Claude API 비용"
+
+# === 단순 크론 (짧은 응답) ===
+일일_백업:
+  duration_sec: 10
+  tokens: 100
+  description: "스크립트 실행 + NO_REPLY"
+
+로그_정리:
+  duration_sec: 10
+  tokens: 100
+  description: "스크립트 실행 + NO_REPLY"
+
+디스크_용량_경고:
+  duration_sec: 10
+  tokens: 200
+  description: "용량 체크 + 조건부 알림"
+
+일일_닥터_점검:
+  duration_sec: 15
+  tokens: 300
+  description: "doctor --fix 실행"
+
+일일_업데이트_확인:
+  duration_sec: 15
+  tokens: 200
+  description: "npm outdated 체크"
+
+Kakao_Token_자동_갱신:
+  duration_sec: 10
+  tokens: 100
+  description: "토큰 갱신 + NO_REPLY"
+
+Kakao_에러_로그_정리:
+  duration_sec: 5
+  tokens: 50
+  description: "find + delete"
+
+Kakao_Refresh_Token_만료_알림:
+  duration_sec: 10
+  tokens: 200
+  description: "만료일 체크"
+
+Emergency_Recovery_실패_감지:
+  duration_sec: 10
+  tokens: 100
+  description: "로그 스캔"
+
+# === 알림 크론 (최소 응답) ===
+조식_알림:
+  duration_sec: 5
+  tokens: 50
+  description: "한 줄 알림"
+
+취침_알림:
+  duration_sec: 5
+  tokens: 50
+  description: "한 줄 알림"
+
+부부_약_먹기_알림:
+  duration_sec: 5
+  tokens: 50
+  description: "한 줄 알림"
+
+관훈_미확정_저녁:
+  duration_sec: 10
+  tokens: 100
+  description: "state 체크 + 질문"
+
+관훈_예약_알림:
+  duration_sec: 10
+  tokens: 100
+  description: "예약 체크"
+
+관훈_근무일_확인:
+  duration_sec: 15
+  tokens: 150
+  description: "주간 확인 질문"
+
+월급날_정기투자_알림:
+  duration_sec: 10
+  tokens: 150
+  description: "투자 리마인더"
+
+# === 기본값 (매핑 없는 크론용) ===
+_default:
+  duration_sec: 15
+  tokens: 500
+  description: "기본값"
