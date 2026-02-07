@@ -4,6 +4,7 @@
 
 A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://github.com/openclaw/openclaw) Gateway, featuring AI-powered diagnosis and repair via Claude Code.
 
+[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases/tag/v2.0.1)
 [![ShellCheck](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform: macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
@@ -89,16 +90,33 @@ Unlike simple watchdogs that just restart processes, **this system understands _
 - Unlike external infrastructure monitors, this targets the agent itself
 - Systematic escalation prevents false alarms
 
-### 4. **Safe by Design** 🔒
+### 4. **Persistent Learning** 📚 *(NEW in v2.0)*
+- Automatic recovery documentation (`recovery-learnings.md`)
+- Cumulative knowledge base: symptom → root cause → solution → prevention
+- Claude learns from past incidents (addresses ContextVault feedback)
+- Reasoning logs capture decision-making process
+
+### 5. **Enhanced Observability** 📊 *(NEW in v2.0)*
+- Metrics dashboard with success rate, avg recovery time
+- Trending analysis (7-day window)
+- Top symptoms and root causes tracking
+- Explainable AI: understand why Claude chose specific fixes
+
+### 6. **Multi-Channel Alerts** 📱 *(NEW in v2.0)*
+- Discord webhooks (original)
+- Telegram bot support (new alternative)
+- Configure one or both notification channels
+
+### 7. **Safe by Design** 🔒
 - No secrets in code (`.env` for webhooks)
 - Lock files prevent race conditions
 - Atomic writes for alert tracking
 - Automatic log rotation (14-day cleanup)
 
-### 5. **Elegant Simplicity** 🎨
-- 3 bash scripts (~300 lines total)
+### 8. **Elegant Simplicity** 🎨
+- 4 bash scripts (~400 lines total)
 - 1 LaunchAgent, 1 cron job
-- Zero external dependencies (except tmux + Claude CLI)
+- Zero external dependencies (except tmux + Claude CLI + jq)
 
 ---
 
