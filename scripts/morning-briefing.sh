@@ -4,9 +4,19 @@
 
 set -euo pipefail
 
+# Load self-review library (V5.0.1 AOP)
+# shellcheck source=/dev/null
+source "$(dirname "$0")/../lib/self-review-lib.sh"
+
+# Self-review metrics
+START_TIME=$(date +%s)
+
 # 색상 정의
 RESET='\033[0m'
 BOLD='\033[1m'
+
+# Main briefing logic
+main() {
 
 # 1. 관훈 여부 체크
 OFFICE_LOC="사조"
@@ -101,4 +111,45 @@ echo "**Claude 한도:**"
 bash ~/openclaw/scripts/claude-weekly-usage.sh 2>/dev/null || echo "체크 실패"
 echo ""
 
-exit 0
+return 0
+}
+
+# Run main function
+main
+MAIN_EXIT_CODE=$?
+
+# ============================================
+# Self-Review (V5.0.1)
+# ============================================
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
+# Non-AI cron (script-based briefing) → tokens=0
+INPUT_TOKENS=0
+OUTPUT_TOKENS=0
+
+# Determine status
+if [ $MAIN_EXIT_CODE -eq 0 ]; then
+  STATUS="ok"
+  WHAT_WENT_WRONG="없음"
+  WHY="브리핑 생성 성공"
+  NEXT_ACTION="없음"
+else
+  STATUS="fail"
+  WHAT_WENT_WRONG="브리핑 실패 (exit code: $MAIN_EXIT_CODE)"
+  WHY="스크립트 에러"
+  NEXT_ACTION="로그 확인 필요"
+fi
+
+# Log self-review
+sr_log_review \
+  "Morning Briefing" \
+  "$DURATION" \
+  "$INPUT_TOKENS" \
+  "$OUTPUT_TOKENS" \
+  "$STATUS" \
+  "$WHAT_WENT_WRONG" \
+  "$WHY" \
+  "$NEXT_ACTION"
+
+exit $MAIN_EXIT_CODE

@@ -4,6 +4,13 @@ set -euo pipefail
 # Emergency Recovery Monitor - Discord 알림
 # emergency-recovery 로그에서 실패 케이스 감지 → Discord 알림
 
+# Load self-review library (V5.0.1 AOP)
+# shellcheck source=/dev/null
+source "$(dirname "$0")/../lib/self-review-lib.sh"
+
+# Self-review metrics
+START_TIME=$(date +%s)
+
 # ============================================
 # Configuration (Override via environment)
 # ============================================
@@ -130,7 +137,7 @@ main() {
   if [ -z "$recent_logs" ]; then
     # 최근 emergency recovery 없음
     log "No recent emergency recovery logs found (last ${ALERT_WINDOW_MINUTES} minutes)"
-    exit 0
+    return 0
   fi
 
   # 가장 최근 로그 확인
@@ -139,13 +146,13 @@ main() {
 
   if [ -z "$latest_log" ] || [ ! -f "$latest_log" ]; then
     log "No valid emergency recovery logs found"
-    exit 0
+    return 0
   fi
 
   # 이미 알림 보낸 로그인지 체크
   if is_alert_already_sent "$latest_log"; then
     log "Alert already sent for: $latest_log"
-    exit 0
+    return 0
   fi
 
   # "MANUAL INTERVENTION REQUIRED" 패턴 검색
@@ -158,13 +165,50 @@ main() {
     # 알림 보냄 기록
     mark_alert_sent "$latest_log"
     
-    exit 0
+    return 0
   else
     log "No manual intervention required in: $latest_log"
   fi
 
-  exit 0
+  return 0
 }
 
 # Run main function
 main
+MAIN_EXIT_CODE=$?
+
+# ============================================
+# Self-Review (V5.0.1)
+# ============================================
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
+# Non-AI cron (no OpenClaw API calls) → tokens=0
+INPUT_TOKENS=0
+OUTPUT_TOKENS=0
+
+# Determine status
+if [ $MAIN_EXIT_CODE -eq 0 ]; then
+  STATUS="ok"
+  WHAT_WENT_WRONG="없음"
+  WHY="정상 실행"
+  NEXT_ACTION="없음"
+else
+  STATUS="fail"
+  WHAT_WENT_WRONG="스크립트 실패 (exit code: $MAIN_EXIT_CODE)"
+  WHY="main 함수 에러"
+  NEXT_ACTION="로그 확인 필요"
+fi
+
+# Log self-review
+sr_log_review \
+  "Emergency Recovery Monitor" \
+  "$DURATION" \
+  "$INPUT_TOKENS" \
+  "$OUTPUT_TOKENS" \
+  "$STATUS" \
+  "$WHAT_WENT_WRONG" \
+  "$WHY" \
+  "$NEXT_ACTION"
+
+exit $MAIN_EXIT_CODE
