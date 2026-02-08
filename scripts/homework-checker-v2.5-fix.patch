@@ -1,0 +1,50 @@
+--- a/homework-checker-v2.py
++++ b/homework-checker-v2.5.py
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python3
+ """
+-한글 숙제 자동 교정 시스템 v2.4
+-선생님 빨간 펜 스타일 - 직접 고쳐쓰기
++한글 숙제 자동 교정 시스템 v2.5
++DOCUMENT_TEXT_DETECTION으로 word 단위 인식 개선
+ 
+ Usage:
+     python3 homework-checker-v2.py <image_path>
+@@ -38,8 +38,11 @@
+     
+     image = vision.Image(content=content)
+-    response = client.text_detection(image=image)
++    # DOCUMENT_TEXT_DETECTION = word 단위 BoundingBox
++    image_context = vision.ImageContext(language_hints=['ko'])
++    response = client.document_text_detection(image=image, image_context=image_context)
+     
+     if response.error.message:
+         raise Exception(f"Vision API Error: {response.error.message}")
+     
+@@ -47,15 +50,28 @@
+-    if response.text_annotations:
+-        full_text = response.text_annotations[0].description
++    if response.full_text_annotation:
++        full_text = response.full_text_annotation.text
+     
+     word_positions = []
+-    for annotation in response.text_annotations[1:]:
+-        vertices = annotation.bounding_poly.vertices
+-        x_coords = [v.x for v in vertices]
+-        y_coords = [v.y for v in vertices]
+-        
+-        word_positions.append({
+-            'text': annotation.description,
++    
++    # document_text_detection: page → block → paragraph → word
++    for page in response.full_text_annotation.pages:
++        for block in page.blocks:
++            for paragraph in block.paragraphs:
++                for word in paragraph.words:
++                    word_text = ''.join([symbol.text for symbol in word.symbols])
++                    vertices = word.bounding_box.vertices
++                    x_coords = [v.x for v in vertices]
++                    y_coords = [v.y for v in vertices]
++                    
++                    word_positions.append({
++                        'text': word_text,

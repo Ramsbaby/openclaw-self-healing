@@ -1,0 +1,46 @@
+{
+  "week": "20260208W",
+  "generated_at": "2026-02-08T13:00:14.296Z",
+  "channels": {
+    "jarvis": {
+      "channel_id": "1468386844621144065",
+      "messages_count": 102,
+      "avg_response_time_ms": 1604,
+      "total_tokens": 39847,
+      "avg_tokens_per_message": 365,
+      "quality_score": "7.8",
+      "violations_count": 0,
+      "faqs_triggered": 0
+    },
+    "jarvis-market": {
+      "channel_id": "1469190686145384513",
+      "messages_count": 129,
+      "avg_response_time_ms": 2086,
+      "total_tokens": 31747,
+      "avg_tokens_per_message": 406,
+      "quality_score": "9.2",
+      "violations_count": 0,
+      "faqs_triggered": 4
+    },
+    "jarvis-system": {
+      "channel_id": "1469190688083280065",
+      "messages_count": 68,
+      "avg_response_time_ms": 1020,
+      "total_tokens": 48069,
+      "avg_tokens_per_message": 521,
+      "quality_score": "9.1",
+      "violations_count": 3,
+      "faqs_triggered": 8
+    },
+    "jarvis-dev": {
+      "channel_id": "1469905074661757049",
+      "messages_count": 145,
+      "avg_response_time_ms": 998,
+      "total_tokens": 59840,
+      "avg_tokens_per_message": 394,
+      "quality_score": "7.4",
+      "violations_count": 3,
+      "faqs_triggered": 9
+    }
+  }
+}

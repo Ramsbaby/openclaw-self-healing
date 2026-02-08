@@ -1,0 +1,26 @@
+{
+  "lastUpdated": "2026-02-09T08:23:00Z",
+  "openai": {
+    "used_dollars": 0,
+    "remaining_dollars": 5,
+    "monthly_limit_dollars": 5,
+    "usage_percent": 0,
+    "note": "0% 사용 (이번 달 시작)"
+  },
+  "brave_search": {
+    "used_queries": 0,
+    "monthly_limit": 2000,
+    "monthly_cost_dollars": 0,
+    "usage_percent": 0,
+    "note": "API 계획 무료 플랜"
+  },
+  "claude": {
+    "week_usage_percent": 94,
+    "all_models_remaining_percent": 6,
+    "sonnet_usage_percent": 88,
+    "sonnet_remaining_percent": 12,
+    "reset_today_utc": "2026-02-09T15:00:00Z",
+    "reset_sonnet_only": "2026-02-10T09:00:00Z",
+    "note": "매일 업데이트 필수"
+  }
+}

@@ -1,0 +1,45 @@
+# Self-Review V5.0.1
+# Generated: 2026-02-08T02:50:09Z
+# File: 관훈_예약_알림_115009.yaml
+
+# === 메트릭 (호출자 제공) ===
+# ⚠️ 이 값들은 "자동 수집"이 아닙니다.
+# 크론이 종료 시 명시적으로 전달해야 합니다.
+metrics:
+  cron_name: "관훈 예약 알림"
+  timestamp: "2026-02-08T02:50:09Z"
+  score: 10
+  tokens_in: 50
+  tokens_out: 10
+  exit_status: "ok"
+
+# === LLM 자기성찰 ===
+self_reflection:
+  what_went_wrong: "없음"
+  why: "N/A"
+  next_action: "없음"
+  deadline: "2026-02-15"
+
+# === 편향 점검 ===
+# ⚠️ 기본값 true = 관대함 의심 (보수적 접근)
+bias_check:
+  am_i_being_too_easy: true
+  evidence: "주간 리뷰에서 검증 필요"
+  user_flagged_before: false
+
+# === 목표 대비 ===
+targets:
+  score:
+    goal: 7.0
+    actual: 10
+    met: true
+  tokens:
+    budget: 100
+    actual: 10
+    usage_pct: 10.0
+
+# === 메타 ===
+meta:
+  version: "5.0.1"
+  reviewed_by: null
+  review_date: null
