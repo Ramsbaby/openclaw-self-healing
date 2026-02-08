@@ -312,6 +312,31 @@
 
 ## Important Decisions
 
+### 2026-02-08: Watchdog v5.1 크론 Catch-up 구현
+- **문제:** Gateway 재시작 후 놓친 크론 미실행 (02:37 재시작 → 03:00~06:15 크론 전부 놓침)
+- **원인:** OpenClaw 크론 스케줄러가 놓친 작업을 "catch up" 하지 않음
+- **해결:**
+  - `~/openclaw/scripts/cron-catchup.sh` 신규 생성
+  - OpenClaw CLI로 크론 목록 조회
+  - 마지막 실행 2시간+ 경과한 크론 감지 + `--force` 실행
+  - Watchdog v5.1에서 복구 성공 시 백그라운드로 자동 호출
+- **커밋:** `1c2741b`
+- **교훈:**
+  - 대부분의 크론 시스템은 재시작 후 놓친 작업을 자동 실행하지 않음
+  - Self-Healing 시스템은 "프로세스 복구" + "상태 복구" 모두 고려해야 함
+
+### 2026-02-08: 시스템 전반 점검 & 트렌드 벤치마킹
+- **ClawHub 현황:** 5,705개 스킬 (악성 400+개 발견)
+- **보안 트렌드:**
+  - Cisco Skill Scanner: 26% 스킬에 취약점
+  - ClawHavoc 캠페인: 341개 악성 스킬
+  - Snyk 280+ Leaky Skills: API 키 노출
+- **벤치마킹 대상:** agent-config, buildlog, cellcog, cc-godmode
+- **Action Items:**
+  - Gateway 업데이트 (2026.2.6-3)
+  - `exec.security` → `allowlist` 전환
+  - Clawdex 스킬 검증 정책 강화
+
 ### 2026-02-05: Self-Healing System 구현 완료
 - **목표:** Gateway 장애 시 4단계 자동 복구 시스템 구축
 - **구조:**
