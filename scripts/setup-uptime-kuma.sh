@@ -1,0 +1,58 @@
+#!/bin/bash
+# Uptime Kuma 초기 설정 + OpenClaw 모니터 자동 등록
+# 첫 실행 시에만 필요 (이후 웹 UI에서 관리)
+#
+# 사용법: ~/openclaw/scripts/setup-uptime-kuma.sh
+
+set -euo pipefail
+
+KUMA_URL="http://localhost:3001"
+WEBHOOK_URL=$(jq -r '.webhook.url' ~/.openclaw/monitoring.json)
+
+echo "============================================"
+echo "  Uptime Kuma 초기 설정 가이드"
+echo "============================================"
+echo ""
+echo "1. 브라우저에서 접속: $KUMA_URL"
+echo "   (또는 Galaxy 폰: http://192.168.219.111:3001)"
+echo ""
+echo "2. 관리자 계정 생성 (최초 1회)"
+echo ""
+echo "3. 아래 모니터를 추가하세요:"
+echo ""
+echo "   [Monitor 1] OpenClaw Gateway"
+echo "   - Type: HTTP(s) - Keyword"
+echo "   - URL: http://localhost:61208/api/4/now"
+echo "   - Keyword: iso"
+echo "   - Interval: 60초"
+echo ""
+echo "   [Monitor 2] Glances Web Dashboard"
+echo "   - Type: HTTP(s)"
+echo "   - URL: http://localhost:61208/api/4/cpu"
+echo "   - Interval: 60초"
+echo ""
+echo "   [Monitor 3] n8n Workflow"
+echo "   - Type: HTTP(s)"
+echo "   - URL: http://localhost:5678/healthz"
+echo "   - Interval: 120초"
+echo ""
+echo "   [Monitor 4] Gateway Process (Push)"
+echo "   - Type: Push"
+echo "   - Heartbeat Interval: 180초"
+echo "   - (watchdog에서 자동으로 ping)"
+echo ""
+echo "4. Notification 설정:"
+echo "   - Settings → Notifications → Add"
+echo "   - Type: Discord"
+echo "   - Webhook URL: $WEBHOOK_URL"
+echo "   - 'Apply on all existing monitors' 체크"
+echo ""
+echo "5. Status Page 생성:"
+echo "   - Status Pages → New"
+echo "   - Title: OpenClaw"
+echo "   - 모든 모니터 추가"
+echo ""
+echo "============================================"
+echo "  설정 후 접속: http://192.168.219.111:3001"
+echo "  Status Page: http://192.168.219.111:3001/status/openclaw"
+echo "============================================"

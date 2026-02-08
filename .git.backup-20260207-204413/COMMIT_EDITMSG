@@ -1,0 +1,1 @@
+security: Add config-history to .gitignore (prevent API key leak)

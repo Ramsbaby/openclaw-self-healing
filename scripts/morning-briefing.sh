@@ -101,8 +101,11 @@ echo ""
 echo "## 💻 시스템 상태"
 echo ""
 echo "**Mac mini:**"
+MEM_INFO=$(top -l 1 | grep PhysMem)
+MEM_USED=$(echo "$MEM_INFO" | awk '{print $2}')
+MEM_UNUSED=$(echo "$MEM_INFO" | awk '{print $6}')
 echo "- CPU: $(top -l 1 | grep 'CPU usage' | awk '{print $3}')"
-echo "- 메모리: $(memory_pressure | grep 'System-wide memory free percentage' | awk '{print 100-$5"%"}')"
+echo "- 메모리: $MEM_USED 사용 / $MEM_UNUSED 여유"
 echo "- 디스크: $(df -h / | tail -1 | awk '{print $5}')"
 echo ""
 

@@ -61,11 +61,20 @@ for service in "${SERVICES[@]}"; do
             fi
         fi
     else
-        # 등록되어 있음 - PID 체크 (StartInterval 서비스 hang 감지)
+        # 등록되어 있음 - PID 체크 (KeepAlive 서비스만)
+        # StartInterval 서비스는 작업 완료 후 정상 종료 → PID가 "-"인 게 정상
+        
+        # plist에서 서비스 타입 확인 (StartInterval vs KeepAlive)
+        service_type="keepalive"
+        if grep -q "StartInterval" "$plist" 2>/dev/null; then
+            service_type="interval"
+        fi
+        
         pid=$(echo "$list_output" | awk '{print $1}')
 
-        if [[ "$pid" == "-" ]]; then
-            # StartInterval 서비스가 실행 안됨 → kickstart
+        # KeepAlive 서비스만 PID 체크 (StartInterval은 스킵)
+        if [[ "$service_type" == "keepalive" && "$pid" == "-" ]]; then
+            # KeepAlive인데 실행 안됨 → kickstart
             log "[WARN] $service 실행 안됨 (PID: -) - kickstart 시도"
             if launchctl kickstart -k "gui/$USER_ID/$service" 2>/dev/null; then
                 log "[OK] $service kickstart 성공"
