@@ -4,7 +4,7 @@
 
 A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://github.com/openclaw/openclaw) Gateway, featuring AI-powered diagnosis and repair via Claude Code.
 
-[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases/tag/v2.0.1)
+[![Version](https://img.shields.io/badge/version-2.0.2-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases/tag/v2.0.2)
 [![ShellCheck](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform: macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
@@ -45,11 +45,12 @@ Unlike simple watchdogs that just restart processes, **this system understands _
 └─────────────────────────────────────────────────────────┘
                          ↓ (if Gateway needs monitoring)
 ┌─────────────────────────────────────────────────────────┐
-│ Level 2: Watchdog (180s interval) 🔍                    │
+│ Level 2: Watchdog v5.3 (180s interval) 🔍               │
 │ ├─ LaunchAgent: ai.openclaw.watchdog + KeepAlive       │
 │ ├─ PID check + HTTP health check                        │
 │ ├─ Memory monitoring (1.5GB warning, 2GB critical)      │
 │ ├─ Exponential backoff (10s → 600s)                     │
+│ ├─ **Auto-fix on crash** (doctor --fix if crash >= 2)  │
 │ └─ SIGUSR1 graceful restart or launchctl kickstart      │
 └─────────────────────────────────────────────────────────┘
                          ↓ (if Watchdog hangs/crashes)

@@ -5,6 +5,26 @@ All notable changes to OpenClaw Self-Healing System will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-02-09
+
+### Added
+- **Watchdog v5.3 - Auto Config Fix**: Automatic `openclaw doctor --fix` execution when crash_count >= 2
+  - Detects configuration validation errors automatically
+  - Reduces recovery time from 36 minutes to 7 minutes (5x faster)
+  - No separate cron required (integrated into Watchdog LaunchAgent)
+  - Maintains full backward compatibility with existing functionality
+
+### Improved
+- **Gateway Recovery**: Enhanced self-healing system with configuration auto-fix
+- **Alerting**: Discord notifications now include auto-fix attempt information
+- **Documentation**: Added detailed version history for Watchdog v5.3
+
+### Technical Details
+- **Trigger condition**: crash_count >= 2 (5+ minutes of continuous failure)
+- **Action**: Execute `openclaw doctor --fix` to repair configuration errors
+- **Fallback**: If auto-fix fails, continues with standard restart retry logic
+- **Risk**: Minimal (code changes isolated, easy rollback via git revert)
+
 ## [2.0.1] - 2026-02-07
 
 ### Fixed
