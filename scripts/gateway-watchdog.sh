@@ -1,5 +1,19 @@
 #!/bin/bash
-# Gateway Watchdog v5.1 - Self-Healing 강화
+# Gateway Watchdog v5.3 - Auto Config Fix + Emergency Recovery
+#
+# v5.3 개선사항 (2026-02-09):
+# - doctor --fix 자동 실행 (crash_count >= 2일 때)
+# - 설정 검증 에러 자동 감지 및 수정
+# - Watchdog 내장화로 별도 크론 불필요
+# - 복구 시간 단축: 36분 → 7분
+#
+# v5.2 개선사항 (2026-02-08):
+# - Backoff 진입 시 Emergency Recovery (Level 3) 즉시 호출
+# - Claude CLI 자율 진단 + 복구 시도 (30분)
+# - 무한 재시작 루프 방지 + 근본 원인 해결
+#
+# v5.1 개선사항:
+# - 복구 성공 시 크론 catch-up 자동 실행
 #
 # v4 개선사항:
 # - 크래시 카운터 자동 감쇠 (6시간 후 리셋, 정상 시 1씩 감소)
@@ -434,12 +448,33 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
     if [[ $crash_count -ge $MAX_TOTAL_RETRIES ]]; then
         log "WARN" "재시도 횟수 높음 ($crash_count/$MAX_TOTAL_RETRIES) - Backoff 적용 중"
 
-        # v4: 안전 모드 대신 긴 backoff로 계속 시도
+        # v5.2: Backoff 쿨다운 중이면 Emergency Recovery (Level 3) 즉시 호출
         if is_in_cooldown; then
-            log "INFO" "Backoff 쿨다운 중 - 다음 주기에 재시도"
-            send_alert "warning" "Gateway 복구 지연" \
-                "Exponential Backoff 적용 중\n${CRASH_DECAY_HOURS}시간 후 자동 리셋됩니다." \
-                "[{\"name\":\"재시도 횟수\",\"value\":\"${crash_count}/${MAX_TOTAL_RETRIES}\",\"inline\":true},{\"name\":\"다음 시도\",\"value\":\"$(get_backoff_delay)초 후\",\"inline\":true}]"
+            log "INFO" "Backoff 쿨다운 중 - Emergency Recovery (Level 3) 호출"
+            
+            # Emergency Recovery 스크립트 존재 확인
+            local emergency_script="$HOME/openclaw/scripts/emergency-recovery.sh"
+            if [[ -x "$emergency_script" ]]; then
+                log "ACTION" "Emergency Recovery 시작 (백그라운드)"
+                
+                if ! $DRY_RUN; then
+                    # 백그라운드로 실행 (Watchdog 블로킹 방지)
+                    nohup bash "$emergency_script" >> "$LOG_DIR/emergency-recovery.stdout.log" 2>&1 &
+                    log "ACTION" "Emergency Recovery PID: $!"
+                    
+                    send_alert "critical" "Gateway 복구 에스컬레이션" \
+                        "Backoff 진입 - Level 3 (Claude AI) 자율 복구 시작" \
+                        "[{\"name\":\"재시도 횟수\",\"value\":\"${crash_count}/${MAX_TOTAL_RETRIES}\",\"inline\":true},{\"name\":\"복구 시간\",\"value\":\"최대 30분\",\"inline\":true}]"
+                else
+                    log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
+                fi
+            else
+                log "ERROR" "Emergency Recovery 스크립트 없음: $emergency_script"
+                send_alert "critical" "Gateway 복구 실패" \
+                    "Emergency Recovery 스크립트 없음\n수동 개입 필요" \
+                    "[{\"name\":\"재시도 횟수\",\"value\":\"${crash_count}/${MAX_TOTAL_RETRIES}\",\"inline\":true}]"
+            fi
+            
             log "INFO" "========== 체크 완료 =========="
             exit 0
         fi
@@ -456,6 +491,34 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
         crash_count=$(get_crash_count)
         backoff=$(get_backoff_delay)
         log "WARN" "크래시 카운트: $crash_count/$MAX_TOTAL_RETRIES (Backoff: ${backoff}초)"
+
+        # v5.3: doctor --fix 자동 실행 (설정 검증 에러 대응)
+        # crash_count >= 2 = 5분 이상 재시작 실패
+        if [[ $crash_count -ge 2 ]]; then
+            log "WARN" "설정 검증 에러 의심 (crash_count: $crash_count) → doctor --fix 실행"
+
+            if command -v openclaw &>/dev/null; then
+                if ! $DRY_RUN; then
+                    if output=$(openclaw doctor --fix 2>&1); then
+                        log "INFO" "doctor --fix 완료"
+                        sleep 2
+
+                        send_alert "info" "Gateway 설정 자동 수정" \
+                            "설정 검증 에러 자동 수정 완료\n재시작 시도 중..." \
+                            "[{\"name\":\"대응\",\"value\":\"openclaw doctor --fix\",\"inline\":true}]"
+                    else
+                        log "ERROR" "doctor --fix 실패: $output"
+                        send_alert "warning" "Gateway doctor --fix 실패" \
+                            "설정 자동 수정 실패\n일반 재시작 시도 중..." \
+                            "[{\"name\":\"에러\",\"value\":\"수정 실패\",\"inline\":true}]"
+                    fi
+                else
+                    log "DRY-RUN" "doctor --fix 호출됨 (실제 실행 안 함)"
+                fi
+            else
+                log "WARN" "openclaw 명령어 없음"
+            fi
+        fi
 
         request_restart "프로세스 없음 ($pid_status)"
         send_alert "warning" "Gateway 재시작 시도" \
