@@ -855,6 +855,117 @@ else:
 - Aggregate Greeks across portfolio
 - Options as hedging tool for stock positions
 
+## Self-Validation Framework
+
+**Every response must pass these checks before sending:**
+
+### Required Elements (Must Include)
+- [ ] **Disclaimer**: "이 분석은 투자 조언이 아닙니다."
+- [ ] **Risk Warning**: "옵션은 원금 손실 위험이 있는 복잡한 금융 상품입니다."
+- [ ] **Theoretical Pricing Note**: "Black-Scholes 이론가격입니다. 실제 시장가와 다를 수 있습니다."
+- [ ] **Max Loss**: 최대 손실 금액 명시
+- [ ] **Max Profit**: 최대 이익 금액 명시
+- [ ] **Breakeven**: 손익분기점 명시
+- [ ] **Greeks**: Delta, Theta, Vega 최소 3개 포함
+
+### Conditional Requirements
+- [ ] **IV Crush Warning** (if earnings-related): "수익 발표 후 IV 급락으로 손실 가능"
+- [ ] **Assignment Risk** (if short options): "행사될 경우 주식 매도/매수 의무"
+- [ ] **Early Exercise** (if American options): "만기 전 조기 행사 가능성"
+- [ ] **Liquidity Warning** (if OTM options): "유동성 부족 시 매매 어려움"
+
+### Forbidden Content
+- [ ] **Guaranteed Profit**: "보장된 수익", "무위험", "확실한"
+- [ ] **Buy/Sell Recommendation**: "매수하세요", "이 전략을 사용하세요"
+- [ ] **Absolute Certainty**: "틀림없이", "100%"
+- [ ] **Without Disclaimer**: 면책 조항 없이 전략 제시
+
+### Response Quality Checklist
+- [ ] **Formatting**: P/L 다이어그램 포함?
+- [ ] **Greeks Explanation**: 각 Greek이 무엇을 의미하는지 설명?
+- [ ] **Exit Plan**: 손절/익절 기준 명시?
+- [ ] **Alternative**: 대안 전략 제시?
+
+### Auto-Fix Actions
+
+**누락 시 자동 추가:**
+```markdown
+# If disclaimer missing:
+→ Add to end: "**면책:** 이 분석은 교육 목적입니다. 투자 조언이 아닙니다. 옵션 거래는 원금 손실 위험이 있습니다."
+
+# If IV crush not mentioned (earnings strategy):
+→ Add warning: "⚠️ **IV Crush 위험**: 수익 발표 후 변동성 급락으로 손실 가능. 옵션 가격은 주가가 안 움직여도 하락할 수 있습니다."
+
+# If max loss missing:
+→ Calculate and add: "**최대 손실:** $XXX (프리미엄 전액 손실)"
+
+# If theoretical pricing note missing:
+→ Add: "**참고:** Black-Scholes 이론가격입니다. 실제 시장가는 bid-ask spread, 유동성, American vs European 옵션 차이로 달라질 수 있습니다."
+```
+
+### Validation Failure Response
+
+If critical elements missing and can't auto-fix:
+```
+⚠️ **불완전한 분석**
+
+다음 정보가 누락되었습니다:
+- [누락 항목 리스트]
+
+추가 정보를 제공하거나 다음 리소스를 참고하세요:
+- [대안 제시]
+
+**면책:** 이 분석은 교육 목적입니다. 투자 조언이 아닙니다.
+```
+
+### Quality Score Calculation
+
+```python
+def calculate_response_quality(response):
+    score = 0
+    total = 14  # 7 required + 4 conditional + 3 forbidden
+    
+    # Required (each worth 2 points)
+    required = ["면책", "위험", "이론가", "최대 손실", "최대 이익", "손익분기", "Greeks"]
+    for item in required:
+        if item in response:
+            score += 2
+    
+    # Forbidden (each -5 points if present)
+    forbidden = ["보장된", "확실한", "100%"]
+    for item in forbidden:
+        if item in response:
+            score -= 5
+    
+    # Quality bonus
+    if "P/L Diagram" in response:
+        score += 2
+    if "Exit Plan" in response:
+        score += 2
+    
+    return min(100, max(0, score / total * 100))
+```
+
+**Target Quality Score:** 90%+
+
+### Weekly Self-Audit
+
+Every Sunday, analyze last 7 days of options strategy responses:
+```bash
+~/openclaw/scripts/options-quality-audit.sh
+
+# Check:
+# 1. Disclaimer inclusion rate
+# 2. Risk warning coverage
+# 3. IV crush mention (earnings strategies)
+# 4. Max loss specification
+# 5. Forbidden content detection
+```
+
+**Report to:** #jarvis-system
+
+---
+
 ## Important Notes
 
 - **All analysis in English**
@@ -863,6 +974,7 @@ else:
 - **User IV input**: Optional, defaults to HV
 - **No real-time data required**: FMP Free tier sufficient
 - **Dependencies**: Python 3.8+, numpy, scipy, pandas
+- **Self-Validation**: Every response passes quality checks before sending
 
 ## Common Use Cases
 

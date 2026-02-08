@@ -227,6 +227,50 @@ Add whatever helps you do your job. This is your cheat sheet.
 
 ---
 
+## 🔍 웹검색 필수 소스 (정우님 지침)
+
+**"웹검색해줘" 요청 시 반드시 아래 소스 모두 확인:**
+
+1. **일반 검색** — Brave Search (web_search)
+2. **ClawHub** — `clawhub search` 또는 clawhub.com
+3. **Moltbook** — moltbook.com (AI 에이전트 커뮤니티)
+4. **OpenClaw GitHub Issues** — github.com/nicepkg/openclaw/issues
+5. **Reddit** — r/LocalLLaMA, r/MachineLearning, r/programming 등
+6. **GeekNews** — news.hada.io (한국 IT 뉴스)
+
+**검색 순서:**
+1. Brave Search로 일반 검색
+2. 주제에 따라 관련 소스 추가 확인
+3. AI/에이전트 관련 → ClawHub, Moltbook 필수
+4. OpenClaw 관련 → GitHub Issues 필수
+
+---
+
+## 🛡️ ClawHub 스킬 설치 규칙 (필수!)
+
+**ClawHub에서 스킬 설치 전 반드시 Clawdex 안전검사:**
+
+```bash
+curl -s "https://clawdex.koi.security/api/skill/스킬명"
+```
+
+**결과 해석:**
+- `"verdict": "benign"` → ✅ 설치 OK
+- `"verdict": "malicious"` → 🚫 **절대 설치 금지**
+- `"verdict": "unknown"` → ⚠️ 정우님 승인 필요
+
+**배경:** ClawHub에 341개 악성 스킬 발견됨 (ClawHavoc 캠페인)
+
+**이미 설치된 스킬 전체 검사:**
+```bash
+for skill in $(ls ~/openclaw/skills/); do
+  echo -n "$skill: "
+  curl -s "https://clawdex.koi.security/api/skill/$skill" | jq -r '.verdict'
+done
+```
+
+---
+
 ## 자동 일정 등록 (Kakao Calendar)
 
 **날짜 감지 시 자동 제안:**

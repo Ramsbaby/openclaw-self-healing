@@ -246,3 +246,52 @@ BTC, ETH, BNB, SOL, XRP, ADA, DOGE, AVAX, DOT, MATIC, LINK, ATOM, UNI, LTC, BCH,
 ## Disclaimer
 
 ⚠️ **NOT FINANCIAL ADVICE.** For informational purposes only. Consult a licensed financial advisor before making investment decisions.
+
+---
+
+## Self-Validation Framework
+
+**Every stock analysis response must pass these checks:**
+
+### Required Elements
+- [ ] **Disclaimer**: "NOT FINANCIAL ADVICE" or "투자 조언 아님"
+- [ ] **Data Freshness**: Yahoo Finance 15-20분 지연 명시
+- [ ] **Risk Warning**: 최소 1개 리스크 요인 포함
+- [ ] **Data Source**: Yahoo Finance, SEC EDGAR, 등 출처 명시
+- [ ] **Timestamp**: 분석 시점 명시 (YYYY-MM-DD HH:MM)
+
+### Conditional Requirements
+- [ ] **Pre-Earnings Warning** (if < 14 days to earnings): "수익 발표 전 변동성 주의"
+- [ ] **Overbought Warning** (if RSI > 70): "과매수 구간, 조정 가능성"
+- [ ] **Crypto Volatility** (if crypto): "암호화폐는 변동성이 매우 큼"
+- [ ] **Dividend Cut Risk** (if payout ratio > 100%): "배당 감소 위험"
+
+### Forbidden Content
+- [ ] **Guaranteed Returns**: "보장된 수익", "확실한"
+- [ ] **Buy/Sell Orders**: "매수하세요", "지금 사세요"
+- [ ] **Price Predictions**: "곧 $XXX 도달", "목표가 $XXX"
+- [ ] **Without Caveat**: 추천 없이 단정적 표현
+
+### Auto-Fix Actions
+
+```python
+# If disclaimer missing:
+response += "\n\n**면책:** 투자 조언 아님. 정보 제공 목적. 투자 결정 전 전문가 상담 권장."
+
+# If data freshness not mentioned:
+response += "\n\n**참고:** Yahoo Finance 데이터는 15-20분 지연될 수 있습니다."
+
+# If pre-earnings and no warning:
+response += "\n\n⚠️ **수익 발표 예정:** {days}일 후. 변동성 증가 주의."
+
+# If crypto and no volatility warning:
+response += "\n\n⚠️ **암호화폐:** 변동성이 매우 큼. 원금 손실 위험."
+```
+
+### Quality Checklist
+- [ ] 8-Dimension 점수 포함?
+- [ ] Risk Detection 항목 포함?
+- [ ] Signal (BUY/HOLD/SELL) 명확?
+- [ ] 근거 설명 충분?
+
+### Target Quality Score: 85%+

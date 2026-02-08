@@ -17,9 +17,23 @@ OpenClaw Gateway는 4단계 자가복구(Self-Healing) 시스템으로 장애 �
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Level 1: Watchdog (180초 간격)                           │
+│ Level 0: Config Validator (300초 간격) ⭐ NEW            │
+│ ├─ Script: config-validator.sh                          │
+│ ├─ LaunchAgent: ai.openclaw.config-validator            │
+│ ├─ openclaw doctor 자동 실행                             │
+│ ├─ Invalid config key 자동 제거                          │
+│ ├─ JSON 문법 검증                                        │
+│ ├─ Config 변경 시 자동 backup                            │
+│ └─ Gateway 시작 전 문제 차단                             │
+└─────────────────────────────────────────────────────────┘
+                         ↓ (Config OK, but 프로세스 죽음)
+┌─────────────────────────────────────────────────────────┐
+│ Level 1: Watchdog v5.2 (60초 간격) ⭐ UPGRADED           │
 │ ├─ LaunchAgent: ai.openclaw.watchdog                    │
-│ └─ 프로세스 존재 체크 → 재시작                          │
+│ ├─ 프로세스 존재 체크 → 재시작                          │
+│ ├─ Exponential Backoff (10→30→90→180→300→600초)        │
+│ ├─ Backoff 진입 시 → Level 3 즉시 호출 ⭐               │
+│ └─ 크론 catch-up 자동 실행                              │
 └─────────────────────────────────────────────────────────┘
                          ↓ (프로세스는 살아있지만 먹통)
 ┌─────────────────────────────────────────────────────────┐
@@ -30,10 +44,11 @@ OpenClaw Gateway는 4단계 자가복구(Self-Healing) 시스템으로 장애 �
 │ ├─ 실패 시 3회 재시도 (30초 간격)                       │
 │ └─ 여전히 실패 → Level 3 escalation                     │
 └─────────────────────────────────────────────────────────┘
-                         ↓ (5분간 복구 실패)
+                         ↓ (5분간 복구 실패 OR Backoff)
 ┌─────────────────────────────────────────────────────────┐
-│ Level 3: Claude Emergency Recovery (30분 타임아웃)       │
+│ Level 3: Claude Emergency Recovery (30분 타임아웃) ⭐    │
 │ ├─ Script: emergency-recovery.sh                        │
+│ ├─ Claude CLI v2.1.37 ⭐ ACTIVATED                       │
 │ ├─ tmux로 Claude Code PTY 세션 시작                     │
 │ ├─ 자동 진단:                                            │
 │ │   - openclaw status                                   │

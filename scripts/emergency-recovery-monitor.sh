@@ -76,8 +76,8 @@ send_alert() {
   local timestamp
   timestamp=$(basename "$latest_log" | sed 's/emergency-recovery-//;s/.log//')
   
-  # Discord 알림 메시지 생성
-  cat > /tmp/emergency-alert.txt << EOF
+  # Discord 알림 메시지 생성 (stdout으로 출력, 크론의 delivery가 전달)
+  cat << EOF
 🚨 **긴급: OpenClaw 자가복구 실패**
 
 **시간:** $timestamp
@@ -100,29 +100,7 @@ send_alert() {
 4. 필요 시 \`openclaw gateway stop && sleep 5 && openclaw gateway start\`
 EOF
 
-  local alert_msg
-  alert_msg=$(cat /tmp/emergency-alert.txt)
-  
-  # Discord 직접 호출 (webhook 있을 경우)
-  if [ -n "$DISCORD_WEBHOOK" ]; then
-    local response_code
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
-      -X POST "$DISCORD_WEBHOOK" \
-      -H "Content-Type: application/json" \
-      -d "{\"content\": \"$alert_msg\"}" \
-      2>&1 || echo "000")
-    
-    if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
-      log "✅ Discord notification sent (HTTP $response_code)"
-    else
-      log "⚠️ Discord notification failed (HTTP $response_code), falling back to stdout"
-      cat /tmp/emergency-alert.txt
-    fi
-  else
-    # Webhook 없으면 stdout 출력 (크론이 message tool로 전달)
-    log "INFO: DISCORD_WEBHOOK_URL not set, printing to stdout"
-    cat /tmp/emergency-alert.txt
-  fi
+  log "✅ Alert sent to stdout (cron delivery will forward to Discord)"
 }
 
 # ============================================

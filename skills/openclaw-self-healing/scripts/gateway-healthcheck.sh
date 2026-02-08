@@ -29,7 +29,6 @@ trap 'rm -f "$LOCKFILE"' EXIT
 
 # Create log directory if not exists
 mkdir -p "$LOG_DIR"
-chmod 700 "$LOG_DIR" 2>/dev/null || true
 
 # Load environment variables
 if [ -f "$HOME/openclaw/.env" ]; then
