@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 
-const socket = new WebSocket('wss://ws.finnhub.io?token=d62ho41r01qlugeq3ge0d62ho41r01qlugeq3geg');
+const socket = new WebSocket('wss://ws.finnhub.io?token=${process.env.FINNHUB_TOKEN}');
 
 console.log('⏳ Finnhub 연결 중...\n');
 

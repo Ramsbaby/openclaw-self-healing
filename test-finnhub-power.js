@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 
-const socket = new WebSocket('wss://ws.finnhub.io?token=d62ho41r01qlugeq3ge0d62ho41r01qlugeq3geg');
+const socket = new WebSocket('wss://ws.finnhub.io?token=${process.env.FINNHUB_TOKEN}');
 
 console.log('🚀 Finnhub 파워 테스트 시작!');
 console.log('💡 비트코인 (24시간 거래) 실시간 모니터링\n');
