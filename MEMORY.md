@@ -17,6 +17,23 @@
 - 포맷: "사용: X%, 남은: Y%, 리셋: YYYY-MM-DD"
 - 위치: 시스템 사용량 섹션
 
+### 약 먹기 알람
+**채널:** `#jarvis-family` (`1469999923633328279`) **전용**
+- ❌ #jarvis, #jarvis-market 등 다른 채널에서 약 알람 금지
+- ✅ 약 관련 알림은 무조건 #jarvis-family로 전송
+
+### 오픈클로 셀프힐링 반응 확인
+**명령어:** "오픈클로 셀프힐링 반응 확인해줘"
+**동작:** 캐시 데이터 말고 실시간으로 모든 플랫폼 체크
+**체크 대상:**
+1. GitHub: Stars, Forks, Watchers, Issues, PRs
+2. Reddit 포스트 3개: r/selfhosted, r/homelab, r/ClaudeAI (upvotes, comments)
+3. Moltbook: Upvotes, Comments (실제 의미있는 것만)
+4. Hacker News: Points, Comments
+5. PitchHut: Views, Upvotes
+6. Dev.to: 포스트 존재 여부 (Self-Healing 전용 글)
+**방법:** web_fetch 또는 browser로 실제 페이지 방문하여 확인
+
 ---
 
 ## Owner Profile
@@ -311,6 +328,48 @@
 ---
 
 ## Important Decisions
+
+### 2026-02-08: Self-Healing System 실패 (Critical Incident #2) 🚨
+- **장애 시간:** 11:29-11:45 (약 15분, 185회 재시도)
+- **근본 원인:** Config에 `tools.exec.allowlist` 키 남아있어서 Gateway 시작 시 `exit_1` 에러
+- **정우님 수동 개입:** 11:40-11:44 맥미니 직접 접속하여 복구
+- **셀프 복구 실패 분석:**
+  - **Level 1 (Watchdog):** ⚠️ Exponential Backoff에 갇힘 (근본 원인 못 고침)
+  - **Level 2 (Health Check):** ❌ Gateway 죽으면 무력
+  - **Level 3 (Emergency Recovery):** ❌ Claude CLI 없어서 미작동
+  - **Level 4 (Discord Alert):** ❌ HTTP 404로 알림 실패
+- **교훈:**
+  1. **Config Validation 부재** → Config 변경 시 `openclaw doctor` 필수
+  2. **Self-Healing Single Point of Failure** → Gateway 죽으면 Level 2-4 전멸
+  3. **Emergency Recovery Dependency 미검증** → Claude CLI, Discord 채널 사전 체크 필요
+  4. **Watchdog Backoff의 한계** → "폭주 방지"지 "치료"는 못 함
+- **즉시 조치:**
+  - [ ] Claude CLI 설치 (Level 3 활성화)
+  - [ ] Discord 채널 ID 검증 (Level 4 수정)
+  - [ ] Config validation 스크립트 작성
+  - [ ] Watchdog v5.2: Backoff 진입 시 Level 3 즉시 호출
+- **상세:** `~/openclaw/memory/2026-02-08.md`
+
+### 2026-02-08: Self-Healing System 실패 (Critical Incident #2) 🚨
+- **장애 시간:** 11:29-11:45 (약 15분, 185회 재시도)
+- **근본 원인:** Config에 `tools.exec.allowlist` 키 남아있어서 Gateway 시작 시 `exit_1` 에러
+- **정우님 수동 개입:** 11:40-11:44 맥미니 직접 접속하여 복구
+- **셀프 복구 실패 분석:**
+  - **Level 1 (Watchdog):** ⚠️ Exponential Backoff에 갇힘 (근본 원인 못 고침)
+  - **Level 2 (Health Check):** ❌ Gateway 죽으면 무력
+  - **Level 3 (Emergency Recovery):** ❌ Claude CLI 없어서 미작동
+  - **Level 4 (Discord Alert):** ❌ HTTP 404로 알림 실패
+- **교훈:**
+  1. **Config Validation 부재** → Config 변경 시 `openclaw doctor` 필수
+  2. **Self-Healing Single Point of Failure** → Gateway 죽으면 Level 2-4 전멸
+  3. **Emergency Recovery Dependency 미검증** → Claude CLI, Discord 채널 사전 체크 필요
+  4. **Watchdog Backoff의 한계** → "폭주 방지"지 "치료"는 못 함
+- **즉시 조치:**
+  - [ ] Claude CLI 설치 (Level 3 활성화)
+  - [ ] Discord 채널 ID 검증 (Level 4 수정)
+  - [ ] Config validation 스크립트 작성
+  - [ ] Watchdog v5.2: Backoff 진입 시 Level 3 즉시 호출
+- **상세:** `~/openclaw/memory/2026-02-08.md`
 
 ### 2026-02-08: Watchdog v5.1 크론 Catch-up 구현
 - **문제:** Gateway 재시작 후 놓친 크론 미실행 (02:37 재시작 → 03:00~06:15 크론 전부 놓침)

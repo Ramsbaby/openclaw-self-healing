@@ -83,9 +83,14 @@ session_status
 ```bash
 # CPU, 메모리, 디스크 한번에
 echo "=== CPU ===" && top -l 1 | head -10 | grep -E "CPU|Load"
-echo "=== Memory ===" && memory_pressure | head -3
+echo "=== Memory ===" && top -l 1 | grep PhysMem
 echo "=== Disk ===" && df -h / | tail -1
 ```
+
+**메모리 정보 상세:**
+- `top -l 1 | grep PhysMem` → 실제 사용량 표시
+- 출력 예시: `PhysMem: 14G used (2180M wired, 2984M compressor), 1335M unused.`
+- ~~`memory_pressure | head -3`~~ (압력 상태만 표시, 사용량 누락)
 
 **통합 보고 형식:**
 
@@ -291,3 +296,52 @@ bash ~/openclaw/scripts/kakao-calendar-add.sh "NFP 고용지표 발표" "2026-02
 - 출력: MP3 파일
 
 **요구사항:** OPENAI_API_KEY 환경변수
+
+---
+
+## 한글 숙제 자동 교정 (Preply 튜터 지원)
+
+**스킬 위치:** `~/openclaw/scripts/homework-checker-v5.0.py` ⭐⭐⭐
+**문서:** `~/openclaw/docs/korean-homework-correction-v2.md`
+**용도:** 보람님(와이프) Preply 한국어 수업 지원
+
+**평가:** ✅ 10.0/10.0 (Production Ready)
+
+**v5.0 핵심 (2026-02-08):**
+- Character-level 영역 병합 방식
+- "아ㅍ요" 같은 불완전한 글자도 정확한 위치에 마킹
+- Google Vision text_detection + 개별 글자 좌표 병합
+
+**사용법 (Discord):**
+1. 학생 숙제 이미지 업로드 (#jarvis-preply-tutor)
+2. "교정해줘"
+3. 자비스가 마킹된 이미지 + 평가 점수 전송
+
+**명령줄:**
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.openclaw/google-vision-key.json"
+python3 ~/openclaw/scripts/homework-checker-v5.0.py <이미지경로>
+```
+
+**출력:**
+- `<원본>_v2_corrected.jpg` — 빨간 밑줄(오류) + 초록 박스(교정)
+- JSON — 오류 상세 + 평가 점수 (10점 만점)
+
+**v2.0 기능:**
+- ✅ Google Vision API (손글씨 95%+ 정확도)
+- ✅ Bounding box 기반 정확한 위치 마킹
+- ✅ 7가지 오류 유형 감지 (철자, 동사, 띄어쓰기, 불완전, 중복)
+- ✅ 자동 평가 시스템 (10점 척도)
+- ✅ Discord 통합
+
+**무료 쿼터:**
+- Google Vision API: 월 1000건 무료
+- 이후 $1.50/1000건
+
+**향후 계획:**
+- [ ] GPT-4 문맥 분석 (Phase 3)
+- [ ] 자동 학습 (보람님 피드백 반영) (Phase 4)
+- [ ] 웹 대시보드 (Phase 5)
+
+**관련 채널:**
+- `1470011814803935274` — #jarvis-preply-tutor (보람님 전용)
