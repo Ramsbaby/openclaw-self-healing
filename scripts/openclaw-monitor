@@ -1,0 +1,10 @@
+#!/bin/bash
+# OpenClaw Monitor - tmux 대시보드 바로 접속
+# 세션 없으면 자동 생성 후 attach
+
+if tmux has-session -t openclaw-monitor 2>/dev/null; then
+    tmux attach -t openclaw-monitor
+else
+    ~/openclaw/scripts/start-dashboard.sh
+    tmux attach -t openclaw-monitor
+fi

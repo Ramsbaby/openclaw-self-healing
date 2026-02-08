@@ -251,3 +251,43 @@ bash ~/openclaw/scripts/kakao-calendar-add.sh "NFP 고용지표 발표" "2026-02
 ```
 
 **주의:** UTC 시간으로 변환 필요 (KST -9시간)
+
+---
+
+## n8n 자동화 플랫폼 (2026-02-07 설치)
+
+**접속 URL:**
+- 로컬: http://localhost:5678
+- 원격: http://macmini.tail75f63b.ts.net:5678
+
+**Docker 명령어:**
+- 시작: `docker start n8n`
+- 중지: `docker stop n8n`
+- 로그: `docker logs n8n --tail 50`
+
+**데이터 위치:** `~/.n8n/`
+
+**활용 예시:**
+- 이메일 → AI 요약 → Discord 전송
+- RSS 피드 → 오디오 브리핑 생성
+- 정기 보고서 자동화
+
+**가이드:** `~/openclaw/docs/n8n-integration.md`
+
+---
+
+## 뉴스레터 오디오 브리핑
+
+**스크립트:** `~/openclaw/scripts/newsletter-to-audio.sh`
+
+**사용법:**
+```bash
+~/openclaw/scripts/newsletter-to-audio.sh "텍스트 내용" [output.mp3]
+```
+
+**특징:**
+- OpenAI TTS API (nova 음성, 1.1x 속도)
+- 4000자 이상 시 자동 청킹 + ffmpeg 병합
+- 출력: MP3 파일
+
+**요구사항:** OPENAI_API_KEY 환경변수

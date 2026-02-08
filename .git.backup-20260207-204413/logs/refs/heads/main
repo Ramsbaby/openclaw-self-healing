@@ -1,0 +1,29 @@
+0000000000000000000000000000000000000000 d910402cec5d97a6fa68f8a9c8c51d554ea86052 ramsbaby <ms6698@naver.com> 1770295369 +0900	commit (initial): Update TQQQ position: 1st buy executed at .66 (28 shares)
+d910402cec5d97a6fa68f8a9c8c51d554ea86052 cfb9980da8062399b4668e5d4447e3922f5a2b9c ramsbaby <ms6698@naver.com> 1770315389 +0900	commit: Nightly Build 2026-02-06: 문서 정리, alias 제안, 의존성 체크 완료
+cfb9980da8062399b4668e5d4447e3922f5a2b9c b000318e22888d479595cf1a9c6f94ae097b4734 ramsbaby <ms6698@naver.com> 1770332307 +0900	commit: Update TQQQ strategy: Aggressive recovery mode with K Phase 1 entry @ .64
+b000318e22888d479595cf1a9c6f94ae097b4734 138470514d40f998500c188b063557a950c9a1c4 ramsbaby <ms6698@naver.com> 1770343431 +0900	commit: Add .gitignore and security improvements
+138470514d40f998500c188b063557a950c9a1c4 8aca08dcffd838102dd46a3f24ac2e739809c9bd ramsbaby <ms6698@naver.com> 1770343914 +0900	commit: Migrate Discord webhook to environment variables
+8aca08dcffd838102dd46a3f24ac2e739809c9bd 37af03deac13d4866fdf8579ab1a9a785e148755 ramsbaby <ms6698@naver.com> 1770386191 +0900	commit: docs: Add marketing materials and sync self-healing skill
+37af03deac13d4866fdf8579ab1a9a785e148755 2710850ff5b15c4a3972edb50368cb068d40b71c ramsbaby <ms6698@naver.com> 1770386471 +0900	commit: 자가개선 크론: TQQQ 재진입 중, Self-Healing v1.2.2 마케팅 번들 완성 (2026-02-06 23:00)
+2710850ff5b15c4a3972edb50368cb068d40b71c c649823a0895efd2cf78a48ef201acdaa23adca8 ramsbaby <ms6698@naver.com> 1770387845 +0900	commit: 📝 TQQQ: NFP 발표 연기 확인 (2/6→2/11), 포지션 상태 업데이트
+c649823a0895efd2cf78a48ef201acdaa23adca8 e4f88efc078dedd4f8252197ffd66ef2ff977d8a ramsbaby <ms6698@naver.com> 1770389864 +0900	commit: docs: sync post-compaction progress (v1.3.0, HN posting)
+e4f88efc078dedd4f8252197ffd66ef2ff977d8a 7887175e1b8f6de29b258392a72c1ed51c76d926 ramsbaby <ms6698@naver.com> 1770401751 +0900	commit: 🌙 Nightly Build (2026-02-07 03:15)
+7887175e1b8f6de29b258392a72c1ed51c76d926 aa7a91d28311fd81bd99319cb350d25fec9846a1 ramsbaby <ms6698@naver.com> 1770401785 +0900	commit: 📝 SESSION-STATE.md: Nightly Build 2026-02-07 완료
+aa7a91d28311fd81bd99319cb350d25fec9846a1 3131423ef9d627db05d990de5e4fbb82fea12405 ramsbaby <ms6698@naver.com> 1770426230 +0900	commit: 🔬 자비스 정보 탐험 리포트 (2026-02-07)
+3131423ef9d627db05d990de5e4fbb82fea12405 4316c6d017215762802d011e0e0506ade0759c17 ramsbaby <ms6698@naver.com> 1770428173 +0900	commit: feat: v2.0.0 - Persistent Learning + Reasoning Logs + Multi-Channel Alerts
+4316c6d017215762802d011e0e0506ade0759c17 3c9a193b8e050cc366129ffdbdd64f3d6fa343dc ramsbaby <ms6698@naver.com> 1770428888 +0900	commit: v2.0.1: Fix reasoning log extraction + version consistency
+3c9a193b8e050cc366129ffdbdd64f3d6fa343dc 1e8fc6af794d1390dac16806b5ec9cc6f1f4b43f ramsbaby <ms6698@naver.com> 1770429022 +0900	commit (merge): Merge public repo (v1.x history) with local v2.0.1
+1e8fc6af794d1390dac16806b5ec9cc6f1f4b43f 05f739679b78bf38b8d79caaf9a4805140d0f7d8 ramsbaby <ms6698@naver.com> 1770429230 +0900	commit: 🔧 품질 체크 박스 출력 금지 규칙 강화
+05f739679b78bf38b8d79caaf9a4805140d0f7d8 66bdfed2bba64f2fdd3e7c300c56e0dda8bf8177 ramsbaby <ms6698@naver.com> 1770449014 +0900	commit: feat: Self-Review V5.0 도입
+66bdfed2bba64f2fdd3e7c300c56e0dda8bf8177 b99af49b9f3fc5c8b0034e39f33eb14bd1bd27a5 ramsbaby <ms6698@naver.com> 1770449605 +0900	commit: feat(self-review): V5.0.1 hotfix - 5 critical issues fixed
+b99af49b9f3fc5c8b0034e39f33eb14bd1bd27a5 838c08e0739f018f9eef92c2ea0447f224cd5078 ramsbaby <ms6698@naver.com> 1770449841 +0900	commit: fix(self-review): V5.0.1 security & robustness fixes
+838c08e0739f018f9eef92c2ea0447f224cd5078 d4afe2203c596d1d629f772c593aee6e98fe3faa ramsbaby <ms6698@naver.com> 1770451016 +0900	commit: ⚡ 크론 효율성 개선 완료
+d4afe2203c596d1d629f772c593aee6e98fe3faa fcca8e9b0bcf4c130d30f79844e1965b85512a17 ramsbaby <ms6698@naver.com> 1770451375 +0900	commit: 🔧 심층 효율성 개선 완료
+fcca8e9b0bcf4c130d30f79844e1965b85512a17 1a3aeaff6a0372f01a355219568459913ae709ac ramsbaby <ms6698@naver.com> 1770454727 +0900	commit: feat: gog 계정 정보 추가 (yuiopnm1931@gmail.com, keychain backend)
+1a3aeaff6a0372f01a355219568459913ae709ac 44d180a3bc33b39b6e328bacf7501a41a5e098d5 ramsbaby <ms6698@naver.com> 1770454884 +0900	commit: feat: 데일리 넛지 크론 추가 + gog 통합 + 비판적 검토 완료
+44d180a3bc33b39b6e328bacf7501a41a5e098d5 541757a1a6665bd144e466291223f6266ead9a9a ramsbaby <ms6698@naver.com> 1770462640 +0900	commit: 🐛 fix: Critical self-healing bugs - KeepAlive + Guardian PID check
+541757a1a6665bd144e466291223f6266ead9a9a 9057abc390560d032077215185bcbb6a903fabdf ramsbaby <ms6698@naver.com> 1770462802 +0900	commit: docs: Update README for v1.1.0 bug fixes
+9057abc390560d032077215185bcbb6a903fabdf 7caaa0a67c72f9235f10045145c6f932233fb485 ramsbaby <ms6698@naver.com> 1770463350 +0900	commit: 🐛 fix: Remove Gateway ThrottleInterval (v1.1.1 hotfix)
+7caaa0a67c72f9235f10045145c6f932233fb485 86e5e42cc00c1a0f13340bb19eca883127aee19c ramsbaby <ms6698@naver.com> 1770464149 +0900	commit: feat: Add glances monitoring + tmux dashboard
+86e5e42cc00c1a0f13340bb19eca883127aee19c 887297cf7b8e07a4ca68ca5318f64d990fe648e4 ramsbaby <ms6698@naver.com> 1770464581 +0900	pull public main --no-edit: Merge made by the 'ort' strategy.
+887297cf7b8e07a4ca68ca5318f64d990fe648e4 de9d7a65ae70d516ce2620a1e4f92886c6e56ed2 ramsbaby <ms6698@naver.com> 1770464599 +0900	commit: security: Add config-history to .gitignore (prevent API key leak)
