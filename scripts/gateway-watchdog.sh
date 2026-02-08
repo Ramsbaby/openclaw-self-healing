@@ -1,5 +1,5 @@
 #!/bin/bash
-# Gateway Watchdog v5 - Self-Healing 강화
+# Gateway Watchdog v5.1 - Self-Healing 강화
 #
 # v4 개선사항:
 # - 크래시 카운터 자동 감쇠 (6시간 후 리셋, 정상 시 1씩 감소)
@@ -400,7 +400,7 @@ request_restart() {
 # 메인 로직
 # ============================================================================
 
-log "INFO" "========== Watchdog v5 체크 시작 =========="
+log "INFO" "========== Watchdog v5.1 체크 시작 =========="
 if $DRY_RUN; then
     log "INFO" "*** DRY-RUN 모드 ***"
 fi
@@ -492,6 +492,16 @@ if [[ "$http_status" == "OK" ]]; then
     # v4: 복구 성공 알림
     if [[ -f "$ALERT_FILE" ]]; then
         send_recovery_alert
+        
+        # v5.1: 크론 catch-up 실행 (놓친 크론 자동 실행)
+        log "ACTION" "크론 catch-up 시작..."
+        if [[ -x "$HOME/openclaw/scripts/cron-catchup.sh" ]]; then
+            # 백그라운드로 실행 (Watchdog 블로킹 방지)
+            nohup bash "$HOME/openclaw/scripts/cron-catchup.sh" >> "$LOG_DIR/cron-catchup.log" 2>&1 &
+            log "ACTION" "크론 catch-up 백그라운드 실행 (PID: $!)"
+        else
+            log "WARN" "cron-catchup.sh 스크립트 없음"
+        fi
     fi
 
     # v4: 크래시 카운터 감쇠 (정상 시 1 감소)
