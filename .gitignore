@@ -76,3 +76,27 @@ temp/
 # 실제 설정은 .gitignore
 config-history/
 .openclaw/
+
+# Security: Secrets and credentials
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+credentials/
+secrets/
+.aws/
+.azure/
+.gcp/
+
+# Tokens and API keys
+**/test-finnhub*.js
+**/check-price*.js
+**/preply*.json
+
+# Sensitive data
+**/node_modules/
+**/dist/
+**/build/
