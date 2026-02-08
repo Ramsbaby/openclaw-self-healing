@@ -1,0 +1,20 @@
+task: "Emergency Recovery 실패 감지"
+timestamp: "2026-02-08T11:17:00+0900"
+duration_seconds: 5
+tokens:
+  input: 0
+  output: 0
+status: "security_blocked"
+quality_score: "N/A"
+notes: |
+  Execution blocked by allowlist security policy.
+  Script requires approval to run through agent interface.
+  
+  Recommendation:
+  - Add emergency-recovery-monitor.sh to exec allowlist
+  - Or: Configure cron to run script directly without agent involvement
+  
+  This is expected behavior for defense-in-depth security.
+what_went_wrong: "Allowlist security prevented script execution"
+why: "exec.security='allowlist' mode + ask='on-miss' requires approval for all non-whitelisted commands"
+next_action: "Update allowlist or modify cron to run script autonomously"

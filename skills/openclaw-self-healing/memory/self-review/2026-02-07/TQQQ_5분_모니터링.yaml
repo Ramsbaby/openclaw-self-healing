@@ -1,0 +1,34 @@
+# Self-Review V5.0
+# Generated: 2026-02-07T07:23:25Z
+
+auto_metrics:
+  cron_name: "TQQQ 5분 모니터링"
+  timestamp: "2026-02-07T07:23:25Z"
+  duration_sec: 8.5
+  tokens_in: 150
+  tokens_out: 300
+  exit_status: "ok"
+
+self_reflection:
+  what_went_wrong: "Yahoo 지연 명시 누락"
+  why: "습관적 생략"
+  next_action: "다음부터 지연 태그 추가"
+  deadline: "2026-02-14"
+
+bias_check:
+  am_i_being_too_easy: false
+  evidence: "자동 생성 - 주간 리뷰에서 검증 필요"
+  user_flagged_before: false
+
+targets:
+  duration:
+    goal_sec: 15
+    met: true
+  tokens:
+    budget: 500
+    usage_pct: 60.0
+
+meta:
+  version: "5.0"
+  reviewed_by: null
+  review_date: null

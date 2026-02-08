@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-02-05T04:32:02.917Z",
+  "days_scanned": 7,
+  "total_failures": 6,
+  "total_patterns": 2,
+  "repeating_patterns": 2,
+  "alerts_sent": 0,
+  "patterns": [
+    {
+      "pattern": "응답 속도가 느림",
+      "repetitions": 3,
+      "dates": [
+        "2026-02-03",
+        "2026-02-02",
+        "2026-02-01"
+      ],
+      "keywords": [
+        "응답",
+        "속도가",
+        "느림"
+      ]
+    },
+    {
+      "pattern": "응답 속도 개선 필요",
+      "repetitions": 3,
+      "dates": [
+        "2026-02-03",
+        "2026-02-02",
+        "2026-02-01"
+      ],
+      "keywords": [
+        "응답",
+        "속도",
+        "개선",
+        "필요"
+      ]
+    }
+  ]
+}
