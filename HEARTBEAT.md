@@ -23,6 +23,29 @@
 
 ---
 
+## 📏 MEMORY.md 크기 체크
+
+**제한:** 20,000자 (20KB)
+**경고 임계값:** 16,000자 (80%)
+
+```bash
+chars=$(wc -m < ~/openclaw/MEMORY.md)
+echo "MEMORY.md: ${chars}자 / 20,000자 ($(( chars * 100 / 20000 ))%)"
+```
+
+**80% 초과 시:**
+1. 오래된 섹션 → `memory/archive/`로 이동
+2. 중복 제거
+3. 상세 내용 → daily notes로 분리
+4. 정우님께 "MEMORY.md 정리 완료" 보고
+
+**초과 방치 시 문제:**
+- 매 세션 truncate → 정보 손실
+- 자비스 판단 오류
+- 크론 오작동
+
+---
+
 ## 🔧 Self-Healing Check
 
 ### Log Review
