@@ -22,6 +22,24 @@
 - ❌ #jarvis, #jarvis-market 등 다른 채널에서 약 알람 금지
 - ✅ 약 관련 알림은 무조건 #jarvis-family로 전송
 
+### "사용량" 요청 시 프로토콜
+**트리거:** "사용량", "사용량 알려줘", "usage" 등
+**필수 보고 항목 (5가지):**
+1. **Claude 누적/남은 사용량** (codexbar cost --json)
+   - 주간 남은 한도 %
+   - 일일/주간 리셋 시간
+2. **OpenAI 남은 사용량** (api-costs.json 또는 실시간)
+   - 월 예산 대비 사용량
+   - 남은 크레딧
+3. **Brave Search API 남은 쿼리** (api-costs.json)
+   - 남은 쿼리 수 / 2,000
+4. **Mac mini 상세 상태**
+   - CPU, 메모리, 디스크, 업타임
+5. **현재 OpenClaw 세션 토큰** (session_status)
+   - 컨텍스트 사용량, 압축 횟수
+
+**상세 프로토콜:** `~/openclaw/TOOLS.md` "사용량 요청 시 프로토콜" 섹션 참조
+
 ### 오픈클로 셀프힐링 반응 확인
 **명령어:** "오픈클로 셀프힐링 반응 확인해줘"
 **동작:** 캐시 데이터 말고 실시간으로 모든 플랫폼 체크
@@ -29,6 +47,7 @@
 1. GitHub: Stars, Forks, Watchers, Issues, PRs
 2. Reddit 포스트 3개: r/selfhosted, r/homelab, r/ClaudeAI (upvotes, comments)
 3. Moltbook: Upvotes, Comments (Self-Healing 포스트)
+   - Post ID: `6cd66937-35a6-4e66-b8b2-b4b18cecc5d4` (Marketing Day, 2026-02-09)
    - Post ID: `6bf735c3-f169-4733-947e-ef10e902088f` (v2.0.1, 2026-02-09)
    - Post ID: `2512d17b-61ab-4481-9730-7ce97950ed44` (원본, 6 upvotes, 524 comments)
    - Submolt: openclaw-explorers

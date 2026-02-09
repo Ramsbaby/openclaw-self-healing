@@ -1,1 +1,3 @@
 {"timestamp":1770382253,"metric":"emergency_recovery","result":"true","duration":1817}
+{"timestamp":1770633877,"metric":"emergency_recovery","result":"false","duration":54}
+{"timestamp":1770636965,"metric":"emergency_recovery","result":"false","duration":164}

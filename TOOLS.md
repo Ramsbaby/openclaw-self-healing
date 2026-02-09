@@ -53,63 +53,84 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ---
 
-## "사용량" 요청 시 방침
+## "사용량" 요청 시 프로토콜 (2026-02-09 확정)
 
-**"사용량"이라고 하면 아래 3가지 모두 보고:**
+**"사용량"이라고 하면 반드시 아래 5가지 모두 보고:**
 
-### 1. ⚠️ Claude CLI 남은 한도 (최우선, 필수!)
+### 1. 🤖 Claude 누적/남은 사용량 (최우선!)
 ```bash
-# PTY로 반드시 실행 - 이게 제일 중요한 정보!
-exec pty:true background:true command:"claude"
-# 잠시 대기 후
-process action:send-keys sessionId:XXX literal:"/usage"
-process action:send-keys sessionId:XXX keys:["Enter"]
-# 결과 확인
-process action:poll sessionId:XXX
-# 종료
-process action:kill sessionId:XXX
+# Codexbar로 실시간 확인
+codexbar cost --json
 ```
-→ **주간 남은 한도 %** 반드시 표시 (이거 빼먹으면 안 됨!)
-→ 리셋 시간도 함께 표시
+→ **주간 남은 한도 %** 반드시 표시
+→ 리셋 시간 (일일/주간)
+→ 누적 사용 토큰, 비용
 
-### 2. OpenClaw 세션 사용량
+### 2. 💰 OpenAI 남은 사용량
+```bash
+# api-costs.json 확인 (또는 실시간 조회)
+cat ~/openclaw/memory/api-costs.json | jq '.openai'
+```
+→ 월 예산 대비 사용량
+→ 남은 크레딧 (있으면)
+
+### 3. 🔍 Brave Search API 남은 쿼리
+```bash
+# api-costs.json 확인
+cat ~/openclaw/memory/api-costs.json | jq '.brave_search'
+```
+→ 남은 쿼리 수 / 월 한도
+→ 무료 플랜 상태
+
+### 4. 💻 Mac mini 상세 상태
+```bash
+# CPU, 메모리, 디스크
+echo "CPU: $(top -l 1 | grep "CPU usage" | awk '{print $3, $5, $7}')"
+echo "메모리: $(top -l 1 | grep PhysMem)"
+echo "디스크: $(df -h / | tail -1 | awk '{print $3 " / " $2 " (" $5 ")"}')"
+```
+
+### 5. 📊 현재 OpenClaw 세션 토큰
 ```bash
 # session_status 도구 사용
 session_status
 ```
-→ 컨텍스트 사용량, 압축 횟수 표시
+→ 컨텍스트 사용량, 압축 횟수
 
-### 3. 맥미니 시스템 상태
-```bash
-# CPU, 메모리, 디스크 한번에
-echo "=== CPU ===" && top -l 1 | head -10 | grep -E "CPU|Load"
-echo "=== Memory ===" && top -l 1 | grep PhysMem
-echo "=== Disk ===" && df -h / | tail -1
-```
-
-**메모리 정보 상세:**
-- `top -l 1 | grep PhysMem` → 실제 사용량 표시
-- 출력 예시: `PhysMem: 14G used (2180M wired, 2984M compressor), 1335M unused.`
-- ~~`memory_pressure | head -3`~~ (압력 상태만 표시, 사용량 누락)
+---
 
 **통합 보고 형식:**
 
-## 📊 사용량 리포트
+```
+📊 전체 시스템 사용량 리포트 (YYYY-MM-DD HH:MM)
 
-### OpenClaw 세션
-| 항목 | 값 |
-|-----|-----|
-| 토큰 | X |
-| 비용 | $X.XX |
-| 모델 | claude-xxx |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### 맥미니 상태
-| 항목 | 값 |
-|-----|-----|
-| CPU | X% |
-| 메모리 | X GB / Y GB |
-| 디스크 | X% 사용 |
-| Uptime | X일 X시간 |
+🤖 Claude API
+  현재 세션: XXk / 200k (XX%)
+  일일 사용: XX% (리셋: HH:MM)
+  주간 사용: XX% (리셋: 요일 HH:MM)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💰 OpenAI API
+  사용: $XX.XX / $XX.XX 월 한도
+  상태: [정상 / 초과]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 Brave Search API
+  남은 쿼리: XXX / 2,000
+  플랜: 무료
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💻 Mac mini 상태
+  CPU: XX% user, XX% sys, XX% idle
+  메모리: XX GB used, XX GB free
+  디스크: XX GB / XXX GB (XX%)
+  업타임: X일 X시간
+```
 
 ---
 

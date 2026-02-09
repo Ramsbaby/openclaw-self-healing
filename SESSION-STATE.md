@@ -3,6 +3,11 @@
 이 파일은 AI의 "RAM" — 컴팩션 후에도 살아남는 작업 상태
 
 ## Current Task
+✅ **완료: "사용량" 프로토콜 저장** (2026-02-09 21:54)
+- MEMORY.md: Critical Rules에 추가
+- TOOLS.md: 상세 프로토콜 업데이트
+- 내용: "사용량" 요청 시 5가지 필수 보고 (Claude, OpenAI, Brave, Mac mini, 세션)
+
 🔄 **진행 중: 모든 채널 Sonnet 4.5로 변경** (2026-02-09 15:02)
 - 토큰 초기화됨 (daily reset 15:00 KST 완료)
 - 변경 대상: ~/.openclaw/openclaw.json + 모든 채널 설정
