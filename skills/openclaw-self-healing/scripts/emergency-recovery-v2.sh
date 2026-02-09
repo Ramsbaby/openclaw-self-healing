@@ -121,8 +121,10 @@ check_dependencies() {
     missing_deps+=("tmux")
   fi
   
-  if ! command -v claude &> /dev/null; then
-    missing_deps+=("claude")
+  # v2.1: 절대 경로 사용 (LaunchAgent PATH 문제 해결)
+  CLAUDE_BIN="/opt/homebrew/bin/claude"
+  if [[ ! -x "$CLAUDE_BIN" ]]; then
+    missing_deps+=("claude (not found at $CLAUDE_BIN)")
   fi
   
   if [ ${#missing_deps[@]} -gt 0 ]; then
@@ -288,7 +290,8 @@ main() {
   # 2. Claude Code PTY 세션 시작
   log "Starting Claude Code session in tmux..."
   
-  if ! tmux new-session -d -s "$TMUX_SESSION" "claude" 2>> "$LOG_FILE"; then
+  # v2.1: 절대 경로 사용
+  if ! tmux new-session -d -s "$TMUX_SESSION" "/opt/homebrew/bin/claude" 2>> "$LOG_FILE"; then
     log "❌ Failed to start tmux session"
     send_notification "🚨 **Level 3 실패**\n\ntmux 세션 시작 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
     record_metric "emergency_recovery" "tmux_failed" 0
