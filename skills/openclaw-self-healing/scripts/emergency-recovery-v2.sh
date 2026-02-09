@@ -15,7 +15,8 @@ cleanup() {
     if [ -n "${TMUX_SESSION:-}" ]; then
         tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
     fi
-    rm -f "${LOCKFILE:-$HOME/openclaw/memory/.emergency-recovery.lock}" 2>/dev/null || true
+    # v2.1: 공용 락 파일 삭제
+    rm -f "/tmp/openclaw-emergency-recovery.lock" 2>/dev/null || true
     exit "$exit_code"
 }
 trap cleanup EXIT INT TERM
@@ -47,7 +48,8 @@ chmod 700 "$LOG_DIR" 2>/dev/null || true
 touch "$SESSION_LOG"
 chmod 600 "$SESSION_LOG"
 
-LOCKFILE="$LOG_DIR/.emergency-recovery.lock"
+# v2.1: 공용 락 파일 (Watchdog와 공유)
+LOCKFILE="/tmp/openclaw-emergency-recovery.lock"
 METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
 
 # Load environment variables

@@ -51,6 +51,9 @@ MAX_TOTAL_RETRIES=6           # 최대 총 재시작 시도 횟수
 CRASH_DECAY_HOURS=6           # 크래시 카운터 자동 리셋 시간
 MEMORY_WARN_MB=1536           # 메모리 경고 임계치 (1.5GB)
 MEMORY_CRITICAL_MB=2048       # 메모리 위험 임계치 (2GB)
+ZOMBIE_LOG_STALE_MINUTES=10   # 런타임 로그 N분 이상 무활동 → 좀비 판정
+ZOMBIE_COUNTER_FILE="$STATE_DIR/zombie-counter"
+ZOMBIE_THRESHOLD=3            # 연속 N회 좀비 감지 → 강제 재시작
 
 # Exponential Backoff 설정 (초)
 BACKOFF_DELAYS=(10 30 90 180 300 600)
@@ -69,6 +72,23 @@ TEST_SCENARIO="${TEST_SCENARIO:-}"  # "halt-crash", "halt-doctor", "normal"
 # ============================================================================
 mkdir -p "$STATE_DIR"
 mkdir -p "$LOG_DIR"
+
+# ============================================================================
+# v5.5: Emergency Recovery 락 체크 (Level 3 작동 중 재시작 방지)
+# ============================================================================
+RECOVERY_LOCK_FILE="/tmp/openclaw-emergency-recovery.lock"
+
+if [[ -f "$RECOVERY_LOCK_FILE" ]]; then
+    lock_age=$(( $(date +%s) - $(stat -f %m "$RECOVERY_LOCK_FILE" 2>/dev/null || echo 0) ))
+    # 30분(1800초) 이상 된 락은 stale로 간주
+    if [[ $lock_age -lt 1800 ]]; then
+        log "INFO" "⏸️ Level 3 Emergency Recovery 진행 중 - Watchdog 스킵 (락 ${lock_age}초)"
+        exit 0
+    else
+        log "WARN" "Stale 락 파일 발견 (${lock_age}초) - 삭제 후 계속"
+        rm -f "$RECOVERY_LOCK_FILE"
+    fi
+fi
 
 # ============================================================================
 # 유틸리티 함수
@@ -116,6 +136,51 @@ trigger_emergency_recovery() {
         rm -f "$HEALING_LOCK"
         return 1
     fi
+}
+
+# 좀비 감지: HTTP 200이지만 로그 활동 없음 (Discord 끊김 등)
+check_zombie_state() {
+    local runtime_log="/tmp/openclaw/openclaw-$(date +%Y-%m-%d).log"
+
+    # 런타임 로그 파일 존재 확인
+    if [[ ! -f "$runtime_log" ]]; then
+        log "WARN" "런타임 로그 없음: $runtime_log"
+        return 1  # 좀비 의심
+    fi
+
+    # 로그 파일 최종 수정 시간 확인
+    local now=$(date +%s)
+    local last_mod
+    if [[ "$(uname)" == "Darwin" ]]; then
+        last_mod=$(stat -f %m "$runtime_log" 2>/dev/null || echo "0")
+    else
+        last_mod=$(stat -c %Y "$runtime_log" 2>/dev/null || echo "0")
+    fi
+    local elapsed_min=$(( (now - last_mod) / 60 ))
+
+    if [[ $elapsed_min -ge $ZOMBIE_LOG_STALE_MINUTES ]]; then
+        log "WARN" "런타임 로그 ${elapsed_min}분 무활동 (임계: ${ZOMBIE_LOG_STALE_MINUTES}분)"
+        return 1  # 좀비
+    fi
+
+    return 0  # 정상
+}
+
+get_zombie_count() {
+    if [[ -f "$ZOMBIE_COUNTER_FILE" ]]; then
+        cat "$ZOMBIE_COUNTER_FILE"
+    else
+        echo "0"
+    fi
+}
+
+increment_zombie_count() {
+    local count=$(get_zombie_count)
+    echo $((count + 1)) > "$ZOMBIE_COUNTER_FILE"
+}
+
+reset_zombie_count() {
+    echo "0" > "$ZOMBIE_COUNTER_FILE" 2>/dev/null || true
 }
 
 log() {
@@ -613,9 +678,34 @@ http_status=$(check_http_health)
 log "INFO" "HTTP 상태: $http_status"
 
 if [[ "$http_status" == "OK" ]]; then
-    # 정상 작동
     mem_mb=$(check_memory_usage)
     log "INFO" "메모리: ${mem_mb}MB"
+
+    # 좀비 감지: HTTP 200이지만 런타임 로그 무활동
+    if ! check_zombie_state; then
+        increment_zombie_count
+        zombie_count=$(get_zombie_count)
+        log "WARN" "좀비 감지 (${zombie_count}/${ZOMBIE_THRESHOLD}): HTTP OK지만 로그 무활동"
+
+        if [[ $zombie_count -ge $ZOMBIE_THRESHOLD ]]; then
+            log "ERROR" "좀비 임계치 도달 → 강제 재시작"
+            reset_zombie_count
+
+            send_alert "warning" "Gateway 좀비 감지 → 강제 재시작" \
+                "HTTP 200 응답하지만 런타임 로그 ${ZOMBIE_LOG_STALE_MINUTES}분 이상 무활동.\nDiscord 연결 끊김 가능성. 강제 재시작합니다." \
+                "[{\"name\":\"좀비 횟수\",\"value\":\"${zombie_count}/${ZOMBIE_THRESHOLD}\",\"inline\":true},{\"name\":\"메모리\",\"value\":\"${mem_mb}MB\",\"inline\":true}]"
+
+            request_restart "좀비 상태 (HTTP OK, 로그 무활동)"
+        else
+            log "INFO" "좀비 관찰 중 (다음 cycle에 재확인)"
+        fi
+
+        log "INFO" "========== 체크 완료 =========="
+        exit 0
+    fi
+
+    # 정상 작동
+    reset_zombie_count
 
     if [[ -f "$ALERT_FILE" ]]; then
         send_recovery_alert

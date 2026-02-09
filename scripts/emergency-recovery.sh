@@ -229,7 +229,34 @@ main() {
     log "⚠️ Proceeding without workspace trust confirmation"
   fi
   
-  # 4. 긴급 복구 명령 전송
+  # 4a. doctor --fix 자동 실행 (Level 3 전)
+  log "Attempting automatic doctor --fix before Claude recovery..."
+  
+  if command -v openclaw &> /dev/null; then
+    if openclaw doctor --fix 2>> "$LOG_FILE"; then
+      log "✅ doctor --fix executed successfully"
+      sleep 3
+      
+      # doctor --fix 후 즉시 상태 확인
+      local http_code_after_fix
+      http_code_after_fix=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$GATEWAY_URL" 2>/dev/null || echo "000")
+      
+      if [ "$http_code_after_fix" = "200" ]; then
+        log "✅ Gateway recovered immediately after doctor --fix! (HTTP $http_code_after_fix)"
+        send_discord_notification "✅ **Level 3 자동 복구 성공 (doctor --fix)**\n\nGateway가 doctor --fix로 자동 복구되었습니다.\n- HTTP 상태: $http_code_after_fix\n- 로그: \`$LOG_FILE\`"
+        exit 0
+      else
+        log "⚠️ doctor --fix completed but Gateway still unhealthy (HTTP $http_code_after_fix)"
+        log "Proceeding to Claude recovery..."
+      fi
+    else
+      log "⚠️ doctor --fix failed - proceeding to Claude recovery"
+    fi
+  else
+    log "⚠️ openclaw command not found - skipping automatic doctor --fix"
+  fi
+  
+  # 4b. 긴급 복구 명령 전송 (Claude)
   log "Sending emergency recovery command to Claude..."
   
   local recovery_command
@@ -241,11 +268,13 @@ main() {
 3. 설정 검증 (~/.openclaw/openclaw.json)
 4. 포트 충돌 체크 (\`lsof -i :18789\`)
 5. 의존성 체크 (\`npm list\`, \`node --version\`)
-6. 복구 시도 (설정 수정, 프로세스 재시작)
+6. 복구 시도 (설정 수정, 프로세스 재시작, doctor --fix)
 7. 결과를 $REPORT_FILE 에 기록
 
 작업 제한시간: ${RECOVERY_TIMEOUT}초 이내
-목표: Gateway가 $GATEWAY_URL 에서 HTTP 200 응답하도록 복구"
+목표: Gateway가 $GATEWAY_URL 에서 HTTP 200 응답하도록 복구
+
+주의: doctor --fix는 이미 시도했으므로 더 깊은 근본 원인 분석 필요"
   
   if ! tmux send-keys -t "$TMUX_SESSION" "$recovery_command" C-m 2>> "$LOG_FILE"; then
     log "❌ Failed to send command to Claude"
