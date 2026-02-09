@@ -474,17 +474,31 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
 
     crash_count=$(get_crash_count)
     
-    # v5.4: 무한 루프 방지 - crash >= 5 → 자동 중단
+    # v5.4: 무한 루프 방지 - crash >= 5 → Emergency Recovery (Level 3)
     if [[ $crash_count -ge $CRASH_HALT_THRESHOLD ]]; then
-        log "ERROR" "🚨 crash 임계치 도달 ($crash_count >= $CRASH_HALT_THRESHOLD) - 자동 중단"
-        log "ERROR" "무한 루프 감지: 더 이상 자동 재시작하지 않음"
-        log "ERROR" "**수동 개입 필수**"
-        
-        send_alert "critical" "🚨 Gateway 무한 루프 감지 - 자동 중단" \
-            "Gateway가 $crash_count회 연속 실패했습니다.\n\n자동 재시작이 중단되었습니다.\n\n원인 분석 및 수동 조치 필요:\n1. 로그 확인: ~/.openclaw/logs/watchdog.log\n2. 설정 검증: openclaw doctor --check\n3. 수동 시작: openclaw gateway restart\n\n상세: v5.4 자동 중단 프로토콜" \
-            "[{\"name\":\"crash 횟수\",\"value\":\"${crash_count}/${CRASH_HALT_THRESHOLD}\",\"inline\":true},{\"name\":\"doctor --fix 시도\",\"value\":\"$(get_doctor_fix_attempts)/${DOCTOR_FIX_MAX_ATTEMPTS}\",\"inline\":true}]"
-        
-        log "INFO" "========== 체크 완료 (자동 중단) =========="
+        log "ERROR" "🚨 crash 임계치 도달 ($crash_count >= $CRASH_HALT_THRESHOLD)"
+        log "WARN" "Level 1 (Watchdog) 실패, Level 2 (doctor --fix) 실패"
+        log "WARN" "Level 3 (Emergency PTY Recovery) 시작..."
+
+        send_alert "critical" "🚨 Gateway 무한 루프 → Level 3 트리거" \
+            "Gateway가 $crash_count회 연속 실패했습니다.\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작...\n\n진행 상황은 Discord로 알림됩니다." \
+            "[{\"name\":\"crash 횟수\",\"value\":\"${crash_count}/${CRASH_HALT_THRESHOLD}\",\"inline\":true},{\"name\":\"Level 3\",\"value\":\"시작 중\",\"inline\":true}]"
+
+        # Emergency Recovery v2.0 실행
+        RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
+        if [[ -x "$RECOVERY_SCRIPT" ]]; then
+            if ! $DRY_RUN; then
+                "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
+                log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
+            else
+                log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
+            fi
+        else
+            log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
+            send_alert "error" "Level 3 실패" "Emergency Recovery 스크립트를 찾을 수 없습니다." "[]"
+        fi
+
+        log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
         exit 0
     fi
 
@@ -518,12 +532,27 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
                     attempts=$(get_doctor_fix_attempts)
                     
                     if [[ $attempts -ge $DOCTOR_FIX_MAX_ATTEMPTS ]]; then
-                        log "ERROR" "doctor --fix 최대 시도 횟수 초과 - 자동 중단"
-                        send_alert "critical" "⚠️ doctor --fix 실패 - 자동 중단" \
-                            "doctor --fix가 $attempts회 시도했으나 설정 문제 해결 불가\n\n수동 개입 필수:\n1. 설정 파일 확인: ~/.openclaw/openclaw.json\n2. 에러 로그: ~/.openclaw/logs/gateway.log\n3. doctor 진단: openclaw doctor --check" \
-                            "[{\"name\":\"실패 원인\",\"value\":\"설정 재검증 실패\",\"inline\":true},{\"name\":\"시도 횟수\",\"value\":\"${attempts}/${DOCTOR_FIX_MAX_ATTEMPTS}\",\"inline\":true}]"
-                        
-                        log "INFO" "========== 체크 완료 (자동 중단) =========="
+                        log "ERROR" "doctor --fix 최대 시도 횟수 초과"
+                        log "WARN" "Level 2 (doctor --fix) 실패 → Level 3 시작..."
+
+                        send_alert "critical" "⚠️ doctor --fix 실패 → Level 3" \
+                            "doctor --fix가 $attempts회 시도했으나 설정 문제 해결 불가\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작..." \
+                            "[{\"name\":\"실패 원인\",\"value\":\"설정 재검증 실패\",\"inline\":true},{\"name\":\"Level 3\",\"value\":\"시작 중\",\"inline\":true}]"
+
+                        # Emergency Recovery v2.0 실행
+                        RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
+                        if [[ -x "$RECOVERY_SCRIPT" ]]; then
+                            if ! $DRY_RUN; then
+                                "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
+                                log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
+                            else
+                                log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
+                            fi
+                        else
+                            log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
+                        fi
+
+                        log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
                         exit 0
                     else
                         log "WARN" "doctor --fix 실패 ($attempts/$DOCTOR_FIX_MAX_ATTEMPTS) - 일반 재시작 시도"
@@ -533,13 +562,28 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
                     fi
                 fi
             else
-                # doctor --fix 이미 최대 시도 횟수 도달 → 자동 중단
-                log "ERROR" "doctor --fix 최대 시도 횟수 초과 ($attempts/$DOCTOR_FIX_MAX_ATTEMPTS) - 자동 중단"
-                send_alert "critical" "⚠️ doctor --fix 실패 - 자동 중단" \
-                    "doctor --fix가 $attempts회 시도했으나 설정 문제 해결 불가\n\n수동 개입 필수:\n1. 설정 파일 확인: ~/.openclaw/openclaw.json\n2. 에러 로그: ~/.openclaw/logs/gateway.log\n3. doctor 진단: openclaw doctor --check" \
-                    "[{\"name\":\"상태\",\"value\":\"설정 재검증 실패\",\"inline\":true},{\"name\":\"시도 횟수\",\"value\":\"${attempts}/${DOCTOR_FIX_MAX_ATTEMPTS}\",\"inline\":true}]"
-                
-                log "INFO" "========== 체크 완료 (자동 중단) =========="
+                # doctor --fix 이미 최대 시도 횟수 도달 → Level 3
+                log "ERROR" "doctor --fix 최대 시도 횟수 초과 ($attempts/$DOCTOR_FIX_MAX_ATTEMPTS)"
+                log "WARN" "Level 2 실패 → Level 3 Emergency Recovery 시작..."
+
+                send_alert "critical" "⚠️ doctor --fix 실패 → Level 3" \
+                    "doctor --fix가 $attempts회 시도했으나 설정 문제 해결 불가\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작..." \
+                    "[{\"name\":\"상태\",\"value\":\"설정 재검증 실패\",\"inline\":true},{\"name\":\"Level 3\",\"value\":\"시작 중\",\"inline\":true}]"
+
+                # Emergency Recovery v2.0 실행
+                RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
+                if [[ -x "$RECOVERY_SCRIPT" ]]; then
+                    if ! $DRY_RUN; then
+                        "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
+                        log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
+                    else
+                        log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
+                    fi
+                else
+                    log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
+                fi
+
+                log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
                 exit 0
             fi
         fi

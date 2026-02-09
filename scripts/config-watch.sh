@@ -18,7 +18,23 @@ while true; do
     
     if [ -n "$LAST_HASH" ] && [ "$CURRENT_HASH" != "$LAST_HASH" ]; then
       echo "[$(date '+%Y-%m-%d %H:%M:%S')] Config changed detected!"
+
+      # 1. 백업 먼저
       "$BACKUP_SCRIPT" "auto-watch" || true
+
+      # 2. 설정 검증
+      if ! openclaw doctor --check &>/dev/null; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Invalid config detected - running doctor --fix"
+        if openclaw doctor --fix &>/dev/null; then
+          echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Config auto-repaired by doctor --fix"
+          # Discord 알림
+          ~/openclaw/scripts/alert.sh "Config Auto-Repair" "설정 오류 감지 → doctor --fix 자동 실행 완료" || true
+        else
+          echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ doctor --fix failed - manual intervention required"
+          ~/openclaw/scripts/alert.sh "Config Repair Failed" "doctor --fix 실패 - 수동 개입 필요\n\n로그: ~/.openclaw/logs/config-watch.log" || true
+        fi
+      fi
+
       # 최근 10개만 보관
       HISTORY_DIR="$HOME/openclaw/config-history"
       if [ -d "$HISTORY_DIR" ]; then
