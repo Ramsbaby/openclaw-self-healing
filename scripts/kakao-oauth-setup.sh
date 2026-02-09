@@ -3,9 +3,22 @@
 
 set -e
 
-REST_API_KEY="${KAKAO_REST_API_KEY:-4d7f36bbfa672c5e24582307de57f4e4}"
+# Kakao API credentials - 환경변수에서 가져옵니다
+REST_API_KEY="${KAKAO_REST_API_KEY}"
 REDIRECT_URI="http://localhost:8080/callback"
 CONFIG_FILE="$HOME/.openclaw/openclaw.json"
+
+if [ -z "$REST_API_KEY" ]; then
+    echo "❌ 에러: KAKAO_REST_API_KEY 환경변수가 설정되지 않았습니다."
+    echo ""
+    echo "설정 방법:"
+    echo "  1. Kakao Developers: https://developers.kakao.com"
+    echo "  2. Application 생성 및 REST API Key 복사"
+    echo "  3. 환경변수 설정:"
+    echo "     export KAKAO_REST_API_KEY=your_rest_api_key"
+    echo ""
+    exit 1
+fi
 
 echo "🔐 Kakao OAuth 토큰 발급"
 echo ""
