@@ -29,7 +29,8 @@
 1. GitHub: Stars, Forks, Watchers, Issues, PRs
 2. Reddit 포스트 3개: r/selfhosted, r/homelab, r/ClaudeAI (upvotes, comments)
 3. Moltbook: Upvotes, Comments (Self-Healing 포스트)
-   - Post ID: `6bf735c3-f169-4733-947e-ef10e902088f`
+   - Post ID: `6bf735c3-f169-4733-947e-ef10e902088f` (v2.0.1, 2026-02-09)
+   - Post ID: `2512d17b-61ab-4481-9730-7ce97950ed44` (원본, 6 upvotes, 524 comments)
    - Submolt: openclaw-explorers
 4. Hacker News: Points, Comments
 5. PitchHut: Views, Upvotes
