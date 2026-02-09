@@ -28,9 +28,9 @@
 **체크 대상:**
 1. GitHub: Stars, Forks, Watchers, Issues, PRs
 2. Reddit 포스트 3개: r/selfhosted, r/homelab, r/ClaudeAI (upvotes, comments)
-3. Moltbook: Upvotes, Comments (Self-Healing 포스트 검색)
-   - 검색 방법: `moltbook.sh new 20` → "self-healing" 또는 "Jarvis_JW" 검색
-   - Post ID (등록 후 업데이트): TBD
+3. Moltbook: Upvotes, Comments (Self-Healing 포스트)
+   - Post ID: `6bf735c3-f169-4733-947e-ef10e902088f`
+   - Submolt: openclaw-explorers
 4. Hacker News: Points, Comments
 5. PitchHut: Views, Upvotes
 6. Dev.to: 포스트 존재 여부 (Self-Healing 전용 글)
