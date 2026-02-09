@@ -10,19 +10,21 @@ set -euo pipefail
 # shellcheck disable=SC2329,SC2317
 cleanup() {
     local exit_code=$?
-    if [ -n "${TMUX_SESSION:-}" ]; then
+    # Only kill tmux session if it actually exists
+    if [ -n "${TMUX_SESSION:-}" ] && tmux has-session -t "$TMUX_SESSION" 2>/dev/null; then
         tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
     fi
     # Remove lock file if exists (uses $LOCKFILE set later, fallback to default)
     rm -f "${LOCKFILE:-$HOME/openclaw/memory/.emergency-recovery.lock}" 2>/dev/null || true
     exit "$exit_code"
 }
-trap cleanup EXIT INT TERM
+# Only trap EXIT (not INT/TERM) to avoid premature cleanup when backgrounded
+trap cleanup EXIT
 
 # ============================================
 # Configuration (Override via environment)
 # ============================================
-RECOVERY_TIMEOUT="${EMERGENCY_RECOVERY_TIMEOUT:-1800}"  # 30분
+RECOVERY_TIMEOUT="${EMERGENCY_RECOVERY_TIMEOUT:-600}"  # 10분 (최적화)
 GATEWAY_URL="${OPENCLAW_GATEWAY_URL:-http://localhost:18789/}"
 LOG_DIR="${OPENCLAW_MEMORY_DIR:-$HOME/openclaw/memory}"
 CLAUDE_WORKSPACE_TRUST_TIMEOUT="${CLAUDE_WORKSPACE_TRUST_TIMEOUT:-10}"
@@ -287,11 +289,11 @@ main() {
   # 5. Claude 작업 대기 (폴링으로 조기 완료 감지)
   log "Waiting for Claude to complete recovery (max ${RECOVERY_TIMEOUT}s)..."
   
-  local poll_interval=30
+  local poll_interval=20
   local elapsed=0
   local last_output=""
   local idle_count=0
-  local max_idle=6  # 3분간 출력 없으면 완료로 간주
+  local max_idle=6  # 2분간 출력 없으면 완료로 간주 (20s * 6 = 120s)
   
   while [ $elapsed -lt "$RECOVERY_TIMEOUT" ]; do
     sleep "$poll_interval"
