@@ -74,6 +74,50 @@ mkdir -p "$LOG_DIR"
 # 유틸리티 함수
 # ============================================================================
 
+# Emergency Recovery 트리거 (중복 실행 방지 포함)
+trigger_emergency_recovery() {
+    local reason="$1"
+
+    # 1. 기존 Emergency Recovery 세션 확인
+    if tmux list-sessions 2>/dev/null | grep -q "emergency_recovery_"; then
+        log "WARN" "Emergency Recovery 이미 실행 중 - 중복 트리거 방지"
+        return 0
+    fi
+
+    # 2. Lock 파일 확인 (30분 타임아웃)
+    if [[ -f "$HEALING_LOCK" ]]; then
+        local lock_time=$(cat "$HEALING_LOCK" 2>/dev/null || echo "0")
+        local now=$(date +%s)
+        local elapsed=$((now - lock_time))
+        if [[ $elapsed -lt 1800 ]]; then
+            log "WARN" "Emergency Recovery lock 활성 (${elapsed}s 전) - 중복 트리거 방지"
+            return 0
+        else
+            log "WARN" "Emergency Recovery lock 만료 (${elapsed}s) - 제거 후 재실행"
+            rm -f "$HEALING_LOCK"
+        fi
+    fi
+
+    # 3. Lock 설정
+    date +%s > "$HEALING_LOCK"
+
+    # 4. Emergency Recovery 실행
+    RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
+    if [[ -x "$RECOVERY_SCRIPT" ]]; then
+        if ! $DRY_RUN; then
+            "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
+            log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
+        else
+            log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
+        fi
+    else
+        log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
+        send_alert "error" "Level 3 실패" "Emergency Recovery 스크립트를 찾을 수 없습니다." "[]"
+        rm -f "$HEALING_LOCK"
+        return 1
+    fi
+}
+
 log() {
     local level="$1"
     local message="$2"
@@ -117,24 +161,24 @@ validate_config() {
         return 1
     fi
     
-    # 2. 알려진 잘못된 키 검사
+    # 2. 알려진 잘못된 키 검사 (jq -e: null/false → exit 1)
     local config=$(cat "$config_file")
-    
+
     # tools.exec.allowlist (deprecated, 08:12 사고 원인)
-    if echo "$config" | jq '.tools.exec.allowlist' 2>/dev/null | grep -q .; then
+    if echo "$config" | jq -e '.tools.exec.allowlist' &>/dev/null; then
         log "ERROR" "잘못된 설정: tools.exec.allowlist (deprecated)"
         return 1
     fi
-    
+
     # tools.allowlist (deprecated)
-    if echo "$config" | jq '.tools.allowlist' 2>/dev/null | grep -q .; then
+    if echo "$config" | jq -e '.tools.allowlist' &>/dev/null; then
         log "ERROR" "잘못된 설정: tools.allowlist (deprecated)"
         return 1
     fi
-    
-    # approvals.exec 검증
-    if ! echo "$config" | jq '.approvals.exec' > /dev/null 2>&1; then
-        log "ERROR" "설정 파일에서 approvals.exec 키 부재"
+
+    # gateway 섹션 검증 (필수 키)
+    if ! echo "$config" | jq -e '.gateway' &>/dev/null; then
+        log "ERROR" "설정 파일에서 gateway 섹션 부재"
         return 1
     fi
     
@@ -481,22 +525,10 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
         log "WARN" "Level 3 (Emergency PTY Recovery) 시작..."
 
         send_alert "critical" "🚨 Gateway 무한 루프 → Level 3 트리거" \
-            "Gateway가 $crash_count회 연속 실패했습니다.\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작...\n\n진행 상황은 Discord로 알림됩니다." \
+            "Gateway가 ${crash_count}회 연속 실패했습니다.\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작...\n\n진행 상황은 Discord로 알림됩니다." \
             "[{\"name\":\"crash 횟수\",\"value\":\"${crash_count}/${CRASH_HALT_THRESHOLD}\",\"inline\":true},{\"name\":\"Level 3\",\"value\":\"시작 중\",\"inline\":true}]"
 
-        # Emergency Recovery v2.0 실행
-        RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
-        if [[ -x "$RECOVERY_SCRIPT" ]]; then
-            if ! $DRY_RUN; then
-                "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
-                log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
-            else
-                log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
-            fi
-        else
-            log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
-            send_alert "error" "Level 3 실패" "Emergency Recovery 스크립트를 찾을 수 없습니다." "[]"
-        fi
+        trigger_emergency_recovery "crash 임계치 도달 ($crash_count)"
 
         log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
         exit 0
@@ -536,21 +568,10 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
                         log "WARN" "Level 2 (doctor --fix) 실패 → Level 3 시작..."
 
                         send_alert "critical" "⚠️ doctor --fix 실패 → Level 3" \
-                            "doctor --fix가 $attempts회 시도했으나 설정 문제 해결 불가\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작..." \
+                            "doctor --fix가 ${attempts}회 시도했으나 설정 문제 해결 불가\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작..." \
                             "[{\"name\":\"실패 원인\",\"value\":\"설정 재검증 실패\",\"inline\":true},{\"name\":\"Level 3\",\"value\":\"시작 중\",\"inline\":true}]"
 
-                        # Emergency Recovery v2.0 실행
-                        RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
-                        if [[ -x "$RECOVERY_SCRIPT" ]]; then
-                            if ! $DRY_RUN; then
-                                "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
-                                log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
-                            else
-                                log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
-                            fi
-                        else
-                            log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
-                        fi
+                        trigger_emergency_recovery "doctor --fix 실패 (${attempts}회)"
 
                         log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
                         exit 0
@@ -567,21 +588,10 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
                 log "WARN" "Level 2 실패 → Level 3 Emergency Recovery 시작..."
 
                 send_alert "critical" "⚠️ doctor --fix 실패 → Level 3" \
-                    "doctor --fix가 $attempts회 시도했으나 설정 문제 해결 불가\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작..." \
+                    "doctor --fix가 ${attempts}회 시도했으나 설정 문제 해결 불가\n\nLevel 3 Emergency Recovery (Claude 자율 복구) 시작..." \
                     "[{\"name\":\"상태\",\"value\":\"설정 재검증 실패\",\"inline\":true},{\"name\":\"Level 3\",\"value\":\"시작 중\",\"inline\":true}]"
 
-                # Emergency Recovery v2.0 실행
-                RECOVERY_SCRIPT="$HOME/openclaw/scripts/emergency-recovery-v2.sh"
-                if [[ -x "$RECOVERY_SCRIPT" ]]; then
-                    if ! $DRY_RUN; then
-                        "$RECOVERY_SCRIPT" >> "$LOG_DIR/emergency-recovery-trigger.log" 2>&1 &
-                        log "INFO" "Emergency Recovery 백그라운드 실행 시작 (PID: $!)"
-                    else
-                        log "DRY-RUN" "Emergency Recovery 호출됨 (실제 실행 안 함)"
-                    fi
-                else
-                    log "ERROR" "Emergency Recovery 스크립트 없음: $RECOVERY_SCRIPT"
-                fi
+                trigger_emergency_recovery "doctor --fix 최대 시도 초과 (${attempts}회)"
 
                 log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
                 exit 0
