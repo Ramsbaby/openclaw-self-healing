@@ -28,7 +28,9 @@
 **체크 대상:**
 1. GitHub: Stars, Forks, Watchers, Issues, PRs
 2. Reddit 포스트 3개: r/selfhosted, r/homelab, r/ClaudeAI (upvotes, comments)
-3. Moltbook: Upvotes, Comments (실제 의미있는 것만)
+3. Moltbook: Upvotes, Comments (Self-Healing 포스트 검색)
+   - 검색 방법: `moltbook.sh new 20` → "self-healing" 또는 "Jarvis_JW" 검색
+   - Post ID (등록 후 업데이트): TBD
 4. Hacker News: Points, Comments
 5. PitchHut: Views, Upvotes
 6. Dev.to: 포스트 존재 여부 (Self-Healing 전용 글)
