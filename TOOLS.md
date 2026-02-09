@@ -134,15 +134,15 @@ yf compare TQQQ,QQQ  # 종목 비교
 
 **스킬 위치:** `gog tasks` (gog CLI)
 
-**계정:** `yuiopnm1931@gmail.com`
+**계정:** `your-email@gmail.com`
 **Keyring:** `keychain` (macOS Keychain 사용)
 
 **사용법:**
 ```bash
-gog tasks lists --account yuiopnm1931@gmail.com                           # 목록 보기
-gog tasks list "목록ID" --account yuiopnm1931@gmail.com                   # 할 일 보기
-gog tasks add "목록ID" --title "제목" --due "YYYY-MM-DD" --account yuiopnm1931@gmail.com  # 추가
-gog tasks done "목록ID" "할일ID" --account yuiopnm1931@gmail.com          # 완료
+gog tasks lists --account your-email@gmail.com                           # 목록 보기
+gog tasks list "목록ID" --account your-email@gmail.com                   # 할 일 보기
+gog tasks add "목록ID" --title "제목" --due "YYYY-MM-DD" --account your-email@gmail.com  # 추가
+gog tasks done "목록ID" "할일ID" --account your-email@gmail.com          # 완료
 ```
 
 **정우님 설정:**
@@ -173,18 +173,18 @@ remindctl add "목록명" "할 일" --due "날짜시간"      # 추가
 
 **스킬 위치:** `gog calendar` (gog CLI)
 
-**계정:** `yuiopnm1931@gmail.com`
+**계정:** `your-email@gmail.com`
 **Keyring:** `keychain` (macOS Keychain 사용)
 
 **사용법:**
 ```bash
-gog calendar calendars --account yuiopnm1931@gmail.com         # 캘린더 목록
-gog calendar events --account yuiopnm1931@gmail.com --today    # 오늘 일정
-gog calendar events --account yuiopnm1931@gmail.com --from today --to "YYYY-MM-DD"  # 기간 일정
+gog calendar calendars --account your-email@gmail.com         # 캘린더 목록
+gog calendar events --account your-email@gmail.com --today    # 오늘 일정
+gog calendar events --account your-email@gmail.com --from today --to "YYYY-MM-DD"  # 기간 일정
 ```
 
 **캘린더 목록:**
-- `yuiopnm1931@gmail.com` — 기본 캘린더
+- `your-email@gmail.com` — 기본 캘린더
 - `family02071296738162305992@group.calendar.google.com` — 가족
 - `ko.south_korea#holiday@group.v.calendar.google.com` — 대한민국 휴일
 

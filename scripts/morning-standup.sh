@@ -23,7 +23,7 @@ LOG_FILE="$OPENCLAW_DIR/logs/auto-retry.jsonl"
 METRICS_FILE="$HOME/.openclaw/metrics/current.prom"
 HISTORY_LOG="$HOME/.openclaw/metrics/history.csv"
 GOG="$(which gog 2>/dev/null || echo '/opt/homebrew/bin/gog')"
-GOG_ACCOUNT="yuiopnm1931@gmail.com"
+GOG_ACCOUNT="your-email@gmail.com"
 TASKS_LIST_ID="MDE3MjE5NzU0MjA3NTAxOTg4ODc6MDow"
 
 TODAY=$(date '+%Y-%m-%d')
