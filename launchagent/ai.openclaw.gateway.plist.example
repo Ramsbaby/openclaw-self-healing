@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>ai.openclaw.gateway</string>
+    
+    <key>Comment</key>
+    <string>OpenClaw Gateway (v2026.2.2-3)</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <dict>
+      <key>SuccessfulExit</key>
+      <false/>
+      <key>Crashed</key>
+      <true/>
+    </dict>
+    <key>ExitTimeOut</key>
+    <integer>5</integer>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>/Users/ramsbaby/.openclaw/scripts/gateway-wrapper.sh</string>
+    </array>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/ramsbaby/.openclaw/logs/gateway.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/ramsbaby/.openclaw/logs/gateway.err.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+    <key>TZ</key>
+    <string>Asia/Seoul</string>
+    <key>PI_BASH_MAX_OUTPUT_CHARS</key>
+    <string>50000</string>
+    <key>OPENCLAW_BASH_PENDING_MAX_OUTPUT_CHARS</key>
+    <string>12000</string>
+    <key>OPENCLAW_GATEWAY_TIMEOUT</key>
+    <string>30000</string>
+    <key>OPENCLAW_RPC_TIMEOUT</key>
+    <string>30000</string>
+    <key>GEMINI_API_KEY</key>
+    <string>YOUR_GEMINI_API_KEY_HERE</string>
+    <key>NAVER_MAPS_CLIENT_ID</key>
+    <string>YOUR_NAVER_CLIENT_ID</string>
+    <key>NAVER_MAPS_CLIENT_SECRET</key>
+    <string>YOUR_NAVER_CLIENT_SECRET</string>
+    <key>ODSAY_API_KEY</key>
+    <string>YOUR_ODSAY_API_KEY</string>
+    <key>OPENAI_API_KEY</key>
+    <string>YOUR_OPENAI_API_KEY_HERE</string>
+    <key>HOME</key>
+    <string>/Users/ramsbaby</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>OPENCLAW_GATEWAY_PORT</key>
+    <string>18789</string>
+    <key>OPENCLAW_GATEWAY_TOKEN</key>
+    <string>YOUR_GATEWAY_TOKEN_HERE</string>
+    <key>OPENCLAW_LAUNCHD_LABEL</key>
+    <string>ai.openclaw.gateway</string>
+    <key>OPENCLAW_SYSTEMD_UNIT</key>
+    <string>openclaw-gateway.service</string>
+    <key>OPENCLAW_SERVICE_MARKER</key>
+    <string>openclaw</string>
+    <key>OPENCLAW_SERVICE_KIND</key>
+    <string>gateway</string>
+    <key>OPENCLAW_SERVICE_VERSION</key>
+    <string>2026.2.1</string>
+    </dict>
+  </dict>
+</plist>

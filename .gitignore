@@ -1,0 +1,113 @@
+# ============================================
+# OpenClaw .gitignore
+# ============================================
+
+# 민감 정보
+USER.md
+.env
+.env.local
+secrets/
+*.secret
+*-secrets.json
+
+# Discord webhook은 환경변수로 관리 예정
+# (현재 하드코딩된 것은 별도 처리 필요)
+
+# 로그 파일
+logs/*.log
+logs/*.jsonl
+logs/level2/*.json
+*.log
+
+# 메모리 (일일 로그)
+memory/*-2026*.md
+memory/*-2025*.md
+memory/*.log
+memory/healthcheck-*.log
+memory/claude-session-*.log
+
+# 캐시
+skills/*/cache/
+*.cache
+
+# 백업
+backups/
+*.backup
+*.bak
+
+# Lock 파일
+.clawhub/lock.json
+
+# Config history (너무 많음)
+config-history/*-auto-watch.json
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 에디터
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+
+# Temporary
+*.tmp
+tmp/
+temp/
+
+# 환경별 설정 (템플릿만 커밋)
+# 실제 설정은 .gitignore
+config-history/
+.openclaw/
+
+# Security: Secrets and credentials
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+credentials/
+secrets/
+.aws/
+.azure/
+.gcp/
+
+# Tokens and API keys
+**/test-finnhub*.js
+**/check-price*.js
+**/preply*.json
+
+# Sensitive data
+**/node_modules/
+**/dist/
+**/build/
+
+# Private/Sensitive
+config-history/
+memory/
+*.backup
+*.bak
+.git.backup-*/
+launchagent/*.plist.backup
+
+# Logs
+*.log

@@ -1,0 +1,82 @@
+# Self-Review V5.0.1 Template
+# ========================================
+# V5.0 → V5.0.1 변경사항:
+# - "자동 메트릭" 거짓 약속 제거
+# - 파일명 타임스탬프 추가 (덮어쓰기 방지)
+# - 크론별 목표 매핑 지원
+# - 편향 기본값 true로 변경 (보수적)
+# ========================================
+
+# === 메트릭 (호출자 제공) ===
+# ⚠️ 이 값들은 "자동 수집"이 아닙니다!
+# OpenClaw 크론은 토큰 카운트에 접근할 수 없습니다.
+# 크론 메시지에서 exec로 스크립트를 호출해야 합니다.
+metrics:
+  cron_name: ""           # 크론 이름
+  timestamp: ""           # ISO 8601 형식
+  score: null             # 1-10 점수 (LLM 자기평가)
+  tokens_in: null         # 입력 토큰 (추정치 허용)
+  tokens_out: null        # 출력 토큰 (추정치 허용)
+  exit_status: "ok"       # ok | error
+
+# === LLM 자기성찰 (편향 인정) ===
+# 이 섹션은 LLM이 작성 (간결하게!)
+self_reflection:
+  # 무엇이 잘못됐나? (필수 1개+)
+  # "없음"은 관대함의 증거로 간주됨
+  what_went_wrong: ""
+  
+  # 왜 그랬나? (근본 원인)
+  why: ""
+  
+  # 다음 액션 (구체적, 측정 가능)
+  next_action: ""
+  
+  # 이 액션의 마감일 (YYYY-MM-DD)
+  deadline: ""
+
+# === 편향 점검 (V5.0 핵심) ===
+bias_check:
+  # 내가 너무 관대하게 평가하고 있나?
+  # ⚠️ 기본값 true = 보수적 접근
+  am_i_being_too_easy: true
+  
+  # 그렇게 판단한 근거 (필수!)
+  # "자동 생성" 같은 플레이스홀더 금지
+  evidence: ""
+  
+  # 정우님이 지적한 적 있는 문제인가?
+  user_flagged_before: false
+
+# === 목표 대비 ===
+# 크론별 목표는 targets-by-cron.yaml에서 로드
+targets:
+  score:
+    goal: 7.0             # 최소 합격 점수
+    actual: null
+    met: null             # score >= 7.0
+  
+  tokens:
+    budget: null          # 크론별 목표에서 로드
+    actual: null
+    usage_pct: null       # actual / budget * 100
+
+# === 메타데이터 ===
+meta:
+  version: "5.0.1"
+  reviewed_by: null       # Layer 3 외부 검증 시 채워짐
+  review_date: null
+
+# ========================================
+# 사용법
+# ========================================
+# 1. 크론 종료 시 스크립트 호출:
+#    bash ~/openclaw/scripts/self-review-logger.sh \
+#      "크론명" "점수" "tokens_in" "tokens_out" "status" \
+#      "what_went_wrong" "why" "next_action"
+#
+# 2. 저장 위치: memory/self-review/YYYY-MM-DD/CRON_NAME_HHMMSS.yaml
+#    (타임스탬프로 덮어쓰기 방지)
+#
+# 3. 주간 외부 검증: weekly-review-collector.sh 실행
+# ========================================
