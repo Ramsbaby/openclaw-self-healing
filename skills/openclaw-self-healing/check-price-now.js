@@ -1,6 +1,16 @@
 const WebSocket = require('ws');
 
-const socket = new WebSocket('wss://ws.finnhub.io?token=d62ho41r01qlugeq3ge0d62ho41r01qlugeq3geg');
+// API key는 환경변수에서 가져옵니다
+const token = process.env.FINNHUB_TOKEN;
+if (!token) {
+  console.error('❌ 에러: FINNHUB_TOKEN 환경변수가 설정되지 않았습니다.');
+  console.error('설정 방법:');
+  console.error('  1. Finnhub API 키 발급: https://www.finnhub.io/account/api-key');
+  console.error('  2. 환경변수 설정: export FINNHUB_TOKEN=your_api_key');
+  process.exit(1);
+}
+
+const socket = new WebSocket(`wss://ws.finnhub.io?token=${token}`);
 
 console.log('⏳ Finnhub 연결 중...\n');
 

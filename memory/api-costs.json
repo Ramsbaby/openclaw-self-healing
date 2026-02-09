@@ -1,11 +1,19 @@
 {
-  "lastUpdated": "2026-02-09T08:23:00Z",
+  "lastUpdated": "2026-02-09T09:10:00Z",
+  "jarvis_app": {
+    "status": "✅ 오전 9:00 완료",
+    "budget_warning": "+$13.17 (초과)",
+    "feb_budget": "$130",
+    "march_goal": "$80~90",
+    "optimizations_recorded": true,
+    "note": "정우님 비용 관리 앱"
+  },
   "openai": {
-    "used_dollars": 0,
-    "remaining_dollars": 5,
+    "used_dollars": 13.17,
+    "remaining_dollars": 0,
     "monthly_limit_dollars": 5,
-    "usage_percent": 0,
-    "note": "0% 사용 (이번 달 시작)"
+    "status": "⚠️ 예산 초과",
+    "note": "Jarvis 앱에서 추적"
   },
   "brave_search": {
     "used_queries": 0,

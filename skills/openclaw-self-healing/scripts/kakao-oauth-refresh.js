@@ -14,13 +14,21 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const REST_API_KEY = process.env.KAKAO_REST_API_KEY || '4d7f36bbfa672c5e24582307de57f4e4';
+// Kakao OAuth credentials - 환경변수에서 가져옵니다
+const REST_API_KEY = process.env.KAKAO_REST_API_KEY;
 const CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET;
 const REDIRECT_URI = 'http://localhost:8080/callback';
 const SCOPE = 'talk_calendar';
 
-if (!CLIENT_SECRET) {
-  console.error('❌ KAKAO_CLIENT_SECRET environment variable not set');
+if (!REST_API_KEY || !CLIENT_SECRET) {
+  console.error('❌ 에러: Kakao OAuth credentials가 설정되지 않았습니다.');
+  console.error('');
+  console.error('설정 방법:');
+  console.error('  1. Kakao Developers: https://developers.kakao.com');
+  console.error('  2. 환경변수 설정:');
+  console.error('     export KAKAO_REST_API_KEY=your_rest_api_key');
+  console.error('     export KAKAO_CLIENT_SECRET=your_client_secret');
+  console.error('');
   process.exit(1);
 }
 

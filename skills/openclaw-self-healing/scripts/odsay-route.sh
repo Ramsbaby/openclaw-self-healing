@@ -21,7 +21,19 @@ if [ -z "$START_ADDR" ] || [ -z "$END_ADDR" ]; then
 fi
 
 # 1. 출발지 좌표 검색 (Kakao Local API 사용)
-KAKAO_API_KEY="${KAKAO_REST_API_KEY:-4d7f36bbfa672c5e24582307de57f4e4}"
+KAKAO_API_KEY="${KAKAO_REST_API_KEY}"
+
+if [ -z "$KAKAO_API_KEY" ]; then
+    echo "❌ 에러: KAKAO_REST_API_KEY 환경변수가 설정되지 않았습니다."
+    echo ""
+    echo "설정 방법:"
+    echo "  1. Kakao Developers: https://developers.kakao.com"
+    echo "  2. REST API Key 복사"
+    echo "  3. 환경변수 설정: export KAKAO_REST_API_KEY=your_key"
+    echo ""
+    exit 1
+fi
+
 START_COORD=$(curl -s "https://dapi.kakao.com/v2/local/search/address.json?query=${START_ADDR}" \
   -H "Authorization: KakaoAK ${KAKAO_API_KEY}" | \
   jq -r '.documents[0] | "\(.x),\(.y)"')
