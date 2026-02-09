@@ -2,7 +2,7 @@
 
 > **"The system that heals itself — or calls for help when it can't."**
 
-A production-ready, **3-tier autonomous recovery system** for [OpenClaw](https://github.com/openclaw/openclaw) Gateway, featuring AI-powered diagnosis and repair via Claude Code PTY.
+A production-ready, **4-tier autonomous recovery system** for [OpenClaw](https://github.com/openclaw/openclaw) Gateway, featuring AI-powered diagnosis and repair via Claude Code PTY.
 
 [![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases/tag/v2.1.0)
 [![ShellCheck](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml)
@@ -67,13 +67,14 @@ Unlike simple watchdogs that just restart processes, **this system understands _
 │ ├─ Discord/Telegram alerts (start + success/failure)    │
 │ └─ Learning repo: symptom → cause → solution → prevent  │
 └─────────────────────────────────────────────────────────┘
-                         ↓ (parallel monitoring)
+                         ↓ (if Level 3 fails OR parallel monitoring)
 ┌─────────────────────────────────────────────────────────┐
-│ Tier 0: LaunchAgent Guardian (180s cron) 🛡️            │
-│ ├─ Cron-based (independent from launchd)                │
-│ ├─ Detects "loaded but not running" state (PID -)       │
-│ ├─ Auto-kickstart hung Watchdog/Gateway services        │
-│ └─ Discord alert on recovery                            │
+│ Level 4: Guardian + Discord (180s cron + alerts) 🛡️    │
+│ ├─ LaunchAgent Guardian (cron-based, independent)       │
+│ │  └─ Detects hung Watchdog/Gateway (PID -)             │
+│ ├─ Auto-kickstart hung services                         │
+│ ├─ Discord alerts on recovery or final failure          │
+│ └─ Human escalation (Level 1-3 all failed)              │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -83,7 +84,9 @@ Config error → config-watch (2min) → ✅
                      ↓ (if unfixable)
                 Watchdog (3min) → ✅
                      ↓ (if crash >= 5)
-            Emergency PTY (30min) → ✅ or 🚨
+            Emergency PTY (30min) → ✅
+                     ↓ (if all fail)
+                  Guardian → 🚨 Human
 ```
 
 ---

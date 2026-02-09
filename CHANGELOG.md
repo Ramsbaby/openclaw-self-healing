@@ -12,12 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Emergency PTY Recovery Auto-Trigger** — Level 3 now automatically triggers when Watchdog detects critical failures (crash >= 5 OR doctor --fix fails 2x)
 - **config-watch Auto-Repair** — Proactive config validation with automatic `doctor --fix` on schema violations (~2min recovery)
-- **3-Tier Self-Healing Architecture** — Simplified from 4-tier: config-watch (L1) → Watchdog (L2) → Emergency PTY (L3)
+- **Enhanced 4-Tier Self-Healing** — config-watch (L1) → Watchdog (L2) → Emergency PTY (L3) → Guardian + Discord (L4)
 
 ### Changed
 - **Watchdog v5.4** — Now triggers Emergency Recovery instead of giving up on critical failures
 - **config-watch** — Enhanced with JSON validation + auto-repair (previously backup-only)
-- **Architecture** — Redefined Guardian as "Tier 0" (parallel monitoring) instead of "Level 3"
+- **Architecture** — Maintained 4-tier structure, added config-watch as new L1, Emergency PTY as L3
 
 ### Fixed
 - **Critical Bug**: Emergency Recovery script existed but was never automatically triggered (fixed by adding Watchdog integration)
