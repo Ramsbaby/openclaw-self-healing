@@ -1,0 +1,22 @@
+# OpenClaw Gateway - Level 0 KeepAlive (user-level systemd)
+# Install: ~/.config/systemd/user/openclaw-gateway.service
+
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/openclaw gateway start --foreground
+ExecStop=%h/.local/bin/openclaw gateway stop
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=300
+StartLimitBurst=5
+Environment=PATH=%h/.local/bin:%h/.nvm/versions/node/current/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HOME=%h
+WorkingDirectory=%h
+
+[Install]
+WantedBy=default.target

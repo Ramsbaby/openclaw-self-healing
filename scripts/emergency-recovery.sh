@@ -104,7 +104,11 @@ check_dependencies() {
   
   if [ ${#missing_deps[@]} -gt 0 ]; then
     log "❌ Missing dependencies: ${missing_deps[*]}"
-    send_discord_notification "🚨 **Level 3 Emergency Recovery 실패**\n\n필수 의존성이 설치되지 않았습니다:\n- ${missing_deps[*]}\n\n설치 방법:\n\`\`\`bash\nbrew install ${missing_deps[*]}\n\`\`\`"
+    local install_hint="brew install"
+    if [[ "$(uname -s)" == "Linux" ]]; then
+      install_hint="apt/dnf/pacman install"
+    fi
+    send_discord_notification "🚨 **Level 3 Emergency Recovery 실패**\n\n필수 의존성이 설치되지 않았습니다:\n- ${missing_deps[*]}\n\n설치 방법:\n\`\`\`bash\n$install_hint ${missing_deps[*]}\n\`\`\`"
     return 1
   fi
   

@@ -1,0 +1,15 @@
+# OpenClaw Emergency Recovery - Level 3 (oneshot, on-demand)
+# Install: ~/.config/systemd/user/openclaw-emergency-recovery.service
+# Trigger: systemctl --user start openclaw-emergency-recovery.service
+
+[Unit]
+Description=OpenClaw Emergency Recovery (Claude AI Doctor)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/openclaw/scripts/emergency-recovery.sh
+TimeoutStartSec=1800
+Environment=PATH=%h/.local/bin:%h/.nvm/versions/node/current/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HOME=%h
+WorkingDirectory=%h

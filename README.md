@@ -8,7 +8,9 @@ A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://git
 [![ShellCheck](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform: macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
+[![Platform: Linux](https://img.shields.io/badge/Platform-Linux-orange.svg)](docs/LINUX_SETUP.md)
 [![OpenClaw: v0.x](https://img.shields.io/badge/OpenClaw-v0.x-green.svg)](https://openclaw.ai/)
+[![GitHub stars](https://img.shields.io/github/stars/Ramsbaby/openclaw-self-healing?style=social)](https://github.com/Ramsbaby/openclaw-self-healing/stargazers)
 
 ---
 
@@ -124,16 +126,39 @@ Unlike simple watchdogs that just restart processes, **this system understands _
 
 ---
 
+## 💻 Supported Platforms
+
+| Platform | Init System | Status |
+|----------|-------------|--------|
+| **macOS** 10.14+ | LaunchAgent | ✅ Production-tested |
+| **Ubuntu** 20.04+ | systemd (user) | ✅ Supported |
+| **Debian** 11+ | systemd (user) | ✅ Supported |
+| **RHEL/CentOS** 8+ | systemd (user) | ✅ Supported |
+| **Arch Linux** | systemd (user) | ✅ Supported |
+| **Raspberry Pi OS** | systemd (user) | ✅ Supported |
+
+> Linux uses **user-level systemd** — no `sudo` required for installation.
+
+---
+
 ## ⚡ One-Click Install (Recommended)
+
+### macOS
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash
 ```
 
+### Linux
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install-linux.sh | bash
+```
+
 **That's it.** The installer will:
 - ✅ Check prerequisites (tmux, Claude CLI, OpenClaw)
 - ✅ Download and install all scripts
-- ✅ Set up the LaunchAgent
+- ✅ Set up LaunchAgent (macOS) or systemd services (Linux)
 - ✅ Configure environment
 
 Custom workspace? Use:
@@ -327,9 +352,10 @@ This is intentional for autonomous recovery, but review `emergency-recovery.sh` 
 
 ## 🐛 Known Limitations
 
-### 1. **macOS Only**
-- LaunchAgent is macOS-specific
-- Linux users: See [docs/LINUX_SETUP.md](docs/LINUX_SETUP.md) for systemd equivalents
+### 1. **~~macOS Only~~ → Cross-Platform (v2.1)**
+- ✅ macOS: LaunchAgent
+- ✅ Linux: systemd (user-level, no sudo)
+- See [docs/LINUX_SETUP.md](docs/LINUX_SETUP.md) for Linux details
 
 ### 2. **Claude CLI Dependency**
 - Level 3 fails if Claude API quota is exhausted
@@ -355,7 +381,7 @@ This is intentional for autonomous recovery, but review `emergency-recovery.sh` 
 - [x] Documentation
 
 ### Phase 2: 🚧 Community Refinement (Current)
-- [ ] Linux (systemd) support
+- [x] Linux (systemd) support
 - [ ] GPT-4/Gemini alternative LLMs
 - [ ] Prometheus metrics export
 - [ ] Grafana dashboard template
@@ -364,7 +390,10 @@ This is intentional for autonomous recovery, but review `emergency-recovery.sh` 
 - [ ] Multi-node cluster support
 - [ ] Self-learning failure patterns
 - [ ] GitHub Issues auto-creation
-- [ ] Slack/Telegram notification channels
+- [ ] [Slack/Telegram/PagerDuty notifications](https://github.com/Ramsbaby/openclaw-self-healing/issues/3)
+- [ ] [Docker Compose support](https://github.com/Ramsbaby/openclaw-self-healing/issues/1)
+- [ ] [Prometheus/Grafana metrics](https://github.com/Ramsbaby/openclaw-self-healing/issues/2)
+- [ ] [BATS test suite](https://github.com/Ramsbaby/openclaw-self-healing/issues/4)
 
 ---
 
@@ -402,6 +431,12 @@ MIT License — See [LICENSE](LICENSE) for details.
 - **OpenClaw Discord:** [discord.com/invite/clawd](https://discord.com/invite/clawd)
 - **Issues:** [github.com/ramsbaby/openclaw-self-healing/issues](https://github.com/ramsbaby/openclaw-self-healing/issues)
 - **Discussions:** [github.com/ramsbaby/openclaw-self-healing/discussions](https://github.com/ramsbaby/openclaw-self-healing/discussions)
+
+---
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Ramsbaby/openclaw-self-healing&type=Date)](https://star-history.com/#Ramsbaby/openclaw-self-healing&Date)
 
 ---
 

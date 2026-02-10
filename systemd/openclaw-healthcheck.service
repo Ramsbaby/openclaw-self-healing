@@ -1,0 +1,13 @@
+# OpenClaw Health Check - Level 2 (oneshot, triggered by timer)
+# Install: ~/.config/systemd/user/openclaw-healthcheck.service
+
+[Unit]
+Description=OpenClaw Gateway Health Check
+After=openclaw-gateway.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/openclaw/scripts/gateway-healthcheck.sh
+Environment=PATH=%h/.local/bin:%h/.nvm/versions/node/current/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HOME=%h
+WorkingDirectory=%h

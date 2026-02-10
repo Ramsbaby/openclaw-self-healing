@@ -1,0 +1,13 @@
+# OpenClaw Health Check Timer - 5 minute interval
+# Install: ~/.config/systemd/user/openclaw-healthcheck.timer
+
+[Unit]
+Description=Run OpenClaw Health Check every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target
