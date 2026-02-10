@@ -18,8 +18,8 @@ test_extract_learning() {
   mkdir -p "$TEST_DIR"
   
   # Mock files
-  echo "### Symptom\n- Test symptom" > "$TEST_DIR/report.md"
-  echo "### Decision Making\n- Test decision" > "$TEST_DIR/reasoning.md"
+  printf "%s\n%s" "### Symptom" "- Test symptom" > "$TEST_DIR/report.md"
+  printf "%s\n%s" "### Decision Making" "- Test decision" > "$TEST_DIR/reasoning.md"
   
   # Simple test: check if function exists
   if grep -q "extract_learning()" ../scripts/emergency-recovery-v2.sh; then
