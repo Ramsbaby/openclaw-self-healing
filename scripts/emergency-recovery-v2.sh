@@ -10,6 +10,7 @@ set -euo pipefail
 # ============================================
 # Cleanup trap
 # ============================================
+# shellcheck disable=SC2317,SC2329
 cleanup() {
     local exit_code=$?
     if [ -n "${TMUX_SESSION:-}" ]; then
@@ -52,8 +53,10 @@ METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
 
 # Load environment variables
 if [ -f "$HOME/openclaw/.env" ]; then
+  # shellcheck source=/dev/null
   source "$HOME/openclaw/.env"
 elif [ -f "$HOME/.openclaw/.env" ]; then
+  # shellcheck source=/dev/null
   source "$HOME/.openclaw/.env"
 fi
 
