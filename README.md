@@ -230,6 +230,44 @@ curl http://localhost:18789/
 
 ---
 
+## 📊 CLI Dashboard
+
+View your self-healing system status in real-time:
+
+```bash
+# Quick status check
+./scripts/self-healing-status.sh
+
+# Watch mode (refresh every 5s)
+./scripts/self-healing-status.sh --watch
+
+# JSON output for scripts
+./scripts/self-healing-status.sh --json
+
+# System diagnostics
+./scripts/openclaw-doctor.sh
+
+# Auto-fix common issues
+./scripts/openclaw-doctor.sh --fix
+```
+
+**Example output:**
+```
+┌─ OpenClaw Self-Healing Status ──────────────────────────┐
+│ Gateway Health:          ✅ Healthy                      │
+│ Gateway Uptime:          24:15                           │
+│ Recovery Success Rate:   94.2% (16/17)                   │
+│ MTTR (avg):              32.5s                            │
+│ System Load:             1.25                             │
+│ Next Health Check:       in 5m                            │
+└──────────────────────────────────────────────────────────┘
+
+Recent Recovery History:
+  2026-02-10 08:15  Level 2  ✅ 25s   Port conflict
+  2026-02-09 23:42  Level 3  ✅ 45s   Config error
+  2026-02-09 14:20  Level 1  ✅  3s   Process crash
+```
+
 ## 📚 Documentation
 
 - [Quick Start Guide](docs/QUICKSTART.md) — 5-minute installation
