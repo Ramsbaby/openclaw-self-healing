@@ -18,7 +18,7 @@ A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://git
   <a href="#-quick-start">🚀 Quick Start</a> •
   <a href="#%EF%B8%8F-architecture">🏗️ Architecture</a> •
   <a href="#-one-click-install-recommended">📦 Install</a> •
-  <a href="#-troubleshooting">🐛 Troubleshooting</a> •
+  <a href="#-testing">🧪 Testing</a> •
   <a href="#-stats--growth">📊 Stats</a>
 </p>
 
