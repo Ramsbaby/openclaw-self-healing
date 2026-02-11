@@ -22,8 +22,9 @@ logs/
 *.temp
 /tmp/
 
-# Lock files (runtime)
-*.lock
+# Runtime lock files
+/tmp/*.lock
+*.pid
 
 # Personal workspace files
 memory/

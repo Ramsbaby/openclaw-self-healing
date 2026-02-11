@@ -4,7 +4,7 @@
 
 A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://github.com/openclaw/openclaw) Gateway, featuring AI-powered diagnosis and repair via Claude Code.
 
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases)
+[![Version](https://img.shields.io/badge/version-2.1.1-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases)
 [![ShellCheck](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/shellcheck.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform: macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
@@ -488,10 +488,10 @@ MIT License — See [LICENSE](LICENSE) for details.
 
 ### Project Stats
 
-- **Lines of Code:** ~300 (bash)
+- **Lines of Code:** ~900 (bash scripts)
 - **Testing Status:** All 4 levels verified ✅ (Feb 2026)
-- **Recovery Success Rate:** 94% (Level 1-3 combined)
-- **Human Interventions:** 2/month (Level 4 alerts)
+- **Recovery Success Rate:** 90%+ (production-tested)
+- **Human Interventions:** 2-3/month (Level 4 alerts)
 
 ---
 

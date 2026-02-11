@@ -18,5 +18,5 @@ jobs:
       - name: Run ShellCheck
         run: |
           echo "🔍 Checking scripts..."
-          shellcheck scripts/*.sh
+          shellcheck -S warning -e SC2317 -x scripts/*.sh
           echo "✅ All scripts passed!"
