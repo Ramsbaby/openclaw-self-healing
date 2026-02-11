@@ -11,6 +11,35 @@ A production-ready, 4-tier autonomous recovery system for [OpenClaw](https://git
 [![Platform: Linux](https://img.shields.io/badge/Platform-Linux-orange.svg)](docs/LINUX_SETUP.md)
 [![OpenClaw: v0.x](https://img.shields.io/badge/OpenClaw-v0.x-green.svg)](https://openclaw.ai/)
 [![GitHub stars](https://img.shields.io/github/stars/Ramsbaby/openclaw-self-healing?style=social)](https://github.com/Ramsbaby/openclaw-self-healing/stargazers)
+![Last commit](https://img.shields.io/github/last-commit/Ramsbaby/openclaw-self-healing)
+![Code size](https://img.shields.io/github/languages/code-size/Ramsbaby/openclaw-self-healing)
+
+<p align="center">
+  <a href="#-quick-start">🚀 Quick Start</a> •
+  <a href="#%EF%B8%8F-architecture">🏗️ Architecture</a> •
+  <a href="#-one-click-install-recommended">📦 Install</a> •
+  <a href="#-troubleshooting">🐛 Troubleshooting</a> •
+  <a href="#-stats--growth">📊 Stats</a>
+</p>
+
+---
+
+## 🚀 Quick Start
+
+**Get self-healing in 60 seconds:**
+
+```bash
+# One-line install
+curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash
+
+# Optional: Configure Discord alerts
+cp .env.example .env && nano .env
+```
+
+**What you get:**
+✅ Auto-restart on crash • ✅ Health monitoring • ✅ AI diagnosis • ✅ Discord alerts
+
+**Next:** [Test](#-testing) • [Configure](#%EF%B8%8F-configuration) • [Docs](#-documentation)
 
 ---
 
@@ -440,7 +469,24 @@ MIT License — See [LICENSE](LICENSE) for details.
 
 ---
 
-## 📊 Stats
+## 📊 Stats & Growth
+
+### Repository Metrics
+
+| Metric | Total | Unique | Status |
+|--------|-------|--------|--------|
+| ⭐ Stars | 12 | - | Growing daily |
+| 📦 Clones | **631** | 212 | **High adoption!** 🔥 |
+| 👀 Views | 348 | 195 | Cross-platform interest |
+| 🍴 Forks | 1 | - | Contributions welcome |
+
+### Traffic Chart (Last 14 Days)
+
+![Traffic Stats](assets/traffic-chart.png)
+
+*Auto-updated daily • Last: 2026-02-11*
+
+### Project Stats
 
 - **Lines of Code:** ~300 (bash)
 - **Testing Status:** All 4 levels verified ✅ (Feb 2026)

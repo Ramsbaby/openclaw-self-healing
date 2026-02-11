@@ -24,3 +24,28 @@ logs/
 
 # Lock files (runtime)
 *.lock
+
+# Personal workspace files
+memory/
+SESSION-STATE.md
+discord-setup.md
+AGENTS.md
+SOUL.md
+IDENTITY.md
+HEARTBEAT.md
+MEMORY.md
+TOOLS.md
+USER.md
+
+# Git backups
+.git.backup-*/
+
+# Demo files (local only)
+*.cast
+demo-script.sh
+demo.tape
+
+# Test files (local only)
+check-price-now.js
+test-*.js
+test-*.py

@@ -1,0 +1,35 @@
+name: Update Traffic Chart
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at 00:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update-chart:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: pip install matplotlib requests
+      
+      - name: Generate chart
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/generate-traffic-chart.py
+      
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/traffic-chart.png traffic-stats.json
+          git diff --quiet && git diff --staged --quiet || \
+            (git commit -m "chore: update traffic chart [skip ci]" && git push)
