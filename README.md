@@ -62,6 +62,10 @@ When all else fails, **Claude Code acts as an autonomous emergency doctor**:
 
 ## 🎬 How It Works
 
+![Self-Healing Demo](https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/assets/demo.gif)
+
+*4-tier recovery in action: Watchdog → Health Check → AI Doctor → Alert*
+
 ### 4-Tier Autonomous Recovery
 
 ```mermaid
@@ -422,13 +426,29 @@ Thanks to these amazing people:
 
 ---
 
+## 📊 Repository Traffic
+
+**Stats (2026-02-13):**
+- ⭐ **14 stars** · 🍴 **1 fork** · 👀 **1 watcher** · 📋 **2 open issues**
+- 👁️ **382 views** (219 unique) · 📥 **688 clones** (235 unique)
+
+| Date | Views | Unique | Clones | Unique |
+|------|-------|--------|--------|--------|
+| 2/6 (Launch) | 100 | 49 | 130 | 67 |
+| 2/7 | 70 | 52 | 45 | 27 |
+| 2/8 | 35 | 21 | 45 | 25 |
+| 2/9 (Marketing) | 51 | 45 | 108 | 52 |
+| 2/10 | 92 | 47 | 303 | 77 |
+| 2/11 | 34 | 26 | 57 | 32 |
+| **Total** | **382** | **219** | **688** | **235** |
+
 ## ⭐ Star History
 
 <a href="https://star-history.com/#ramsbaby/openclaw-self-healing&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ramsbaby/openclaw-self-healing&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ramsbaby/openclaw-self-healing&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ramsbaby/openclaw-self-healing&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ramsbaby/openclaw-self-healing&type=Date&theme=dark&v=20260213" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ramsbaby/openclaw-self-healing&type=Date&v=20260213" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ramsbaby/openclaw-self-healing&type=Date&v=20260213" />
   </picture>
 </a>
 
