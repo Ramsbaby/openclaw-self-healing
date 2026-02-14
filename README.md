@@ -2,6 +2,12 @@
 
 # 🦞 OpenClaw Self-Healing System
 
+![Self-Healing Demo](https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/assets/demo.gif)
+
+*4-tier recovery in action: Watchdog → Health Check → AI Doctor → Alert*
+
+<br/>
+
 ### *Autonomous AI-Powered Recovery for Production Services*
 
 **Stop getting paged at 3 AM. Let AI fix your crashes automatically.**
@@ -14,12 +20,6 @@
 [![Recovery Rate](https://img.shields.io/badge/recovery%20rate-99%25-green.svg)](docs/self-healing-system.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Platform: macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
-
-<br/>
-
-![Self-Healing Demo](https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/assets/demo.gif)
-
-*4-tier recovery in action: Watchdog → Health Check → AI Doctor → Alert*
 
 </div>
 
