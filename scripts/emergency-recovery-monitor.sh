@@ -24,8 +24,12 @@ elif [ -f "$HOME/.openclaw/.env" ]; then
   source "$HOME/.openclaw/.env"
 fi
 
-# Discord webhook from environment variable (optional)
-DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
+# ============================================
+# Load notification library
+# ============================================
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/notify.sh
+source "$SCRIPT_DIR/lib/notify.sh"
 
 # Secure temp file
 ALERT_TMP=$(mktemp -t emergency-alert.XXXXXX)
@@ -74,7 +78,7 @@ send_alert() {
   local timestamp
   timestamp=$(basename "$latest_log" | sed 's/emergency-recovery-//;s/.log//')
   
-  # Discord 알림 메시지 생성
+  # Alert message (same format for all channels)
   cat > "$ALERT_TMP" << EOF
 🚨 **긴급: OpenClaw 자가복구 실패**
 
@@ -101,26 +105,11 @@ EOF
   local alert_msg
   alert_msg=$(cat "$ALERT_TMP")
   
-  # Discord 직접 호출 (webhook 있을 경우)
-  if [ -n "$DISCORD_WEBHOOK" ]; then
-    local response_code
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
-      -X POST "$DISCORD_WEBHOOK" \
-      -H "Content-Type: application/json" \
-      -d "{\"content\": \"$alert_msg\"}" \
-      2>&1 || echo "000")
-    
-    if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
-      log "✅ Discord notification sent (HTTP $response_code)"
-    else
-      log "⚠️ Discord notification failed (HTTP $response_code), falling back to stdout"
-      cat "$ALERT_TMP"
-    fi
-  else
-    # Webhook 없으면 stdout 출력 (크론이 message tool로 전달)
-    log "INFO: DISCORD_WEBHOOK_URL not set, printing to stdout"
+  # Use notification library
+  send_notification "$alert_msg" || {
+    log "⚠️ All notification channels failed, printing to stdout"
     cat "$ALERT_TMP"
-  fi
+  }
 }
 
 # ============================================

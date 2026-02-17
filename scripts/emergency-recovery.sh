@@ -62,12 +62,12 @@ elif [ -f "$HOME/.openclaw/.env" ]; then
   source "$HOME/.openclaw/.env"
 fi
 
-# Discord webhook from environment variable (optional)
-DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
-
-if [ -z "$DISCORD_WEBHOOK" ]; then
-  echo "INFO: DISCORD_WEBHOOK_URL not set. Notifications disabled."
-fi
+# ============================================
+# Load notification library
+# ============================================
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/notify.sh
+source "$SCRIPT_DIR/lib/notify.sh"
 
 # ============================================
 # Functions
@@ -75,24 +75,6 @@ fi
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
-}
-
-send_discord_notification() {
-  local message="$1"
-  if [ -n "$DISCORD_WEBHOOK" ]; then
-    local response_code
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
-      -X POST "$DISCORD_WEBHOOK" \
-      -H "Content-Type: application/json" \
-      -d "{\"content\": \"$message\"}" \
-      2>&1 || echo "000")
-    
-    if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
-      log "✅ Discord notification sent (HTTP $response_code)"
-    else
-      log "⚠️ Discord notification failed (HTTP $response_code)"
-    fi
-  fi
 }
 
 check_dependencies() {
@@ -112,7 +94,7 @@ check_dependencies() {
     if [[ "$(uname -s)" == "Linux" ]]; then
       install_hint="apt/dnf/pacman install"
     fi
-    send_discord_notification "🚨 **Level 3 Emergency Recovery 실패**\n\n필수 의존성이 설치되지 않았습니다:\n- ${missing_deps[*]}\n\n설치 방법:\n\`\`\`bash\n$install_hint ${missing_deps[*]}\n\`\`\`"
+    send_notification "🚨 **Level 3 Emergency Recovery 실패**\n\n필수 의존성이 설치되지 않았습니다:\n- ${missing_deps[*]}\n\n설치 방법:\n\`\`\`bash\n$install_hint ${missing_deps[*]}\n\`\`\`"
     return 1
   fi
   
@@ -221,7 +203,7 @@ main() {
   
   if ! tmux new-session -d -s "$TMUX_SESSION" "claude" 2>> "$LOG_FILE"; then
     log "❌ Failed to start tmux session"
-    send_discord_notification "🚨 **Level 3 실패**\n\ntmux 세션 시작 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
+    send_notification "🚨 **Level 3 실패**\n\ntmux 세션 시작 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
     record_metric "emergency_recovery" "tmux_failed" 0
     exit 1
   fi
@@ -258,7 +240,7 @@ main() {
   if ! tmux send-keys -t "$TMUX_SESSION" "$recovery_command" C-m 2>> "$LOG_FILE"; then
     log "❌ Failed to send command to Claude"
     cleanup_tmux_session "$TMUX_SESSION"
-    send_discord_notification "🚨 **Level 3 실패**\n\nClaude 명령 전송 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
+    send_notification "🚨 **Level 3 실패**\n\nClaude 명령 전송 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
     record_metric "emergency_recovery" "command_failed" 0
     exit 1
   fi
@@ -323,7 +305,7 @@ main() {
   local SUCCESS="unknown"
   
   if ! check_claude_quota "$SESSION_LOG"; then
-    send_discord_notification "⚠️ **Level 3 Emergency Recovery 실패**\n\nClaude API 할당량 소진 또는 속도 제한.\n\n다음 단계:\n1. Claude 할당량 확인: \`claude\` → \`/usage\`\n2. 수동 복구 시도\n\n세션 로그: \`$SESSION_LOG\`"
+    send_notification "⚠️ **Level 3 Emergency Recovery 실패**\n\nClaude API 할당량 소진 또는 속도 제한.\n\n다음 단계:\n1. Claude 할당량 확인: \`claude\` → \`/usage\`\n2. 수동 복구 시도\n\n세션 로그: \`$SESSION_LOG\`"
     SUCCESS="false"
   fi
   
@@ -355,7 +337,7 @@ main() {
   
   if [ "$SUCCESS" = "true" ]; then
     log "✅ Sending success notification to Discord..."
-    send_discord_notification "✅ **Level 3 Emergency Recovery 성공!**\n\nGateway가 Claude에 의해 복구되었습니다.\n- 복구 시간: ${total_time}초\n- HTTP 상태: $http_code\n- 로그: \`$LOG_FILE\`\n- Claude 세션: \`$SESSION_LOG\`"
+    send_notification "✅ **Level 3 Emergency Recovery 성공!**\n\nGateway가 Claude에 의해 복구되었습니다.\n- 복구 시간: ${total_time}초\n- HTTP 상태: $http_code\n- 로그: \`$LOG_FILE\`\n- Claude 세션: \`$SESSION_LOG\`"
     exit 0
   else
     log "🚨 Sending failure notification to Discord..."
@@ -363,7 +345,7 @@ main() {
     local failure_msg
     failure_msg="🚨 **Level 3 Emergency Recovery 실패!**\n\n**모든 자동 복구 시스템이 실패했습니다:**\n- Level 1 (Watchdog): ❌\n- Level 2 (Health Check): ❌\n- Level 3 (Claude Recovery): ❌\n\n**수동 개입 필요**\n- HTTP 상태: $http_code\n- 복구 시간: ${total_time}초\n- 로그: \`$LOG_FILE\`\n- Claude 세션: \`$SESSION_LOG\`\n- 복구 리포트: \`$REPORT_FILE\` (Claude가 생성했을 경우)"
 
-    send_discord_notification "$failure_msg"
+    send_notification "$failure_msg"
 
     # 로그에도 기록
     cat >> "$LOG_FILE" << EOF
