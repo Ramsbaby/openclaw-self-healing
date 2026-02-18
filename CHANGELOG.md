@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.0.0] - 2026-02-18
+
+### Added
+- **Self-Optimization**: AGENTS.md 자동 분석 및 개선안 제안 (self-evolving 흡수)
+  - 주 1회 로그 분석 → 패턴 감지 → 개선안 자동 생성
+  - 사용자 승인 필수 워크플로우 (비파괴적 개선 보장)
+  - AI가 스스로 운영 패턴을 학습하고 최적화 제안
+
+### Changed
+- **README 전면 개선**: 496줄 → 250줄 이내로 간결화
+  - 과대광고 배지 제거 (9.9/10, 99% recovery rate 수치 배지 삭제)
+  - mermaid 다이어그램 → 텍스트 기반 ASCII 다이어그램으로 교체 (GitHub 렌더링 호환성 향상)
+
+### Fixed
+- **Telegram notification support** (PR [#5](https://github.com/Ramsbaby/openclaw-self-healing/pull/5) by [@AbhiWisdom](https://github.com/AbhiWisdom))
+  - `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` 환경변수 설정으로 활성화
+  - Discord와 동시 알림 지원
+
+---
+
 ## [2.1.0] - 2026-02-09
 
 ### Added
@@ -163,6 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Production-tested (verified recovery Feb 5, 2026)
 - World's first Claude Code as emergency doctor
 
+[3.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v2.1.0...v3.0.0
 [2.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.4...v2.0.0
 [1.3.4]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.0...v1.3.4
 [1.3.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.2.2...v1.3.0

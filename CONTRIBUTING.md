@@ -4,6 +4,68 @@
 
 ---
 
+## 🟢 Good First Issues
+
+**New to this project? Start here!**
+
+These are beginner-friendly tasks that don't require deep system knowledge:
+
+| Issue | Difficulty | Skills Needed |
+|-------|-----------|---------------|
+| Add Slack notification support | Easy | Bash, curl |
+| Improve error messages in `gateway-healthcheck.sh` | Easy | Bash |
+| Write a one-page architecture diagram | Easy | Markdown/ASCII |
+| Add `--dry-run` flag to install scripts | Medium | Bash |
+| Linux systemd unit file equivalent | Medium | systemd, Bash |
+| Docker Compose example | Medium | Docker |
+| Grafana dashboard JSON | Medium | JSON, Grafana |
+
+👉 Browse open issues labeled [`good first issue`](https://github.com/ramsbaby/openclaw-self-healing/labels/good%20first%20issue) and [`help wanted`](https://github.com/ramsbaby/openclaw-self-healing/labels/help%20wanted).
+
+---
+
+## 🗂️ Code Structure
+
+Quick orientation to the repository:
+
+```
+openclaw-self-healing/
+├── install.sh                    # One-line installer (entry point)
+├── install-linux.sh              # Linux-specific installer
+├── SKILL.md                      # OpenClaw skill descriptor
+│
+├── scripts/                      # Core self-healing scripts
+│   ├── gateway-watchdog.sh       # Level 1-2: PID + HTTP monitoring
+│   ├── gateway-healthcheck.sh    # Level 2: HTTP health check + retries
+│   ├── emergency-recovery.sh     # Level 3: Claude AI autonomous recovery
+│   ├── emergency-recovery-v2.sh  # Level 3 v2: with learning/reasoning logs
+│   ├── emergency-recovery-monitor.sh  # Daemon wrapper for emergency recovery
+│   ├── metrics-dashboard.sh      # Recovery statistics visualizer
+│   ├── test-all.sh               # Integration test runner
+│   └── lib/                      # Shared utility functions
+│
+├── launchagent/                  # macOS LaunchAgent plist files
+│   └── *.plist                   # Daemon definitions (watchdog, healthcheck, guardian)
+│
+├── systemd/                      # Linux systemd unit files (beta)
+│   └── *.service
+│
+├── docs/                         # Extended documentation
+│   ├── QUICKSTART.md             # 5-minute setup guide
+│   ├── TROUBLESHOOTING.md        # Common issues & fixes
+│   └── LINUX_SETUP.md            # Linux-specific setup
+│
+└── assets/                       # Images, GIFs for README
+    └── demo.gif
+```
+
+**Key files to understand first:**
+1. `scripts/gateway-watchdog.sh` — The main loop that monitors everything
+2. `scripts/emergency-recovery.sh` — How Claude AI gets invoked for diagnosis
+3. `install.sh` — How the system gets deployed
+
+---
+
 ## 🌟 Ways to Contribute
 
 ### 1. **Bug Reports** 🐛
@@ -181,6 +243,8 @@ git push origin feature/your-feature-name
 ### 5. Open Pull Request
 
 Go to GitHub and click "New Pull Request".
+
+> 💡 **Shortcut:** Use our [PR template directly](https://github.com/ramsbaby/openclaw-self-healing/compare?template=pull_request_template.md) to pre-fill the checklist.
 
 **PR Template:**
 
