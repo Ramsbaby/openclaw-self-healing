@@ -10,10 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0] - 2026-02-18
 
 ### Added
-- **Self-Optimization**: AGENTS.md 자동 분석 및 개선안 제안 (self-evolving 흡수)
-  - 주 1회 로그 분석 → 패턴 감지 → 개선안 자동 생성
-  - 사용자 승인 필수 워크플로우 (비파괴적 개선 보장)
-  - AI가 스스로 운영 패턴을 학습하고 최적화 제안
+- **Self-Optimization feature moved to separate project: openclaw-self-evolving**
+  - See: https://github.com/Ramsbaby/openclaw-self-evolving
 
 ### Changed
 - **README 전면 개선**: 496줄 → 250줄 이내로 간결화

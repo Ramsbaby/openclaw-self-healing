@@ -77,6 +77,14 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:18789/
 
 ---
 
+## 🧠 Want Self-Optimization Too?
+
+Your agent survives crashes — but can it also improve itself?
+
+→ **[openclaw-self-evolving](https://github.com/Ramsbaby/openclaw-self-evolving)** — Weekly log analysis → AGENTS.md improvement proposals. Pairs perfectly with self-healing.
+
+---
+
 ## How It Works
 
 | Tier | Trigger | Action | Typical Recovery |
@@ -89,29 +97,6 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:18789/
 **Crash loop guard:** Watchdog stops escalating after 5 consecutive failures — no infinite restart storms.
 
 Architecture deep-dive: [docs/architecture.md](docs/architecture.md)
-
----
-
-## NEW in v3.0: Self-Optimization
-
-> "Now it optimizes its own configuration, too."
-
-The previous **Self-Evolving Agent** concept is fully integrated as a weekly background task:
-
-1. **Analyze** — Reads `AGENTS.md`, recent logs, and recovery reports once a week
-2. **Propose** — Generates a diff with suggested threshold / config improvements
-3. **Review** — Posts the proposal to Discord for your approval
-4. **Apply** — Makes changes **only after you explicitly confirm** (never automatic)
-
-This means the system can suggest "your memory threshold is too low — 70% of your Level 2 recoveries are false positives" and show you the exact config change. You decide.
-
-**No silent self-modification. Ever.**
-
-```bash
-# Manual trigger (or runs automatically every Sunday 02:00)
-bash scripts/self-optimize.sh --dry-run   # preview
-bash scripts/self-optimize.sh             # submit proposal for approval
-```
 
 ---
 
@@ -137,7 +122,6 @@ Full reference: [docs/configuration.md](docs/configuration.md)
 |---|---|---|---|
 | Instant restart | ✅ | ✅ | ✅ |
 | Root-cause diagnosis | ✅ AI-powered | ❌ | ❌ |
-| Self-optimizing config | ✅ v3.0 | ❌ | ❌ |
 | macOS LaunchAgent support | ✅ | ❌ | ❌ |
 | Zero-dependency core | ✅ (bash + jq) | ✅ | ❌ |
 | Crash loop guard | ✅ | ❌ | ✅ |
@@ -177,13 +161,4 @@ MIT — see [LICENSE](LICENSE). No warranty, no guarantees.
 
 ---
 
-<!-- SEO Keywords -->
-<!--
-self-healing, auto-recovery, crash recovery, AI ops, DevOps automation,
-OpenClaw, Claude, agent reliability, production monitoring,
-autonomous recovery, self-healing infrastructure, AI-powered ops,
-gateway watchdog, process monitoring, uptime automation,
-macOS service management, LaunchAgent automation, bash automation,
-Claude Code, Anthropic, LLM ops, AI agent reliability,
-homelab automation, self-hosted AI, production AI assistant
--->
+<!-- SEO: self-healing, auto-recovery, crash recovery, AI ops, OpenClaw, Claude, gateway watchdog, macOS LaunchAgent, bash automation, LLM ops, production AI assistant -->
