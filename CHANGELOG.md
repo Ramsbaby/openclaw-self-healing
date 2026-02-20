@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.0] - 2026-02-20
+
+### Fixed
+- **`gateway-healthcheck.sh` — HTTP 200 pre-check before restart** (실운영 발견 버그)
+  - `restart_gateway()` 함수가 `openclaw gateway restart` 호출 전 HTTP 상태를 먼저 확인하지 않았음
+  - SIGUSR1 graceful reload 후 launchd에 PID가 없어도 child process는 살아있는 경우,
+    불필요한 restart → "already running" exit 1 → 무한루프 발생
+  - 수정: restart 전 HTTP GET → 200이면 "already healthy" 처리, restart 스킵
+- **`gateway-watchdog.sh` — 공개 레포에 누락** (실운영 발견 버그)
+  - CONTRIBUTING.md 등에 참조되어 있으나 실제 파일이 없었음
+  - v4 기준 (Healing Rate Limiter, Exponential Backoff, Crash Decay) 추가
+  - launchd PID 없어도 HTTP 200이면 재시작 스킵하는 로직 포함 (v4.1 패치)
+- **`com.openclaw.healthcheck.plist` — ThrottleInterval 누락** (실운영 발견 버그)
+  - `ThrottleInterval` 없으면 launchd가 연속 실패 시 빠르게 재실행해 복구 budget 소모
+  - 수정: `ThrottleInterval` 60초 추가
+
+### Added
+- `scripts/gateway-watchdog.sh` — v4 Watchdog 공개 레포에 정식 추가
+
+---
+
 ## [3.0.0] - 2026-02-18
 
 ### Added

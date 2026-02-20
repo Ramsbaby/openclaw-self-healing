@@ -80,19 +80,34 @@ check_http() {
 }
 
 restart_gateway() {
-  log "Restarting OpenClaw Gateway..."
-  
+  # Bug fix (v2.2.0): Check HTTP 200 BEFORE calling restart.
+  # SIGUSR1 graceful reload keeps a child process alive while launchd shows no PID.
+  # Calling 'openclaw gateway restart' in that state hits "already running" and exits 1
+  # → infinite restart loop. Skip restart if gateway is already healthy.
+  local pre_check_code
+  pre_check_code=$(curl -s -o /dev/null -w "%{http_code}" \
+    --max-time "$HTTP_TIMEOUT" \
+    "$GATEWAY_URL" 2>/dev/null || echo "000")
+
+  if [ "$pre_check_code" = "200" ]; then
+    log "Pre-restart HTTP check: 200 — gateway already healthy (SIGUSR1 child alive), skipping restart"
+    record_metric "gateway_restart" "skipped_healthy" 0
+    return 0
+  fi
+
+  log "Restarting OpenClaw Gateway... (pre-check: HTTP $pre_check_code)"
+
   local start_time
   start_time=$(date +%s)
-  
+
   if openclaw gateway restart >> "$LOG_FILE" 2>&1; then
     local end_time
     end_time=$(date +%s)
     local restart_time=$((end_time - start_time))
-    
+
     log "Gateway restart completed (${restart_time}s)"
     record_metric "gateway_restart" "success" "$restart_time"
-    
+
     sleep "$RETRY_DELAY"
     return 0
   else
