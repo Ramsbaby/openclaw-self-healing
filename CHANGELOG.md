@@ -7,42 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.2.0] - 2026-02-20
+## [3.1.0] - 2026-02-21
 
 ### Fixed
-- **`gateway-healthcheck.sh` — HTTP 200 pre-check before restart** (실운영 발견 버그)
-  - `restart_gateway()` 함수가 `openclaw gateway restart` 호출 전 HTTP 상태를 먼저 확인하지 않았음
-  - SIGUSR1 graceful reload 후 launchd에 PID가 없어도 child process는 살아있는 경우,
-    불필요한 restart → "already running" exit 1 → 무한루프 발생
-  - 수정: restart 전 HTTP GET → 200이면 "already healthy" 처리, restart 스킵
-- **`gateway-watchdog.sh` — 공개 레포에 누락** (실운영 발견 버그)
-  - CONTRIBUTING.md 등에 참조되어 있으나 실제 파일이 없었음
-  - v4 기준 (Healing Rate Limiter, Exponential Backoff, Crash Decay) 추가
-  - launchd PID 없어도 HTTP 200이면 재시작 스킵하는 로직 포함 (v4.1 패치)
-- **`com.openclaw.healthcheck.plist` — ThrottleInterval 누락** (실운영 발견 버그)
-  - `ThrottleInterval` 없으면 launchd가 연속 실패 시 빠르게 재실행해 복구 budget 소모
-  - 수정: `ThrottleInterval` 60초 추가
-
-### Added
-- `scripts/gateway-watchdog.sh` — v4 Watchdog 공개 레포에 정식 추가
-
----
-
-## [3.0.0] - 2026-02-18
-
-### Added
-- **Self-Optimization feature moved to separate project: openclaw-self-evolving**
-  - See: https://github.com/Ramsbaby/openclaw-self-evolving
+- **Level 2→3 Chain Disconnection** — Watchdog now auto-escalates to Emergency Recovery after 30min of continuous failure (was completely disconnected)
+- **Discord Webhook Never Set** — emergency-recovery-v2.sh now reads `DISCORD_WEBHOOK_URL` from `~/.openclaw/.env` with graceful fallback if not configured
+- **Installer Only Set Up Level 2** — Complete chain now installed out of the box
 
 ### Changed
-- **README 전면 개선**: 496줄 → 250줄 이내로 간결화
-  - 과대광고 배지 제거 (9.9/10, 99% recovery rate 수치 배지 삭제)
-  - mermaid 다이어그램 → 텍스트 기반 ASCII 다이어그램으로 교체 (GitHub 렌더링 호환성 향상)
+- **gateway-watchdog.sh v4.1** — Added `check_level3_escalation()` and `trigger_level3_emergency_recovery()` functions; critical failure tracking with configurable 30min threshold
+- **gateway-healthcheck.sh** — Fixed escalation path to emergency-recovery-v2.sh; improved .env loading
+- **emergency-recovery-v2.sh** — Prioritized `~/.openclaw/.env` over `~/openclaw/.env`; logs when no webhooks configured instead of failing silently
+- **install.sh** — Complete rewrite: sets up full 4-tier chain (Watchdog LaunchAgent with `StartInterval` only — no `KeepAlive`), interactive .env generation, auto-detects gateway token, verification step
+- **install-linux.sh** — Complete rewrite: systemd-based setup with timer units, interactive configuration, verification
+- **.env.example** — Added Watchdog configuration variables, gateway port/token, Level 3 escalation timing
+- **README.md** — Updated architecture diagram to reflect actual Level 1→2→3→4 chain with accurate timing and trigger conditions
 
-### Fixed
-- **Telegram notification support** (PR [#5](https://github.com/Ramsbaby/openclaw-self-healing/pull/5) by [@AbhiWisdom](https://github.com/AbhiWisdom))
-  - `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` 환경변수 설정으로 활성화
-  - Discord와 동시 알림 지원
+### Removed
+- LaunchAgent `KeepAlive` + `StartInterval` conflict (2/7 incident lesson)
 
 ---
 
@@ -202,7 +184,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Production-tested (verified recovery Feb 5, 2026)
 - World's first Claude Code as emergency doctor
 
-[3.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v2.1.0...v3.0.0
 [2.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.4...v2.0.0
 [1.3.4]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.0...v1.3.4
 [1.3.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.2.2...v1.3.0

@@ -1,5 +1,10 @@
 #!/bin/bash
-# Gateway Watchdog v4 - Self-Healing 강화
+# Gateway Watchdog v4.1 - Level 3 Escalation 추가
+#
+# v4.1 개선사항:
+# - Level 3 Emergency Recovery 자동 트리거 (30분 연속 실패 시)
+# - Critical failure 추적 및 자동 escalation
+# - Emergency Recovery v2 연동
 #
 # v4 개선사항:
 # - 크래시 카운터 자동 감쇠 (6시간 후 리셋, 정상 시 1씩 감소)
@@ -28,6 +33,8 @@ ALERT_FILE="$STATE_DIR/pending-alert"
 RECOVERY_START_FILE="$STATE_DIR/recovery-start"
 HEALING_LOCK="/tmp/openclaw-healing.lock"
 ALERT_SCRIPT="$HOME/.openclaw/scripts/alert.sh"
+CRITICAL_FAILURE_FILE="$STATE_DIR/critical-failure-since"
+EMERGENCY_RECOVERY_SCRIPT="$HOME/.openclaw/skills/openclaw-self-healing/scripts/emergency-recovery-v2.sh"
 
 # 설정값
 HEALTH_TIMEOUT=5              # HTTP 요청 타임아웃 (초)
@@ -35,6 +42,7 @@ MAX_TOTAL_RETRIES=6           # 최대 총 재시작 시도 횟수
 CRASH_DECAY_HOURS=6           # 크래시 카운터 자동 리셋 시간
 MEMORY_WARN_MB=1536           # 메모리 경고 임계치 (1.5GB)
 MEMORY_CRITICAL_MB=2048       # 메모리 위험 임계치 (2GB)
+ESCALATE_TO_L3_AFTER=1800     # Level 3 escalation 시간 (30분)
 
 # Exponential Backoff 설정 (초)
 BACKOFF_DELAYS=(10 30 90 180 300 600)
@@ -331,6 +339,68 @@ clear_alert() {
 }
 
 # ============================================================================
+# v4.1 신규: Level 3 Escalation
+# ============================================================================
+
+check_level3_escalation() {
+    local crash_count=$(get_crash_count)
+
+    # Level 3 escalation 조건: MAX_RETRIES 초과 + 30분 이상 지속
+    if [[ $crash_count -ge $MAX_TOTAL_RETRIES ]]; then
+        if [[ ! -f "$CRITICAL_FAILURE_FILE" ]]; then
+            # 처음 임계치 도달 - 타임스탬프 기록
+            date +%s > "$CRITICAL_FAILURE_FILE"
+            log "WARN" "Critical failure 시작 - Level 3 escalation 대기 중 (${ESCALATE_TO_L3_AFTER}초 후)"
+            return 1
+        fi
+
+        local failure_start=$(cat "$CRITICAL_FAILURE_FILE")
+        local now=$(date +%s)
+        local elapsed=$((now - failure_start))
+
+        if [[ $elapsed -ge $ESCALATE_TO_L3_AFTER ]]; then
+            log "CRITICAL" "Critical failure ${elapsed}초 지속 - Level 3 Emergency Recovery 트리거"
+            return 0
+        else
+            local remaining=$((ESCALATE_TO_L3_AFTER - elapsed))
+            log "INFO" "Critical failure ${elapsed}초 경과 (Level 3까지 ${remaining}초 남음)"
+            return 1
+        fi
+    else
+        # 정상 복구 시 critical failure 파일 삭제
+        rm -f "$CRITICAL_FAILURE_FILE"
+        return 1
+    fi
+}
+
+trigger_level3_emergency_recovery() {
+    log "CRITICAL" "========== ESCALATING TO LEVEL 3 (Emergency Recovery) =========="
+
+    send_alert "critical" "Level 3 Emergency Recovery 트리거" \
+        "Watchdog가 ${ESCALATE_TO_L3_AFTER}초 동안 복구 실패\nClaude AI 자동 진단 시작" \
+        "[{\"name\":\"재시도 횟수\",\"value\":\"$(get_crash_count)/${MAX_TOTAL_RETRIES}\",\"inline\":true},{\"name\":\"실패 지속\",\"value\":\"${ESCALATE_TO_L3_AFTER}초+\",\"inline\":true}]"
+
+    # Emergency recovery 스크립트 실행
+    if [[ -x "$EMERGENCY_RECOVERY_SCRIPT" ]]; then
+        if $DRY_RUN; then
+            log "DRY-RUN" "Level 3 스크립트 호출 (실제 실행 안 함): $EMERGENCY_RECOVERY_SCRIPT"
+        else
+            log "ACTION" "Level 3 스크립트 실행: $EMERGENCY_RECOVERY_SCRIPT"
+            bash "$EMERGENCY_RECOVERY_SCRIPT" >> "$LOG_FILE" 2>&1 &
+            log "INFO" "Level 3 Emergency Recovery 시작됨 (백그라운드)"
+
+            # Critical failure 파일 삭제 (재트리거 방지)
+            rm -f "$CRITICAL_FAILURE_FILE"
+        fi
+    else
+        log "ERROR" "Level 3 스크립트 없음: $EMERGENCY_RECOVERY_SCRIPT"
+        send_alert "critical" "Level 3 실행 실패" \
+            "Emergency recovery 스크립트를 찾을 수 없습니다\n수동 개입 필요" \
+            "[{\"name\":\"경로\",\"value\":\"$EMERGENCY_RECOVERY_SCRIPT\"}]"
+    fi
+}
+
+# ============================================================================
 # 재시작 요청
 # ============================================================================
 
@@ -391,23 +461,52 @@ pid_status=$(check_pid_status)
 log "INFO" "PID 상태: $pid_status"
 
 # 2. 프로세스가 없으면 처리
-# v4.1 패치: launchd PID 없어도 HTTP 200이면 SIGUSR1 재시작 child process가 살아있는 것
-# → HTTP 먼저 확인, 200이면 정상으로 간주 (재시작 스킵)
+# v4.2: CRASHED:signal_* 이어도 HTTP 200이면 child process 살아있는 것 → 스킵
+# 단, child orphan 방지: 90분 이상 signal_* 상태 지속 시 강제 재시작
+ORPHAN_TIMEOUT=5400  # 90분
+ORPHAN_SINCE_FILE="$STATE_DIR/crashed-signal-since"
 if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[ "$pid_status" == CRASHED:* ]]; then
-    # HTTP 체크 먼저
     _precheck_http=$(check_http_health)
     if [[ "$_precheck_http" == "OK" ]]; then
-        log "INFO" "launchd PID 없음(${pid_status})이나 HTTP 200 확인 — child process 정상 작동 중, 재시작 스킵"
-        log "INFO" "========== 체크 완료 =========="
-        exit 0
+        # CRASHED:signal_* 상태라면 orphan 타이머 기록/체크
+        if [[ "$pid_status" == CRASHED:signal_* ]]; then
+            if [[ ! -f "$ORPHAN_SINCE_FILE" ]]; then
+                date +%s > "$ORPHAN_SINCE_FILE"
+            fi
+            _orphan_since=$(cat "$ORPHAN_SINCE_FILE")
+            _orphan_elapsed=$(( $(date +%s) - _orphan_since ))
+            if [[ $_orphan_elapsed -ge $ORPHAN_TIMEOUT ]]; then
+                log "WARN" "Child orphan ${_orphan_elapsed}초 경과(>${ORPHAN_TIMEOUT}s) — 강제 재시작"
+                rm -f "$ORPHAN_SINCE_FILE"
+                # 아래 재시작 로직으로 진행
+            else
+                log "INFO" "launchd PID 없음(${pid_status})이나 HTTP 200 확인 — child process 정상 작동 중 (${_orphan_elapsed}s/${ORPHAN_TIMEOUT}s), 재시작 스킵"
+                log "INFO" "========== 체크 완료 =========="
+                exit 0
+            fi
+        else
+            rm -f "$ORPHAN_SINCE_FILE"
+            log "INFO" "launchd PID 없음(${pid_status})이나 HTTP 200 확인 — child process 정상 작동 중, 재시작 스킵"
+            log "INFO" "========== 체크 완료 =========="
+            exit 0
+        fi
+    else
+        rm -f "$ORPHAN_SINCE_FILE"
     fi
     log "WARN" "Gateway 프로세스 없음 (HTTP: ${_precheck_http})"
 
     crash_count=$(get_crash_count)
 
-    # 최대 재시도 횟수 초과 시 - v4: 시간 경과 후 자동 리셋되므로 계속 시도
+    # 최대 재시도 횟수 초과 시 - v4.1: Level 3 escalation 체크 추가
     if [[ $crash_count -ge $MAX_TOTAL_RETRIES ]]; then
         log "WARN" "재시도 횟수 높음 ($crash_count/$MAX_TOTAL_RETRIES) - Backoff 적용 중"
+
+        # v4.1: Level 3 escalation 체크
+        if check_level3_escalation; then
+            trigger_level3_emergency_recovery
+            log "INFO" "========== 체크 완료 (Level 3 트리거됨) =========="
+            exit 0
+        fi
 
         # v4: 안전 모드 대신 긴 backoff로 계속 시도
         if is_in_cooldown; then
@@ -471,6 +570,9 @@ if [[ "$http_status" == "OK" ]]; then
 
     # v4: 크래시 카운터 감쇠 (정상 시 1 감소)
     decrement_crash_count
+
+    # v4.1: Critical failure 상태 초기화
+    rm -f "$CRITICAL_FAILURE_FILE"
 
     log "INFO" "Gateway 정상 작동 중"
     log "INFO" "========== 체크 완료 =========="

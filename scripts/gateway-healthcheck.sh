@@ -19,12 +19,13 @@ HTTP_TIMEOUT="${HEALTH_CHECK_HTTP_TIMEOUT:-10}"
 METRICS_FILE="$LOG_DIR/.healthcheck-metrics.json"
 
 # Lock file로 중복 실행 방지
-LOCKDIR=/tmp/openclaw-healthcheck.lock
-if ! mkdir "$LOCKDIR" 2>/dev/null; then
+LOCKFILE=/tmp/openclaw-healthcheck.lock
+if [ -f "$LOCKFILE" ]; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Previous health check still running, skipping..."
   exit 0
 fi
-trap 'rm -rf "$LOCKDIR"' EXIT
+touch "$LOCKFILE"
+trap 'rm -f "$LOCKFILE"' EXIT
 
 # Create log directory if not exists
 mkdir -p "$LOG_DIR"
@@ -39,12 +40,13 @@ elif [ -f "$HOME/.openclaw/.env" ]; then
   source "$HOME/.openclaw/.env"
 fi
 
-# ============================================
-# Load notification library
-# ============================================
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=lib/notify.sh
-source "$SCRIPT_DIR/lib/notify.sh"
+# Discord webhook from environment variable (optional)
+DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
+
+# Validate webhook URL (optional, warning only)
+if [ -z "$DISCORD_WEBHOOK" ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: DISCORD_WEBHOOK_URL not set. Notifications disabled." | tee -a "$LOG_FILE"
+fi
 
 # ============================================
 # Functions
@@ -52,6 +54,24 @@ source "$SCRIPT_DIR/lib/notify.sh"
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
+}
+
+send_discord_notification() {
+  local message="$1"
+  if [ -n "$DISCORD_WEBHOOK" ]; then
+    local response_code
+    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
+      -X POST "$DISCORD_WEBHOOK" \
+      -H "Content-Type: application/json" \
+      -d "{\"content\": \"$message\"}" \
+      2>&1)
+    
+    if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
+      log "✅ Discord notification sent (HTTP $response_code)"
+    else
+      log "⚠️ Discord notification failed (HTTP $response_code)"
+    fi
+  fi
 }
 
 check_http() {
@@ -80,34 +100,19 @@ check_http() {
 }
 
 restart_gateway() {
-  # Bug fix (v2.2.0): Check HTTP 200 BEFORE calling restart.
-  # SIGUSR1 graceful reload keeps a child process alive while launchd shows no PID.
-  # Calling 'openclaw gateway restart' in that state hits "already running" and exits 1
-  # → infinite restart loop. Skip restart if gateway is already healthy.
-  local pre_check_code
-  pre_check_code=$(curl -s -o /dev/null -w "%{http_code}" \
-    --max-time "$HTTP_TIMEOUT" \
-    "$GATEWAY_URL" 2>/dev/null || echo "000")
-
-  if [ "$pre_check_code" = "200" ]; then
-    log "Pre-restart HTTP check: 200 — gateway already healthy (SIGUSR1 child alive), skipping restart"
-    record_metric "gateway_restart" "skipped_healthy" 0
-    return 0
-  fi
-
-  log "Restarting OpenClaw Gateway... (pre-check: HTTP $pre_check_code)"
-
+  log "Restarting OpenClaw Gateway..."
+  
   local start_time
   start_time=$(date +%s)
-
+  
   if openclaw gateway restart >> "$LOG_FILE" 2>&1; then
     local end_time
     end_time=$(date +%s)
     local restart_time=$((end_time - start_time))
-
+    
     log "Gateway restart completed (${restart_time}s)"
     record_metric "gateway_restart" "success" "$restart_time"
-
+    
     sleep "$RETRY_DELAY"
     return 0
   else
@@ -142,15 +147,17 @@ escalate_to_level3() {
   log "🚨 Still unhealthy after ${ESCALATION_WAIT}s, triggering emergency recovery..."
 
   # Discord 알림 (Level 3 시작)
-  send_notification "🚨 **Level 3 Emergency Recovery 시작**\n\n${ESCALATION_WAIT}초 대기 후에도 Gateway 복구 안 됨.\nClaude가 자동으로 진단 및 복구를 시도합니다.\n\n예상 소요 시간: 30분\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
+  send_discord_notification "🚨 **Level 3 Emergency Recovery 시작**\n\n${ESCALATION_WAIT}초 대기 후에도 Gateway 복구 안 됨.\nClaude가 자동으로 진단 및 복구를 시도합니다.\n\n예상 소요 시간: 30분\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
 
-  local emergency_script="$HOME/openclaw/scripts/emergency-recovery.sh"
-  
+  # v3.1: Updated to emergency-recovery-v2.sh
+  local emergency_script="$HOME/.openclaw/skills/openclaw-self-healing/scripts/emergency-recovery-v2.sh"
+
   if [ -f "$emergency_script" ]; then
-    bash "$emergency_script"
+    bash "$emergency_script" &
+    log "✅ Emergency recovery v2 started (background)"
   else
     log "❌ Emergency recovery script not found: $emergency_script"
-    send_notification "🚨 **Level 3 실행 실패**\n\nEmergency recovery script not found:\n\`$emergency_script\`\n\n수동 개입 필요."
+    send_discord_notification "🚨 **Level 3 실행 실패**\n\nEmergency recovery script not found:\n\`$emergency_script\`\n\n수동 개입 필요."
   fi
 }
 
@@ -176,7 +183,7 @@ main() {
         log "✅ Recovery successful on retry $i"
 
         # Discord 알림 (복구 성공)
-        send_notification "✅ **Gateway 복구 성공**\n\nLevel 2 Health Check가 Gateway를 재시작하여 복구했습니다.\n- 재시도 횟수: $i/$MAX_RETRIES\n- 현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
+        send_discord_notification "✅ **Gateway 복구 성공**\n\nLevel 2 Health Check가 Gateway를 재시작하여 복구했습니다.\n- 재시도 횟수: $i/$MAX_RETRIES\n- 현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
 
         record_metric "recovery" "success" "$i"
         exit 0
@@ -188,7 +195,7 @@ main() {
     record_metric "recovery" "failed" "$MAX_RETRIES"
 
     # Discord 알림 (Level 3로 escalation)
-    send_notification "⚠️ **Level 2 Health Check 실패**\n\nGateway를 ${MAX_RETRIES}회 재시작했으나 복구 실패.\n${ESCALATION_WAIT}초 후 Level 3 (Claude Emergency Recovery)로 escalation합니다.\n\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
+    send_discord_notification "⚠️ **Level 2 Health Check 실패**\n\nGateway를 ${MAX_RETRIES}회 재시작했으나 복구 실패.\n${ESCALATION_WAIT}초 후 Level 3 (Claude Emergency Recovery)로 escalation합니다.\n\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
 
     # 5분 대기 후 최종 검증
     sleep "$ESCALATION_WAIT"
@@ -199,7 +206,7 @@ main() {
       log "✅ Gateway recovered during waiting period"
 
       # Discord 알림 (대기 중 복구됨)
-      send_notification "✅ **Gateway 자동 복구됨**\n\n${ESCALATION_WAIT}초 대기 중 Gateway가 스스로 복구되었습니다.\nLevel 3 Emergency Recovery는 실행하지 않습니다."
+      send_discord_notification "✅ **Gateway 자동 복구됨**\n\n${ESCALATION_WAIT}초 대기 중 Gateway가 스스로 복구되었습니다.\nLevel 3 Emergency Recovery는 실행하지 않습니다."
       
       record_metric "recovery" "self_healed" 0
     fi
