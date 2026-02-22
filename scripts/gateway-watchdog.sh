@@ -1,5 +1,10 @@
 #!/bin/bash
-# Gateway Watchdog v4.1 - Level 3 Escalation 추가
+# Gateway Watchdog v4.2 - Config Auto-Fix 추가
+#
+# v4.2 개선사항:
+# - exit_1 연속 감지 시 openclaw doctor --fix 자동 실행 (config 스키마 불일치 자가복구)
+# - 버전 업데이트 후 invalid config로 인한 영구 마비 방지
+# - CONFIG_FIX_COUNTER로 중복 실행 방지 (최대 2회)
 #
 # v4.1 개선사항:
 # - Level 3 Emergency Recovery 자동 트리거 (30분 연속 실패 시)
@@ -35,6 +40,8 @@ HEALING_LOCK="/tmp/openclaw-healing.lock"
 ALERT_SCRIPT="$HOME/.openclaw/scripts/alert.sh"
 CRITICAL_FAILURE_FILE="$STATE_DIR/critical-failure-since"
 EMERGENCY_RECOVERY_SCRIPT="$HOME/.openclaw/skills/openclaw-self-healing/scripts/emergency-recovery-v2.sh"
+CONFIG_FIX_COUNTER_FILE="$STATE_DIR/config-fix-attempts"
+GATEWAY_ERR_LOG="$LOG_DIR/gateway.err.log"
 
 # 설정값
 HEALTH_TIMEOUT=5              # HTTP 요청 타임아웃 (초)
@@ -401,6 +408,75 @@ trigger_level3_emergency_recovery() {
 }
 
 # ============================================================================
+# v4.2 신규: Config 자동 수정 (exit_1 반복 시)
+# ============================================================================
+
+is_config_error() {
+    # gateway.err.log 마지막 50줄에서 config 오류 패턴 확인
+    if [[ ! -f "$GATEWAY_ERR_LOG" ]]; then
+        return 1
+    fi
+    tail -50 "$GATEWAY_ERR_LOG" | grep -q "Config invalid\|Unrecognized keys\|doctor --fix" 2>/dev/null
+}
+
+try_config_fix() {
+    local fix_count=0
+    if [[ -f "$CONFIG_FIX_COUNTER_FILE" ]]; then
+        fix_count=$(cat "$CONFIG_FIX_COUNTER_FILE")
+    fi
+
+    local MAX_CONFIG_FIX=2
+    if [[ $fix_count -ge $MAX_CONFIG_FIX ]]; then
+        log "WARN" "Config fix 이미 ${fix_count}회 시도 - 중복 실행 방지 (수동 확인 필요)"
+        return 1
+    fi
+
+    log "ACTION" "Config 오류 감지 - openclaw doctor --fix 실행 (${fix_count}/${MAX_CONFIG_FIX})"
+    echo $((fix_count + 1)) > "$CONFIG_FIX_COUNTER_FILE"
+
+    local doctor_out
+    if doctor_out=$(openclaw doctor --fix 2>&1); then
+        log "INFO" "doctor --fix 완료"
+    else
+        # doctor --fix가 non-zero 리턴해도 실제 수정은 됐을 수 있음
+        log "INFO" "doctor --fix 출력: ${doctor_out:0:200}"
+    fi
+
+    # config에서 직접 invalid key 제거 (doctor --fix가 실제 수정 안 할 경우 대비)
+    if is_config_error; then
+        log "ACTION" "doctor --fix 미적용 - Python으로 직접 invalid key 제거"
+        python3 -c "
+import json, sys
+try:
+    with open('$HOME/.openclaw/openclaw.json') as f:
+        c = json.load(f)
+    discord = c.get('channels', {}).get('discord', {})
+    removed = []
+    for key in ['streaming', 'statusReactions']:
+        if key in discord:
+            del discord[key]
+            removed.append(f'channels.discord.{key}')
+    with open('$HOME/.openclaw/openclaw.json', 'w') as f:
+        json.dump(c, f, indent=2, ensure_ascii=False)
+    print('removed:', removed)
+except Exception as e:
+    print('error:', e, file=sys.stderr)
+    sys.exit(1)
+" >> "$LOG_FILE" 2>&1 && log "INFO" "직접 제거 완료" || log "ERROR" "직접 제거 실패"
+    fi
+
+    send_alert "warning" "Config 자동 수정 실행" \
+        "exit_1 반복으로 config 오류 감지\nopclaw doctor --fix 자동 실행됨" \
+        "[{\"name\":\"시도 횟수\",\"value\":\"$((fix_count+1))/${MAX_CONFIG_FIX}\",\"inline\":true}]"
+
+    return 0
+}
+
+reset_config_fix_counter() {
+    rm -f "$CONFIG_FIX_COUNTER_FILE"
+}
+
+# ============================================================================
 # 재시작 요청
 # ============================================================================
 
@@ -519,6 +595,12 @@ if [[ "$pid_status" == "NOT_LOADED" ]] || [[ "$pid_status" == STOPPED:* ]] || [[
         fi
     fi
 
+    # v4.2: exit_1 감지 시 config 오류 자동 수정
+    if [[ "$pid_status" == "STOPPED:exit_1" ]] && is_config_error; then
+        log "WARN" "exit_1 + Config 오류 패턴 감지 - 자동 수정 시도"
+        try_config_fix
+    fi
+
     # 쿨다운 체크
     if is_in_cooldown; then
         log "INFO" "Backoff 쿨다운 중이므로 재시작 보류"
@@ -573,6 +655,9 @@ if [[ "$http_status" == "OK" ]]; then
 
     # v4.1: Critical failure 상태 초기화
     rm -f "$CRITICAL_FAILURE_FILE"
+
+    # v4.2: Config fix 카운터 리셋 (정상 복구 확인)
+    reset_config_fix_counter
 
     log "INFO" "Gateway 정상 작동 중"
     log "INFO" "========== 체크 완료 =========="
