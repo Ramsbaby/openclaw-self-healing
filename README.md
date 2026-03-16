@@ -180,7 +180,7 @@ Level 4: Human Alert 🚨
 ### Scripts Reference
 
 | Script | Level | Purpose |
-|--------|-------|---------|
+|--------|-------|---------| 
 | `scripts/gateway-preflight.sh` | 0 | Proactive config validation before service start |
 | `scripts/gateway-watchdog.sh` | 2 | Reactive recovery after crash detection |
 | `scripts/gateway-healthcheck.sh` | 2 | HTTP health polling + Level 3 escalation |
@@ -200,7 +200,7 @@ Level 4: Human Alert 🚨
 ### Previous: What v3.1 Fixed
 
 | Before v3.1 | After v3.1 |
-|-------------|-----------| 
+|-------------|-----------|
 | Manual LaunchAgent/systemd setup | `install.sh` does everything |
 | `.env` had to be created by hand | Interactive wizard generates it |
 | Level 2 → Level 3 was disconnected | Auto-triggers after 30 min |
@@ -241,9 +241,16 @@ Level 3 Claude access: OpenClaw config, gateway restart, log files — intention
 
 ---
 
-## 🧠 Companion: MemoryBox
+## 🌐 OpenClaw Ecosystem
 
-Self-Healing recovers from crashes. **[MemoryBox](https://github.com/Ramsbaby/openclaw-memorybox)** prevents the memory bloat that causes them. Both MIT licensed, both battle-tested on the same production instance.
+| Project | Role |
+|---------|------|
+| **[openclaw-self-healing](https://github.com/Ramsbaby/openclaw-self-healing)** ← you are here | 4-tier autonomous crash recovery |
+| **[openclaw-memorybox](https://github.com/Ramsbaby/openclaw-memorybox)** | Memory hygiene CLI — prevents the bloat that causes crashes |
+| **[openclaw-self-evolving](https://github.com/Ramsbaby/openclaw-self-evolving)** | AI agent that proposes its own AGENTS.md improvements |
+| **[claude-discord-bridge](https://github.com/Ramsbaby/claude-discord-bridge)** | Full AI company-in-a-box — where self-healing runs in production |
+
+All MIT licensed, all battle-tested on the same 24/7 production instance.
 
 ---
 
