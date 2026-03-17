@@ -25,7 +25,7 @@ set -euo pipefail
 # 설정
 # ============================================================================
 GATEWAY_PORT="${OPENCLAW_GATEWAY_PORT:-18789}"
-GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-}"
+export GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-}"
 LAUNCHD_SERVICE="ai.openclaw.gateway"
 LAUNCHD_PLIST="$HOME/Library/LaunchAgents/ai.openclaw.gateway.plist"
 LOG_DIR="$HOME/.openclaw/logs"
@@ -73,7 +73,7 @@ mkdir -p "$LOG_DIR"
 log() {
     local level="$1"
     local message="$2"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp; timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
     if $DRY_RUN; then
         echo "[$timestamp] [$level] $message"
@@ -86,11 +86,12 @@ log() {
 
 acquire_healing_lock() {
     if mkdir "$HEALING_LOCK" 2>/dev/null; then
+        # shellcheck disable=SC2064  # HEALING_LOCK is constant, intentional early expansion
         trap "rmdir '$HEALING_LOCK' 2>/dev/null || true" EXIT
         return 0
     else
         # 락이 10분 이상 됐으면 강제 해제 (stale lock)
-        local lock_age=$(( $(date +%s) - $(stat -f %m "$HEALING_LOCK" 2>/dev/null || echo "0") ))
+        local lock_age; lock_age=$(( $(date +%s) - $(stat -f %m "$HEALING_LOCK" 2>/dev/null || echo "0") ))
         if [[ $lock_age -gt 600 ]]; then
             rmdir "$HEALING_LOCK" 2>/dev/null || true
             mkdir "$HEALING_LOCK" 2>/dev/null && return 0
@@ -117,10 +118,10 @@ check_crash_decay() {
         return
     fi
 
-    local last_crash=$(cat "$CRASH_TIMESTAMP_FILE")
-    local now=$(date +%s)
-    local elapsed=$((now - last_crash))
-    local decay_seconds=$((CRASH_DECAY_HOURS * 3600))
+    local last_crash; last_crash=$(cat "$CRASH_TIMESTAMP_FILE")
+    local now; now=$(date +%s)
+    local elapsed; elapsed=$((now - last_crash))
+    local decay_seconds; decay_seconds=$((CRASH_DECAY_HOURS * 3600))
 
     if [[ $elapsed -ge $decay_seconds ]]; then
         log "INFO" "크래시 카운터 자동 리셋 (${CRASH_DECAY_HOURS}시간 경과)"
@@ -130,14 +131,14 @@ check_crash_decay() {
 }
 
 increment_crash_count() {
-    local count=$(get_crash_count)
+    local count; count=$(get_crash_count)
     echo $((count + 1)) > "$CRASH_COUNTER_FILE"
     date +%s > "$CRASH_TIMESTAMP_FILE"
 }
 
 # v4 신규: 정상 작동 시 카운터 감소 (감쇠)
 decrement_crash_count() {
-    local count=$(get_crash_count)
+    local count; count=$(get_crash_count)
     if [[ $count -gt 0 ]]; then
         echo $((count - 1)) > "$CRASH_COUNTER_FILE"
         log "INFO" "크래시 카운터 감소: $count → $((count - 1))"
@@ -154,8 +155,8 @@ reset_crash_count() {
 # ============================================================================
 
 get_backoff_delay() {
-    local crash_count=$(get_crash_count)
-    local index=$((crash_count - 1))
+    local crash_count; crash_count=$(get_crash_count)
+    local index; index=$((crash_count - 1))
 
     if [[ $index -lt 0 ]]; then
         index=0
@@ -171,13 +172,13 @@ is_in_cooldown() {
         return 1
     fi
 
-    local last_restart=$(cat "$COOLDOWN_FILE")
-    local now=$(date +%s)
-    local elapsed=$((now - last_restart))
-    local required_cooldown=$(get_backoff_delay)
+    local last_restart; last_restart=$(cat "$COOLDOWN_FILE")
+    local now; now=$(date +%s)
+    local elapsed; elapsed=$((now - last_restart))
+    local required_cooldown; required_cooldown=$(get_backoff_delay)
 
     if [[ $elapsed -lt $required_cooldown ]]; then
-        local remaining=$((required_cooldown - elapsed))
+        local remaining; remaining=$((required_cooldown - elapsed))
         log "INFO" "Backoff 쿨다운 중: ${remaining}초 남음 (필요: ${required_cooldown}초)"
         return 0
     fi
@@ -219,8 +220,8 @@ preflight_check() {
     fi
 
     # 3. 포트 충돌 확인
-    local port_user=$(lsof -i ":$GATEWAY_PORT" -sTCP:LISTEN -t 2>/dev/null | head -1)
-    local gateway_pid=$(launchctl list 2>/dev/null | grep "$LAUNCHD_SERVICE" | awk '{print $1}' | grep -v "^-$")
+    local port_user; port_user=$(lsof -i ":$GATEWAY_PORT" -sTCP:LISTEN -t 2>/dev/null | head -1)
+    local gateway_pid; gateway_pid=$(launchctl list 2>/dev/null | grep "$LAUNCHD_SERVICE" | awk '{print $1}' | grep -v "^-$")
 
     if [[ -n "$port_user" ]] && [[ "$port_user" != "$gateway_pid" ]]; then
         log "WARN" "포트 $GATEWAY_PORT가 다른 프로세스(PID: $port_user)에 의해 사용 중"
@@ -239,15 +240,15 @@ preflight_check() {
 # ============================================================================
 
 check_pid_status() {
-    local status=$(launchctl list 2>/dev/null | grep "$LAUNCHD_SERVICE" || echo "")
+    local status; status=$(launchctl list 2>/dev/null | grep "$LAUNCHD_SERVICE" || echo "")
 
     if [[ -z "$status" ]]; then
         echo "NOT_LOADED"
         return
     fi
 
-    local pid=$(echo "$status" | awk '{print $1}')
-    local exit_code=$(echo "$status" | awk '{print $2}')
+    local pid; pid=$(echo "$status" | awk '{print $1}')
+    local exit_code; exit_code=$(echo "$status" | awk '{print $2}')
 
     if [[ "$pid" != "-" ]] && [[ "$pid" -gt 0 ]] 2>/dev/null; then
         echo "PID:$pid"
@@ -276,7 +277,7 @@ check_http_health() {
 }
 
 check_memory_usage() {
-    local pid_status=$(check_pid_status)
+    local pid_status; pid_status=$(check_pid_status)
 
     if [[ "$pid_status" != PID:* ]]; then
         echo "0"
@@ -284,7 +285,7 @@ check_memory_usage() {
     fi
 
     local pid="${pid_status#PID:}"
-    local mem_kb=$(ps -p "$pid" -o rss= 2>/dev/null | tr -d ' ')
+    local mem_kb; mem_kb=$(ps -p "$pid" -o rss= 2>/dev/null | tr -d ' ')
 
     if [[ -z "$mem_kb" ]]; then
         echo "0"
@@ -327,8 +328,8 @@ send_recovery_alert() {
 
     local recovery_time="unknown"
     if [[ -f "$RECOVERY_START_FILE" ]]; then
-        local start=$(cat "$RECOVERY_START_FILE")
-        local now=$(date +%s)
+        local start; start=$(cat "$RECOVERY_START_FILE")
+        local now; now=$(date +%s)
         recovery_time="$((now - start))초"
         rm -f "$RECOVERY_START_FILE"
     fi
@@ -350,7 +351,7 @@ clear_alert() {
 # ============================================================================
 
 check_level3_escalation() {
-    local crash_count=$(get_crash_count)
+    local crash_count; crash_count=$(get_crash_count)
 
     # Level 3 escalation 조건: MAX_RETRIES 초과 + 30분 이상 지속
     if [[ $crash_count -ge $MAX_TOTAL_RETRIES ]]; then
@@ -361,15 +362,15 @@ check_level3_escalation() {
             return 1
         fi
 
-        local failure_start=$(cat "$CRITICAL_FAILURE_FILE")
-        local now=$(date +%s)
-        local elapsed=$((now - failure_start))
+        local failure_start; failure_start=$(cat "$CRITICAL_FAILURE_FILE")
+        local now; now=$(date +%s)
+        local elapsed; elapsed=$((now - failure_start))
 
         if [[ $elapsed -ge $ESCALATE_TO_L3_AFTER ]]; then
             log "CRITICAL" "Critical failure ${elapsed}초 지속 - Level 3 Emergency Recovery 트리거"
             return 0
         else
-            local remaining=$((ESCALATE_TO_L3_AFTER - elapsed))
+            local remaining; remaining=$((ESCALATE_TO_L3_AFTER - elapsed))
             log "INFO" "Critical failure ${elapsed}초 경과 (Level 3까지 ${remaining}초 남음)"
             return 1
         fi
@@ -462,7 +463,8 @@ try:
 except Exception as e:
     print('error:', e, file=sys.stderr)
     sys.exit(1)
-" >> "$LOG_FILE" 2>&1 && log "INFO" "직접 제거 완료" || log "ERROR" "직접 제거 실패"
+" >> "$LOG_FILE" 2>&1
+    if [[ $? -eq 0 ]]; then log "INFO" "직접 제거 완료"; else log "ERROR" "직접 제거 실패"; fi
     fi
 
     send_alert "warning" "Config 자동 수정 실행" \
@@ -493,7 +495,7 @@ request_restart() {
 
     log "ACTION" "재시작 요청: $reason"
 
-    local pid_status=$(check_pid_status)
+    local pid_status; pid_status=$(check_pid_status)
 
     if [[ "$pid_status" == PID:* ]]; then
         local pid="${pid_status#PID:}"
