@@ -18,5 +18,13 @@ jobs:
       - name: Run ShellCheck
         run: |
           echo "🔍 Checking scripts..."
-          shellcheck -S warning -e SC2317 -x scripts/*.sh
+          # base64 인코딩된 파일 제외, 실제 쉘 스크립트만 검사
+          for f in scripts/*.sh; do
+            if head -c 4 "$f" | grep -q "^#!"; then
+              echo "  checking $f"
+              shellcheck -S warning -e SC2317 -x "$f"
+            else
+              echo "  skipping $f (not a shell script)"
+            fi
+          done
           echo "✅ All scripts passed!"
