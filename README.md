@@ -10,6 +10,7 @@
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-blue.svg)](#-quick-start)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/ramsbaby/openclaw-self-healing?style=social)](https://github.com/ramsbaby/openclaw-self-healing/stargazers)
+[![Recovery Rate](https://img.shields.io/badge/autonomous_recovery-64%25-brightgreen)](README.md)
 
 [🚀 Quick Start](#-quick-start) · [🎬 Demo](#-demo) · [🏗️ Architecture](#️-architecture) · [📖 Docs](docs/)
 
@@ -30,6 +31,8 @@
 ---
 
 ## 🔥 Why This Exists
+
+> **OpenClaw** is a self-hosted AI gateway (Claude/GPT-4 routing + session management). This system wraps it with autonomous crash recovery.
 
 Your OpenClaw Gateway crashes at midnight. A basic watchdog restarts it — but what if the config is corrupted? The API rate limit hit? A dependency broken?
 
@@ -269,3 +272,4 @@ Bug reports, feature requests, docs improvements welcome. [📋 Contribution Gui
 *"The best system is one that fixes itself before you notice it's broken."*
 
 </div>
+
