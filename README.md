@@ -6,11 +6,12 @@
 
 **Stop getting paged at 3 AM. Let AI fix your crashes automatically.**
 
-[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases)
+[![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-blue.svg)](#-quick-start)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/ramsbaby/openclaw-self-healing?style=social)](https://github.com/ramsbaby/openclaw-self-healing/stargazers)
 [![Recovery Rate](https://img.shields.io/badge/autonomous_recovery-64%25-brightgreen)](README.md)
+[![LLM-Agnostic](https://img.shields.io/badge/AI-Claude%20%7C%20GPT--4%20%7C%20Gemini%20%7C%20Ollama-blueviolet)](README.md)
 
 [🚀 Quick Start](#-quick-start) · [🎬 Demo](#-demo) · [🏗️ Architecture](#️-architecture) · [📖 Docs](docs/)
 
@@ -48,7 +49,7 @@ Your OpenClaw Gateway crashes at midnight. A basic watchdog restarts it — but 
 
 - **macOS 12+** or **Linux** (Ubuntu 20.04+ / systemd)
 - **[OpenClaw Gateway](https://github.com/openclaw/openclaw)** installed and running
-- **[Claude CLI](https://docs.anthropic.com/claude/docs/claude-code)** with Anthropic API key
+- **Any major LLM** — Claude CLI (default), OpenAI, Gemini, or Ollama. See [LLM-Agnostic](#-llm-agnostic-recovery-new-in-v33)
 - `tmux`, `jq` (`brew install tmux jq` or `apt install tmux jq`)
 
 ### Install (5 minutes)
@@ -108,7 +109,7 @@ graph TD
     G -->|Repeated crashes| H[Level 2: Watchdog]
     H -->|"HTTP check every 3min"| I{Stable?}
     I -->|Yes| Z
-    I -->|"30min continuous failure"| J[Level 3: Claude AI]
+    I -->|"30min continuous failure"| J[Level 3: AI Recovery]
     J -->|"Autonomous diagnosis & fix"| K{Fixed?}
     K -->|Yes| Z
     K -->|No| L[Level 4: Human Alert]
@@ -127,7 +128,7 @@ graph TD
 | **0** | Preflight Validation | Every cold start | Validate binary, .env keys, JSON configs before exec |
 | **1** | LaunchAgent KeepAlive | Any crash | Instant restart (0–30s) |
 | **2** | Watchdog v4.1 + HealthCheck | Repeated crashes | PID + HTTP + memory monitoring, exponential backoff |
-| **3** | Claude AI Emergency Recovery | 30min continuous failure | PTY session → log analysis → auto-fix |
+| **3** | AI Emergency Recovery | 30min continuous failure | PTY session → log analysis → auto-fix (Claude/GPT-4/Gemini/Ollama) |
 | **4** | Human Alert | All automation fails | Discord/Telegram with full context |
 
 **Level 0 (new in v3.2):** Catches config corruption, missing .env keys, and broken JSON *before* the gateway even starts — preventing crash loops from bad config entirely.
@@ -171,7 +172,8 @@ Level 2: Watchdog v4.1 🔍 (3-5 min)
 ▼  30 minutes of continuous failure
 Level 3: AI Emergency Recovery 🧠 (5-30 min)
 │  Auto-triggered — no manual intervention
-│  Claude Code PTY: reads logs → diagnoses → fixes
+│  Supports Claude, GPT-4, Gemini, Ollama (OPENCLAW_LLM_PROVIDER)
+│  PTY session: reads logs → diagnoses → fixes
 │  Documents learnings for future incidents
 │
 ▼  all automation fails
@@ -183,12 +185,13 @@ Level 4: Human Alert 🚨
 ### Scripts Reference
 
 | Script | Level | Purpose |
-|--------|-------|---------| 
+|--------|-------|---------|
 | `scripts/gateway-preflight.sh` | 0 | Proactive config validation before service start |
 | `scripts/gateway-watchdog.sh` | 2 | Reactive recovery after crash detection |
 | `scripts/gateway-healthcheck.sh` | 2 | HTTP health polling + Level 3 escalation |
-| `scripts/emergency-recovery-v2.sh` | 3 | Claude AI autonomous diagnosis and repair |
+| `scripts/emergency-recovery-v2.sh` | 3 | AI autonomous diagnosis and repair |
 | `scripts/emergency-recovery-monitor.sh` | 3 | Monitor active recovery sessions |
+| `scripts/lib/llm-gateway.sh` | 3 | LLM-agnostic wrapper (Claude/GPT-4/Gemini/Ollama) |
 
 ---
 
@@ -212,11 +215,41 @@ Level 4: Human Alert 🚨
 
 ---
 
+## 🤖 LLM-Agnostic Recovery (New in v3.3)
+
+Level 3 Emergency Recovery is no longer Claude-only. Set `OPENCLAW_LLM_PROVIDER` in your `.env`:
+
+| Provider | Config | Default model | Requires |
+|----------|--------|---------------|----------|
+| **Claude** (default) | `OPENCLAW_LLM_PROVIDER=claude` | Claude Code CLI | Claude Max subscription |
+| **OpenAI** | `OPENCLAW_LLM_PROVIDER=openai` | `gpt-4o` | `OPENAI_API_KEY` + `pip install openai` |
+| **Google Gemini** | `OPENCLAW_LLM_PROVIDER=gemini` | `gemini-2.0-flash` | `GOOGLE_API_KEY` + `pip install google-generativeai` |
+| **Ollama** (local/offline) | `OPENCLAW_LLM_PROVIDER=ollama` | `llama3.2` | Ollama running locally |
+
+```bash
+# Switch to GPT-4o
+echo 'OPENCLAW_LLM_PROVIDER=openai' >> ~/.openclaw/.env
+echo 'OPENAI_API_KEY=sk-...'        >> ~/.openclaw/.env
+
+# Fully offline with Ollama (no API key needed)
+echo 'OPENCLAW_LLM_PROVIDER=ollama' >> ~/.openclaw/.env
+echo 'OPENCLAW_LLM_MODEL=llama3.2'  >> ~/.openclaw/.env
+
+# Use Gemini 1.5 Pro
+echo 'OPENCLAW_LLM_PROVIDER=gemini'        >> ~/.openclaw/.env
+echo 'GOOGLE_API_KEY=AIza...'              >> ~/.openclaw/.env
+echo 'OPENCLAW_LLM_MODEL=gemini-1.5-pro'  >> ~/.openclaw/.env
+```
+
+Implementation: [`scripts/lib/llm-gateway.sh`](scripts/lib/llm-gateway.sh)
+
+---
+
 ## 🗺️ Roadmap
 
-**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2)
+**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)**
 
-**🚧 Next:** Docker image · Alternative LLMs (GPT-4, Gemini) · Prometheus metrics · Grafana dashboard
+**🚧 Next:** Docker image · Prometheus metrics · Grafana dashboard
 
 **🔮 Future:** Multi-node clusters · Kubernetes Operator
 
@@ -240,7 +273,7 @@ Level 4: Human Alert 🚨
 
 No secrets in code. `.env` for all webhooks. Lock files prevent races. All recoveries logged.
 
-Level 3 Claude access: OpenClaw config, gateway restart, log files — intentional for autonomous recovery.
+Level 3 AI access: OpenClaw config, gateway restart, log files — intentional for autonomous recovery.
 
 ---
 
@@ -272,4 +305,3 @@ Bug reports, feature requests, docs improvements welcome. [📋 Contribution Gui
 *"The best system is one that fixes itself before you notice it's broken."*
 
 </div>
-
