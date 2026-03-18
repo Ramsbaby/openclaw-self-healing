@@ -12,6 +12,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/ramsbaby/openclaw-self-healing?style=social)](https://github.com/ramsbaby/openclaw-self-healing/stargazers)
 [![Recovery Rate](https://img.shields.io/badge/autonomous_recovery-64%25-brightgreen)](README.md)
 [![LLM-Agnostic](https://img.shields.io/badge/AI-Claude%20%7C%20GPT--4%20%7C%20Gemini%20%7C%20Ollama-blueviolet)](README.md)
+[![Prometheus](https://img.shields.io/badge/metrics-Prometheus%20%2F%20Grafana-orange)](README.md)
 
 [🚀 Quick Start](#-quick-start) · [🎬 Demo](#-demo) · [🏗️ Architecture](#️-architecture) · [📖 Docs](docs/)
 
@@ -192,6 +193,8 @@ Level 4: Human Alert 🚨
 | `scripts/emergency-recovery-v2.sh` | 3 | AI autonomous diagnosis and repair |
 | `scripts/emergency-recovery-monitor.sh` | 3 | Monitor active recovery sessions |
 | `scripts/lib/llm-gateway.sh` | 3 | LLM-agnostic wrapper (Claude/GPT-4/Gemini/Ollama) |
+| `scripts/prometheus-exporter.py` | obs | Prometheus metrics HTTP server |
+| `scripts/start-metrics-exporter.sh` | obs | Start/stop/status for the metrics exporter |
 
 ---
 
@@ -206,7 +209,7 @@ Level 4: Human Alert 🚨
 ### Previous: What v3.1 Fixed
 
 | Before v3.1 | After v3.1 |
-|-------------|-----------|
+|-------------|------------|
 | Manual LaunchAgent/systemd setup | `install.sh` does everything |
 | `.env` had to be created by hand | Interactive wizard generates it |
 | Level 2 → Level 3 was disconnected | Auto-triggers after 30 min |
@@ -234,22 +237,72 @@ echo 'OPENAI_API_KEY=sk-...'        >> ~/.openclaw/.env
 # Fully offline with Ollama (no API key needed)
 echo 'OPENCLAW_LLM_PROVIDER=ollama' >> ~/.openclaw/.env
 echo 'OPENCLAW_LLM_MODEL=llama3.2'  >> ~/.openclaw/.env
-
-# Use Gemini 1.5 Pro
-echo 'OPENCLAW_LLM_PROVIDER=gemini'        >> ~/.openclaw/.env
-echo 'GOOGLE_API_KEY=AIza...'              >> ~/.openclaw/.env
-echo 'OPENCLAW_LLM_MODEL=gemini-1.5-pro'  >> ~/.openclaw/.env
 ```
 
 Implementation: [`scripts/lib/llm-gateway.sh`](scripts/lib/llm-gateway.sh)
 
 ---
 
+## 📈 Prometheus Metrics (New in v3.3)
+
+Expose real-time recovery metrics for Grafana dashboards and alerting rules.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `openclaw_gateway_healthy` | gauge | 1 if gateway returns HTTP 200, 0 otherwise |
+| `openclaw_recovery_attempts` | gauge | Total Level-3 recovery attempts |
+| `openclaw_recovery_success` | gauge | Successful recoveries |
+| `openclaw_recovery_failed` | gauge | Failed recoveries |
+| `openclaw_recovery_rate_percent` | gauge | Autonomous recovery success rate (0–100) |
+| `openclaw_last_recovery_duration_seconds` | gauge | Duration of last recovery attempt |
+| `openclaw_last_recovery_success` | gauge | 1 if last recovery succeeded, 0 if failed |
+| `openclaw_last_recovery_timestamp_seconds` | gauge | Unix timestamp of last recovery |
+
+```bash
+# Start the exporter (port 9090 by default)
+bash scripts/start-metrics-exporter.sh start
+
+# Test
+curl -s http://localhost:9090/metrics
+
+# Stop / restart
+bash scripts/start-metrics-exporter.sh stop
+bash scripts/start-metrics-exporter.sh restart
+
+# Custom port
+OPENCLAW_METRICS_PORT=8080 bash scripts/start-metrics-exporter.sh start
+```
+
+### Prometheus scrape config
+
+```yaml
+# prometheus.yml
+scrape_configs:
+  - job_name: 'openclaw'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+```
+
+### Grafana alerting example
+
+```
+# Alert: gateway down for >5 minutes
+openclaw_gateway_healthy == 0
+
+# Alert: recovery rate drops below 50%
+openclaw_recovery_rate_percent < 50
+```
+
+Implementation: [`scripts/prometheus-exporter.py`](scripts/prometheus-exporter.py) · [`scripts/start-metrics-exporter.sh`](scripts/start-metrics-exporter.sh)
+
+---
+
 ## 🗺️ Roadmap
 
-**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)**
+**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)** · **Prometheus metrics exporter (v3.3)**
 
-**🚧 Next:** Docker image · Prometheus metrics · Grafana dashboard
+**🚧 Next:** Docker image · Grafana dashboard template
 
 **🔮 Future:** Multi-node clusters · Kubernetes Operator
 
