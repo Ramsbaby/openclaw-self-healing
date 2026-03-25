@@ -2,7 +2,7 @@
 
 # 🦞 OpenClaw Self-Healing System
 
-### *Autonomous AI-Powered Recovery for Production Services*
+### *Autonomous AI-Powered Recovery for Any Service*
 
 **Stop getting paged at 3 AM. Let AI fix your crashes automatically.**
 
@@ -17,6 +17,8 @@
 [🚀 Quick Start](#-quick-start) · [🎬 Demo](#-demo) · [🏗️ Architecture](#️-architecture) · [📖 Docs](docs/)
 
 </div>
+
+> If this saved your night 🌙, a ⭐ helps others find it.
 
 ---
 
@@ -34,9 +36,9 @@
 
 ## 🔥 Why This Exists
 
-> **OpenClaw** is a self-hosted AI gateway (Claude/GPT-4 routing + session management). This system wraps it with autonomous crash recovery.
+> **This system wraps any long-running service with autonomous crash recovery.** OpenClaw Gateway is the primary example — a self-hosted AI gateway for Claude/GPT-4 routing — but the watchdog/recovery architecture adapts to any service.
 
-Your OpenClaw Gateway crashes at midnight. A basic watchdog restarts it — but what if the config is corrupted? The API rate limit hit? A dependency broken?
+Your service crashes at midnight. A basic watchdog restarts it — but what if the config is corrupted? The API rate limit hit? A dependency broken?
 
 **Simple restart = crash loop.** You get paged. Your weekend is ruined.
 
@@ -52,6 +54,8 @@ Your OpenClaw Gateway crashes at midnight. A basic watchdog restarts it — but 
 - **[OpenClaw Gateway](https://github.com/openclaw/openclaw)** installed and running
 - **Any major LLM** — Claude CLI (default), OpenAI, Gemini, or Ollama. See [LLM-Agnostic](#-llm-agnostic-recovery-new-in-v33)
 - `tmux`, `jq` (`brew install tmux jq` or `apt install tmux jq`)
+
+> **Note:** While this was built for OpenClaw Gateway, the watchdog/recovery architecture works for **any service**. See [docs/configuration.md](docs/configuration.md) to adapt it.
 
 ### Install (5 minutes)
 
@@ -193,6 +197,7 @@ Level 4: Human Alert 🚨
 | `scripts/emergency-recovery-v2.sh` | 3 | AI autonomous diagnosis and repair |
 | `scripts/emergency-recovery-monitor.sh` | 3 | Monitor active recovery sessions |
 | `scripts/lib/llm-gateway.sh` | 3 | LLM-agnostic wrapper (Claude/GPT-4/Gemini/Ollama) |
+| `scripts/lib/notify.sh` | all | Unified notification dispatcher (Discord/Slack/Telegram) |
 | `scripts/prometheus-exporter.py` | obs | Prometheus metrics HTTP server |
 | `scripts/start-metrics-exporter.sh` | obs | Start/stop/status for the metrics exporter |
 
@@ -300,13 +305,23 @@ Implementation: [`scripts/prometheus-exporter.py`](scripts/prometheus-exporter.p
 
 ## 🗺️ Roadmap
 
-**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)** · **Prometheus metrics exporter (v3.3)**
+**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)** · **Prometheus metrics exporter (v3.3)** · **Multi-channel notifications — Discord/Slack/Telegram (v3.4)** · **Docker Compose support (v3.4)**
 
-**🚧 Next:** Docker image · Grafana dashboard template
+**🚧 Next:** Grafana dashboard template · Multi-node clusters
 
-**🔮 Future:** Multi-node clusters · Kubernetes Operator
+**🔮 Future:** Kubernetes Operator
 
 [🗳️ Vote on features →](https://github.com/ramsbaby/openclaw-self-healing/discussions)
+
+---
+
+## 💬 Community
+
+Found this useful? A ⭐ on GitHub helps others discover it.
+
+- [💬 Discussions](https://github.com/ramsbaby/openclaw-self-healing/discussions) — questions, ideas, show-and-tell
+- [🐛 Issues](https://github.com/ramsbaby/openclaw-self-healing/issues) — bug reports and feature requests
+- [🤝 Contributing](CONTRIBUTING.md) — PRs welcome
 
 ---
 
@@ -317,6 +332,7 @@ Implementation: [`scripts/prometheus-exporter.py`](scripts/prometheus-exporter.p
 | [📖 Quick Start](docs/QUICKSTART.md) | Installation guide |
 | [🏗️ Architecture](docs/architecture.md) | System design |
 | [🔧 Configuration](docs/configuration.md) | Environment variables |
+| [🐳 Docker](docs/DOCKER.md) | Docker Compose setup |
 | [🐛 Troubleshooting](docs/TROUBLESHOOTING.md) | Common issues |
 | [📜 Changelog](CHANGELOG.md) | Version history |
 
@@ -337,7 +353,7 @@ Level 3 AI access: OpenClaw config, gateway restart, log files — intentional f
 | **[openclaw-self-healing](https://github.com/Ramsbaby/openclaw-self-healing)** ← you are here | 4-tier autonomous crash recovery |
 | **[openclaw-memorybox](https://github.com/Ramsbaby/openclaw-memorybox)** | Memory hygiene CLI — prevents the bloat that causes crashes |
 | **[openclaw-self-evolving](https://github.com/Ramsbaby/openclaw-self-evolving)** | AI agent that proposes its own AGENTS.md improvements |
-| **[claude-discord-bridge](https://github.com/Ramsbaby/claude-discord-bridge)** | Full AI company-in-a-box — where self-healing runs in production |
+| **[jarvis](https://github.com/Ramsbaby/jarvis)** | 24/7 AI ops system using Claude Max — self-healing, RAG, cron automation |
 
 All MIT licensed, all battle-tested on the same 24/7 production instance.
 
