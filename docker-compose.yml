@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  openclaw-gateway:
+    image: node:22-slim
+    working_dir: /app
+    volumes:
+      - ~/.openclaw:/root/.openclaw
+      - ~/.config:/root/.config
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "18789:18789"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18789/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    command: >
+      sh -c "npm install -g openclaw-gateway && openclaw-gateway"
+
+  self-healing-watchdog:
+    image: alpine:latest
+    volumes:
+      - ~/.openclaw:/root/.openclaw
+      - .:/app
+    working_dir: /app
+    environment:
+      - OPENCLAW_PORT=18789
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+      - NOTIFICATION_CHANNEL=${NOTIFICATION_CHANNEL:-discord}
+    depends_on:
+      openclaw-gateway:
+        condition: service_healthy
+    command: >
+      sh -c "apk add --no-cache bash curl jq tmux && bash scripts/gateway-watchdog.sh"
+    restart: unless-stopped
