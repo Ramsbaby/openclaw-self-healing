@@ -1,124 +1,145 @@
-#!/bin/bash
-# OpenClaw Self-Healing Notification Library
-# Multi-channel notification support (Discord, Telegram)
+#!/usr/bin/env bash
+# scripts/lib/notify.sh — unified notification dispatcher
+#
+# Supports Discord, Slack, and Telegram out of the box.
+# Auto-detects the channel from available environment variables.
+#
+# Usage:
+#   source scripts/lib/notify.sh
+#   send_notification "Title" "Message body" "info|warning|error"
+#
+# Environment variables (set at least one group):
+#   NOTIFICATION_CHANNEL    — force channel: "discord" | "slack" | "telegram"
+#   DISCORD_WEBHOOK_URL     — Discord incoming webhook URL
+#   SLACK_WEBHOOK_URL       — Slack incoming webhook URL
+#   TELEGRAM_BOT_TOKEN      — Telegram bot token
+#   TELEGRAM_CHAT_ID        — Telegram chat/channel ID
 
-# ============================================
-# Configuration (from environment)
-# ============================================
-DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
-TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
-TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:-}"
-NOTIFICATION_CHANNEL="${NOTIFICATION_CHANNEL:-discord}"  # discord|telegram|all
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
 
-# ============================================
-# Discord Notification
-# ============================================
-send_discord_notification() {
-  local message="$1"
-  
-  if [ -z "$DISCORD_WEBHOOK" ]; then
-    log "⚠️ Discord webhook not configured, skipping Discord notification"
-    return 1
-  fi
-  
-  local response_code
-  response_code=$(curl -s -o /dev/null -w "%{http_code}" \
-    -X POST "$DISCORD_WEBHOOK" \
-    -H "Content-Type: application/json" \
-    -d "{\"content\": \"$message\"}" \
-    2>&1 || echo "000")
-  
-  if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
-    log "✅ Discord notification sent (HTTP $response_code)"
-    return 0
-  else
-    log "⚠️ Discord notification failed (HTTP $response_code)"
-    return 1
-  fi
-}
-
-# ============================================
-# Telegram Notification
-# ============================================
-send_telegram_notification() {
-  local message="$1"
-  
-  if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
-    log "⚠️ Telegram credentials not configured, skipping Telegram notification"
-    return 1
-  fi
-  
-  # Convert Discord-style markdown to Telegram format
-  # - **bold** → *bold*
-  # - \`code\` → `code` (same)
-  # - \\n → actual newlines
-  local telegram_message
-  telegram_message=$(echo -e "$message" | sed 's/\*\*/*/g')
-  
-  # Telegram Bot API endpoint
-  local api_url="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
-  
-  # Send message with Markdown formatting
-  local response
-  response=$(curl -s -X POST "$api_url" \
-    -H "Content-Type: application/json" \
-    -d "{
-      \"chat_id\": \"$TELEGRAM_CHAT_ID\",
-      \"text\": \"$telegram_message\",
-      \"parse_mode\": \"Markdown\",
-      \"disable_notification\": false
-    }" 2>&1)
-  
-  # Check if response contains "ok":true
-  if echo "$response" | grep -q '"ok":true'; then
-    log "✅ Telegram notification sent"
-    return 0
-  else
-    # Extract error description if available
-    local error_msg
-    error_msg=$(echo "$response" | grep -o '"description":"[^"]*"' | cut -d'"' -f4)
-    
-    if [ -n "$error_msg" ]; then
-      log "⚠️ Telegram notification failed: $error_msg"
-    else
-      log "⚠️ Telegram notification failed: $response"
-    fi
-    return 1
-  fi
-}
-
-# ============================================
-# Multi-Channel Dispatcher
-# ============================================
 send_notification() {
-  local message="$1"
-  local success=false
-  
-  case "$NOTIFICATION_CHANNEL" in
-    discord)
-      send_discord_notification "$message" && success=true
-      ;;
-    
-    telegram)
-      send_telegram_notification "$message" && success=true
-      ;;
-    
-    all)
-      # Send to both channels (don't fail if one fails)
-      send_discord_notification "$message" && success=true
-      send_telegram_notification "$message" && success=true
-      ;;
-    
-    *)
-      log "⚠️ Unknown notification channel: $NOTIFICATION_CHANNEL (supported: discord, telegram, all)"
-      log "⚠️ Falling back to Discord only"
-      send_discord_notification "$message" && success=true
-      ;;
-  esac
-  
-  if [ "$success" = true ]; then
-    return 0
-  else
-    return 1
-  fi
+    local title="${1:-Notification}"
+    local message="${2:-}"
+    local level="${3:-info}"
+    local channel="${NOTIFICATION_CHANNEL:-}"
+
+    # Auto-detect channel from available env vars when not explicitly set
+    if [[ -z "$channel" ]]; then
+        if [[ -n "${DISCORD_WEBHOOK_URL:-}" ]]; then
+            channel="discord"
+        elif [[ -n "${SLACK_WEBHOOK_URL:-}" ]]; then
+            channel="slack"
+        elif [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
+            channel="telegram"
+        else
+            echo "[notify] No notification channel configured" >&2
+            return 0
+        fi
+    fi
+
+    case "$channel" in
+        discord)  _notify_discord  "$title" "$message" "$level" ;;
+        slack)    _notify_slack    "$title" "$message" "$level" ;;
+        telegram) _notify_telegram "$title" "$message" ;;
+        *)
+            echo "[notify] Unknown channel: $channel" >&2
+            return 0
+            ;;
+    esac
+}
+
+# ---------------------------------------------------------------------------
+# Private: Discord
+# ---------------------------------------------------------------------------
+
+_notify_discord() {
+    local title="$1"
+    local message="$2"
+    local level="$3"
+    local color
+
+    case "$level" in
+        error)   color=15158332 ;;  # red    #E74C3C
+        warning) color=16776960 ;;  # yellow #FFFF00
+        *)       color=3066993  ;;  # green  #2ECC71
+    esac
+
+    if [[ -z "${DISCORD_WEBHOOK_URL:-}" ]]; then
+        echo "[notify] DISCORD_WEBHOOK_URL is not set" >&2
+        return 0
+    fi
+
+    # Escape double-quotes in user-supplied strings to keep JSON valid
+    local safe_title safe_message
+    safe_title="${title//\"/\\\"}"
+    safe_message="${message//\"/\\\"}"
+
+    local payload
+    payload=$(printf '{"embeds":[{"title":"%s","description":"%s","color":%d}]}' \
+        "$safe_title" "$safe_message" "$color")
+
+    curl -s -X POST -H "Content-Type: application/json" \
+        -d "$payload" "${DISCORD_WEBHOOK_URL}" >/dev/null || true
+}
+
+# ---------------------------------------------------------------------------
+# Private: Slack
+# ---------------------------------------------------------------------------
+
+_notify_slack() {
+    local title="$1"
+    local message="$2"
+    local level="$3"
+    local emoji
+
+    case "$level" in
+        error)   emoji=":red_circle:" ;;
+        warning) emoji=":warning:" ;;
+        *)       emoji=":white_check_mark:" ;;
+    esac
+
+    if [[ -z "${SLACK_WEBHOOK_URL:-}" ]]; then
+        echo "[notify] SLACK_WEBHOOK_URL is not set" >&2
+        return 0
+    fi
+
+    local safe_title safe_message
+    safe_title="${title//\"/\\\"}"
+    safe_message="${message//\"/\\\"}"
+
+    local payload
+    payload=$(printf '{"text":"%s *%s*\n%s"}' "$emoji" "$safe_title" "$safe_message")
+
+    curl -s -X POST -H "Content-Type: application/json" \
+        -d "$payload" "${SLACK_WEBHOOK_URL}" >/dev/null || true
+}
+
+# ---------------------------------------------------------------------------
+# Private: Telegram
+# ---------------------------------------------------------------------------
+
+_notify_telegram() {
+    local title="$1"
+    local message="$2"
+
+    if [[ -z "${TELEGRAM_BOT_TOKEN:-}" ]]; then
+        echo "[notify] TELEGRAM_BOT_TOKEN is not set" >&2
+        return 0
+    fi
+
+    if [[ -z "${TELEGRAM_CHAT_ID:-}" ]]; then
+        echo "[notify] TELEGRAM_CHAT_ID is not set" >&2
+        return 0
+    fi
+
+    local text="*${title}*\n${message}"
+
+    curl -s -X POST \
+        "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+        -d "chat_id=${TELEGRAM_CHAT_ID}" \
+        --data-urlencode "text=${text}" \
+        -d "parse_mode=Markdown" \
+        >/dev/null || true
 }
