@@ -18,6 +18,10 @@
 
 </div>
 
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="openclaw-self-healing" width="100%">
+</p>
+
 > If this saved your night 🌙, a ⭐ helps others find it.
 
 ---
@@ -187,6 +191,10 @@ Based on an audit of 14 real incidents (Feb 2026):
 
 ## 🏗️ Architecture
 
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="4-tier recovery architecture" width="100%">
+</p>
+
 ```
 Level 0: Preflight 🔍 (every cold start)
 │  Validates binary, .env keys, JSON configs before exec
@@ -237,7 +245,7 @@ Implementation: [`scripts/lib/notify.sh`](scripts/lib/notify.sh)
 ### Scripts Reference
 
 | Script | Level | Purpose |
-|--------|-------|---------| 
+|--------|-------|---------|
 | `scripts/gateway-preflight.sh` | 0 | Proactive config validation before service start |
 | `scripts/gateway-watchdog.sh` | 2 | Reactive recovery after crash detection |
 | `scripts/gateway-healthcheck.sh` | 2 | HTTP health polling + Level 3 escalation |
