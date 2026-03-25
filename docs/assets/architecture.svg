@@ -1,0 +1,106 @@
+<svg width="800" height="520" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="openclaw-self-healing 4-tier recovery architecture">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="g0" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1a7f37"/>
+      <stop offset="100%" stop-color="#2ea043"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1158c7"/>
+      <stop offset="100%" stop-color="#1f6feb"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9e6a03"/>
+      <stop offset="100%" stop-color="#d29922"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6e40c9"/>
+      <stop offset="100%" stop-color="#a371f7"/>
+    </linearGradient>
+    <linearGradient id="g4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="520" fill="url(#bg)" rx="12"/>
+  <rect width="800" height="520" fill="none" stroke="#30363d" stroke-width="1" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700" fill="#e6edf3">openclaw-self-healing</text>
+  <text x="400" y="58" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" fill="#7d8590">4-Tier Autonomous Recovery Architecture</text>
+
+  <!-- Failure trigger box -->
+  <rect x="270" y="78" width="260" height="40" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="400" y="103" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" fill="#e6edf3">&#x26A1; Failure Detected</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="118" x2="400" y2="138" stroke="#30363d" stroke-width="2"/>
+  <polygon points="395,134 400,142 405,134" fill="#30363d"/>
+
+  <!-- Level 0 -->
+  <rect x="100" y="142" width="600" height="56" rx="8" fill="url(#g0)" opacity="0.15" stroke="#2ea043" stroke-width="1"/>
+  <rect x="100" y="142" width="4" height="56" rx="2" fill="url(#g0)"/>
+  <text x="120" y="163" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#3fb950">LEVEL 0</text>
+  <text x="120" y="181" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#e6edf3">Pre-flight Validation</text>
+  <text x="660" y="172" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#7d8590">env checks &#xB7; port validation &#xB7; config sanity</text>
+
+  <!-- Arrow + fail label -->
+  <line x1="400" y1="198" x2="400" y2="218" stroke="#30363d" stroke-width="2"/>
+  <polygon points="395,214 400,222 405,214" fill="#30363d"/>
+  <text x="412" y="213" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" fill="#da3633">fail</text>
+
+  <!-- Level 1 -->
+  <rect x="100" y="222" width="600" height="56" rx="8" fill="url(#g1)" opacity="0.15" stroke="#1f6feb" stroke-width="1"/>
+  <rect x="100" y="222" width="4" height="56" rx="2" fill="url(#g1)"/>
+  <text x="120" y="243" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#58a6ff">LEVEL 1</text>
+  <text x="120" y="261" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#e6edf3">Watchdog KeepAlive</text>
+  <text x="660" y="252" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#7d8590">launchd &#xB7; HTTP &#xB7; PID &#xB7; memory checks</text>
+
+  <!-- Arrow + fail label -->
+  <line x1="400" y1="278" x2="400" y2="298" stroke="#30363d" stroke-width="2"/>
+  <polygon points="395,294 400,302 405,294" fill="#30363d"/>
+  <text x="412" y="293" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" fill="#da3633">fail</text>
+
+  <!-- Level 2 -->
+  <rect x="100" y="302" width="600" height="56" rx="8" fill="url(#g2)" opacity="0.15" stroke="#d29922" stroke-width="1"/>
+  <rect x="100" y="302" width="4" height="56" rx="2" fill="url(#g2)"/>
+  <text x="120" y="323" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#e3b341">LEVEL 2</text>
+  <text x="120" y="341" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#e6edf3">Automated doctor --fix</text>
+  <text x="660" y="332" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#7d8590">config repair &#xB7; port cleanup &#xB7; log rotation</text>
+
+  <!-- Arrow + fail label -->
+  <line x1="400" y1="358" x2="400" y2="378" stroke="#30363d" stroke-width="2"/>
+  <polygon points="395,374 400,382 405,374" fill="#30363d"/>
+  <text x="412" y="373" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" fill="#da3633">fail</text>
+
+  <!-- Level 3 - AI (special) -->
+  <rect x="100" y="382" width="600" height="60" rx="8" fill="url(#g3)" opacity="0.2" stroke="#a371f7" stroke-width="1.5"/>
+  <rect x="100" y="382" width="4" height="60" rx="2" fill="url(#g3)"/>
+  <text x="120" y="405" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#c084fc">LEVEL 3 &#x2736; AI</text>
+  <text x="120" y="424" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="700" fill="#e6edf3">Claude Repair Session (tmux PTY)</text>
+  <text x="660" y="416" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#a371f7">reads logs &#xB7; diagnoses root cause &#xB7; executes fix</text>
+
+  <!-- Arrow + fail label -->
+  <line x1="400" y1="442" x2="400" y2="462" stroke="#30363d" stroke-width="2"/>
+  <polygon points="395,458 400,466 405,458" fill="#30363d"/>
+  <text x="412" y="457" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" fill="#da3633">fail</text>
+
+  <!-- Level 4 -->
+  <rect x="100" y="466" width="600" height="40" rx="8" fill="url(#g4)" opacity="0.12" stroke="#f85149" stroke-width="1"/>
+  <rect x="100" y="466" width="4" height="40" rx="2" fill="url(#g4)"/>
+  <text x="120" y="482" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#f85149">LEVEL 4</text>
+  <text x="120" y="498" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="600" fill="#e6edf3">Human Escalation  &#x2192;  Discord &#xB7; Telegram &#xB7; Slack</text>
+
+  <!-- Stats badge -->
+  <rect x="570" y="84" width="130" height="28" rx="6" fill="#21262d" stroke="#30363d"/>
+  <text x="635" y="102" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#3fb950">&#x2713; 64% auto-resolved</text>
+</svg>
