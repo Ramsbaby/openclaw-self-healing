@@ -6,8 +6,8 @@
 
 **Stop getting paged at 3 AM. Let AI fix your crashes automatically.**
 
-[![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases)
-[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-blue.svg)](#-quick-start)
+[![Version](https://img.shields.io/badge/version-3.4.0-blue.svg)](https://github.com/Ramsbaby/openclaw-self-healing/releases)
+[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Docker-blue.svg)](#-quick-start)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/ramsbaby/openclaw-self-healing?style=social)](https://github.com/ramsbaby/openclaw-self-healing/stargazers)
 [![Recovery Rate](https://img.shields.io/badge/autonomous_recovery-64%25-brightgreen)](README.md)
@@ -46,18 +46,37 @@ Your service crashes at midnight. A basic watchdog restarts it — but what if t
 
 ---
 
+## 🆚 Why openclaw-self-healing vs. rolling your own
+
+| Feature | Basic Watchdog | supervisord | openclaw-self-healing |
+|---------|---------------|-------------|----------------------|
+| Auto-restart on crash | ✅ | ✅ | ✅ |
+| HTTP health polling | ❌ | ❌ | ✅ |
+| Crash loop prevention (backoff) | ❌ | partial | ✅ exponential backoff |
+| Config validation before start | ❌ | ❌ | ✅ Level 0 preflight |
+| **AI root-cause diagnosis** | ❌ | ❌ | ✅ Claude / GPT-4 / Gemini / Ollama |
+| **Auto-fix corrupted config** | ❌ | ❌ | ✅ |
+| Multi-channel alerts (Discord/Slack/Telegram) | ❌ | ❌ | ✅ |
+| Prometheus metrics | ❌ | ❌ | ✅ |
+| Works on macOS + Linux + Docker | partial | ✅ | ✅ |
+| Zero vendor lock-in | ✅ | ✅ | ✅ MIT |
+
+The gap that matters: when a crash loop is caused by something that can't be fixed by restarting alone, every other tool pages you. This one tries to fix it first.
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **macOS 12+** or **Linux** (Ubuntu 20.04+ / systemd)
+- **macOS 12+** or **Linux** (Ubuntu 20.04+ / systemd) or **Docker**
 - **[OpenClaw Gateway](https://github.com/openclaw/openclaw)** installed and running
 - **Any major LLM** — Claude CLI (default), OpenAI, Gemini, or Ollama. See [LLM-Agnostic](#-llm-agnostic-recovery-new-in-v33)
 - `tmux`, `jq` (`brew install tmux jq` or `apt install tmux jq`)
 
 > **Note:** While this was built for OpenClaw Gateway, the watchdog/recovery architecture works for **any service**. See [docs/configuration.md](docs/configuration.md) to adapt it.
 
-### Install (5 minutes)
+### Option 1: One-line Install (macOS / Linux)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ramsbaby/openclaw-self-healing/main/install.sh | bash
@@ -84,6 +103,17 @@ The installer walks you through everything:
 
 🎉 Self-Healing System Active!
 ```
+
+### Option 2: Docker Compose
+
+```bash
+git clone https://github.com/Ramsbaby/openclaw-self-healing.git
+cd openclaw-self-healing
+cp .env.example .env   # edit with your config
+docker compose up -d
+```
+
+> See [docs/DOCKER.md](docs/DOCKER.md) for full configuration guide.
 
 ### Verify It Works
 
@@ -118,7 +148,7 @@ graph TD
     J -->|"Autonomous diagnosis & fix"| K{Fixed?}
     K -->|Yes| Z
     K -->|No| L[Level 4: Human Alert]
-    L -->|"Discord / Telegram"| M[👤 Manual Fix]
+    L -->|"Discord / Slack / Telegram"| M[👤 Manual Fix]
 
     style A fill:#74c0fc
     style B fill:#74c0fc
@@ -134,7 +164,7 @@ graph TD
 | **1** | LaunchAgent KeepAlive | Any crash | Instant restart (0–30s) |
 | **2** | Watchdog v4.1 + HealthCheck | Repeated crashes | PID + HTTP + memory monitoring, exponential backoff |
 | **3** | AI Emergency Recovery | 30min continuous failure | PTY session → log analysis → auto-fix (Claude/GPT-4/Gemini/Ollama) |
-| **4** | Human Alert | All automation fails | Discord/Telegram with full context |
+| **4** | Human Alert | All automation fails | Discord/Slack/Telegram with full context |
 
 **Level 0 (new in v3.2):** Catches config corruption, missing .env keys, and broken JSON *before* the gateway even starts — preventing crash loops from bad config entirely.
 
@@ -183,14 +213,31 @@ Level 3: AI Emergency Recovery 🧠 (5-30 min)
 │
 ▼  all automation fails
 Level 4: Human Alert 🚨
-   Discord/Telegram notification with full context
+   Discord/Slack/Telegram notification with full context
    Log paths + recovery report attached
 ```
+
+### 📢 Multi-Channel Notifications
+
+Unified notification library supporting **Discord**, **Slack**, **Telegram**, and extensible adapters — one config, all channels.
+
+```bash
+# Auto-detects channel from available env vars
+# Set one (or more) of:
+DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/..."
+SLACK_WEBHOOK_URL="https://hooks.slack.com/services/..."
+TELEGRAM_BOT_TOKEN="..."  # + TELEGRAM_CHAT_ID
+
+# Or explicitly force a channel
+NOTIFICATION_CHANNEL="slack"
+```
+
+Implementation: [`scripts/lib/notify.sh`](scripts/lib/notify.sh)
 
 ### Scripts Reference
 
 | Script | Level | Purpose |
-|--------|-------|---------|
+|--------|-------|---------| 
 | `scripts/gateway-preflight.sh` | 0 | Proactive config validation before service start |
 | `scripts/gateway-watchdog.sh` | 2 | Reactive recovery after crash detection |
 | `scripts/gateway-healthcheck.sh` | 2 | HTTP health polling + Level 3 escalation |
@@ -203,7 +250,14 @@ Level 4: Human Alert 🚨
 
 ---
 
-## ✅ What v3.2 Added
+## ✅ What v3.4 Added
+
+| Before v3.4 | After v3.4 |
+|-------------|------------|
+| Docker users had to adapt manually | Docker Compose support with gateway + watchdog services |
+| Discord-only in some scripts | Unified `notify.sh` library (Discord/Slack/Telegram) |
+
+### Previous: What v3.2 Added
 
 | Before v3.2 | After v3.2 |
 |-------------|------------|
