@@ -40,12 +40,22 @@ elif [ -f "$HOME/.openclaw/.env" ]; then
   source "$HOME/.openclaw/.env"
 fi
 
-# Discord webhook from environment variable (optional)
-DISCORD_WEBHOOK="${DISCORD_WEBHOOK_URL:-}"
+# Load unified notification library (Discord / Slack / Telegram)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NOTIFY_LIB="$SCRIPT_DIR/lib/notify.sh"
+if [ -f "$NOTIFY_LIB" ]; then
+  # shellcheck source=scripts/lib/notify.sh
+  source "$NOTIFY_LIB"
+else
+  # Fallback: no-op if library missing (non-fatal)
+  send_notification() { :; }
+fi
 
-# Validate webhook URL (optional, warning only)
-if [ -z "$DISCORD_WEBHOOK" ]; then
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: DISCORD_WEBHOOK_URL not set. Notifications disabled." | tee -a "$LOG_FILE"
+# Warn if no notification channel is configured
+if [ -z "${DISCORD_WEBHOOK_URL:-}" ] && \
+   [ -z "${SLACK_WEBHOOK_URL:-}" ] && \
+   [ -z "${TELEGRAM_BOT_TOKEN:-}" ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: No notification channel configured. Set DISCORD_WEBHOOK_URL, SLACK_WEBHOOK_URL, or TELEGRAM_BOT_TOKEN." | tee -a "$LOG_FILE"
 fi
 
 # ============================================
@@ -54,24 +64,6 @@ fi
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
-}
-
-send_discord_notification() {
-  local message="$1"
-  if [ -n "$DISCORD_WEBHOOK" ]; then
-    local response_code
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
-      -X POST "$DISCORD_WEBHOOK" \
-      -H "Content-Type: application/json" \
-      -d "{\"content\": \"$message\"}" \
-      2>&1)
-    
-    if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
-      log "✅ Discord notification sent (HTTP $response_code)"
-    else
-      log "⚠️ Discord notification failed (HTTP $response_code)"
-    fi
-  fi
 }
 
 check_http() {
@@ -146,8 +138,11 @@ record_metric() {
 escalate_to_level3() {
   log "🚨 Still unhealthy after ${ESCALATION_WAIT}s, triggering emergency recovery..."
 
-  # Discord 알림 (Level 3 시작)
-  send_discord_notification "🚨 **Level 3 Emergency Recovery 시작**\n\n${ESCALATION_WAIT}초 대기 후에도 Gateway 복구 안 됨.\nClaude가 자동으로 진단 및 복구를 시도합니다.\n\n예상 소요 시간: 30분\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
+  # Notify all configured channels (Level 3 start)
+  send_notification \
+    "🚨 Level 3 Emergency Recovery 시작" \
+    "${ESCALATION_WAIT}초 대기 후에도 Gateway 복구 안 됨.\nClaude가 자동으로 진단 및 복구를 시도합니다.\n\n예상 소요 시간: 30분\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')" \
+    "error"
 
   # v3.1: Updated to emergency-recovery-v2.sh
   local emergency_script="$HOME/.openclaw/skills/openclaw-self-healing/scripts/emergency-recovery-v2.sh"
@@ -157,7 +152,10 @@ escalate_to_level3() {
     log "✅ Emergency recovery v2 started (background)"
   else
     log "❌ Emergency recovery script not found: $emergency_script"
-    send_discord_notification "🚨 **Level 3 실행 실패**\n\nEmergency recovery script not found:\n\`$emergency_script\`\n\n수동 개입 필요."
+    send_notification \
+      "🚨 Level 3 실행 실패" \
+      "Emergency recovery script not found:\n\`$emergency_script\`\n\n수동 개입 필요." \
+      "error"
   fi
 }
 
@@ -182,8 +180,11 @@ main() {
       if restart_gateway && check_http; then
         log "✅ Recovery successful on retry $i"
 
-        # Discord 알림 (복구 성공)
-        send_discord_notification "✅ **Gateway 복구 성공**\n\nLevel 2 Health Check가 Gateway를 재시작하여 복구했습니다.\n- 재시도 횟수: $i/$MAX_RETRIES\n- 현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
+        # Notify all configured channels (recovery success)
+        send_notification \
+          "✅ Gateway 복구 성공" \
+          "Level 2 Health Check가 Gateway를 재시작하여 복구했습니다.\n- 재시도 횟수: $i/$MAX_RETRIES\n- 현재 시각: $(date '+%Y-%m-%d %H:%M:%S')" \
+          "info"
 
         record_metric "recovery" "success" "$i"
         exit 0
@@ -191,11 +192,14 @@ main() {
     done
     
     log "❌ Recovery failed after $MAX_RETRIES retries"
-    log "🚨 Escalating to Level 3 (Claude Emergency Recovery)..."
+    log "🚨 Escalating to Level 3 (AI Emergency Recovery)..."
     record_metric "recovery" "failed" "$MAX_RETRIES"
 
-    # Discord 알림 (Level 3로 escalation)
-    send_discord_notification "⚠️ **Level 2 Health Check 실패**\n\nGateway를 ${MAX_RETRIES}회 재시작했으나 복구 실패.\n${ESCALATION_WAIT}초 후 Level 3 (Claude Emergency Recovery)로 escalation합니다.\n\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')"
+    # Notify all configured channels (escalating to Level 3)
+    send_notification \
+      "⚠️ Level 2 Health Check 실패" \
+      "Gateway를 ${MAX_RETRIES}회 재시작했으나 복구 실패.\n${ESCALATION_WAIT}초 후 Level 3 (AI Emergency Recovery)로 escalation합니다.\n\n현재 시각: $(date '+%Y-%m-%d %H:%M:%S')" \
+      "warning"
 
     # 5분 대기 후 최종 검증
     sleep "$ESCALATION_WAIT"
@@ -205,8 +209,11 @@ main() {
     else
       log "✅ Gateway recovered during waiting period"
 
-      # Discord 알림 (대기 중 복구됨)
-      send_discord_notification "✅ **Gateway 자동 복구됨**\n\n${ESCALATION_WAIT}초 대기 중 Gateway가 스스로 복구되었습니다.\nLevel 3 Emergency Recovery는 실행하지 않습니다."
+      # Notify all configured channels (self-healed during wait)
+      send_notification \
+        "✅ Gateway 자동 복구됨" \
+        "${ESCALATION_WAIT}초 대기 중 Gateway가 스스로 복구되었습니다.\nLevel 3 Emergency Recovery는 실행하지 않습니다." \
+        "info"
       
       record_metric "recovery" "self_healed" 0
     fi
