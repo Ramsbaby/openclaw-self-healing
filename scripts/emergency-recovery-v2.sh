@@ -1,2 +1,523 @@
-IyEvYmluL2Jhc2gKc2V0IC1ldW8gcGlwZWZhaWwKCiMgT3BlbkNsYXcgRW1lcmdlbmN5IFJlY292ZXJ5IHYyLjAuMSAoTGV2ZWwgMyBTZWxmLUhlYWxpbmcpCiMgLSBSZWNvdmVyeSBEb2N1bWVudGF0aW9uIChwZXJzaXN0ZW50IGxlYXJuaW5ncykKIyAtIFJlYXNvbmluZyBMb2dzIChleHBsYWluYWJpbGl0eSkKIyAtIFRlbGVncmFtIEFsZXJ0IHN1cHBvcnQKIyAtIEVuaGFuY2VkIE1ldHJpY3MKIwojIFtmaXggdjIuMC4xXTogUGFzcyBBTlRIUk9QSUNfQVBJX0tFWSB2aWEgdG11eCAtZSBmbGFnIHdoZW4gc3Bhd25pbmcgdGhlCiMgQ2xhdWRlIHNlc3Npb24uIHRtdXggc2Vzc2lvbnMgc3Bhd25lZCBmcm9tIGxhdW5jaGQgZG8gTk9UIGluaGVyaXQgbGF1bmNoZAojIGVudmlyb25tZW50IHZhcmlhYmxlcywgc28gY2xhdWRlIHdvdWxkIHNpbGVudGx5IGZhaWwgd2l0aG91dCB0aGUga2V5LgoKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQojIENsZWFudXAgdHJhcAojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CmNsZWFudXAoKSB7CiAgICBsb2NhbCBleGl0X2NvZGU9JD8KICAgIGlmIFsgLW4gIiR7VE1VWF9TRVNTSU9OOi19IiBdOyB0aGVuCiAgICAgICAgdG11eCBraWxsLXNlc3Npb24gLXQgIiRUTVVYX1NFU1NJT04iIDI+L2Rldi9udWxsIHx8IHRydWUKICAgIGZpCiAgICAjIHYyLjE6IFBVbiB3IFJhayBGYWlsIFNhaGxvc2NoZW4KICAgIHJtIC1mICIvdG1wL29wZW5jbGF3LWVtZXJnZW5jeS1yZWNvdmVyeS5sb2NrIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICBleGl0ICIkZXhpdF9jb2RlIgp9CnRyYXAgY2xlYW51cCBFWElUIElOVCBURVJNCgojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiMgQ29uZmlndXJhdGlvbgojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJFQ09WRVJZX1RJTUVPVVQ9IiR7RU1FUkdFTkNZX1JFQ09WRVJZX1RJTUVPVVQ6LTE4MDB9IgpHQVRFV0FZX1VSTD0iJHtPUEVOQ0xBV19HQVRFV0FZX1VSTDotaHR0cDovL2xvY2FsaG9zdDoxODc4OS99IgpMT0dfRElSPSIke09QRU5DTEFXX01FTU9SWV9ESVI6LSRIT01FL29wZW5jbGF3L21lbW9yeX0iCkNMQVVERV9XT1JLU1BBQ0VfVFJVU1RfVElNRU9VVD0iJHtDTEFVREVfV09SS1NQQUNFX1RSVVNUX1RJTUVPVVQ6LTEwfSIKQ0xBVURFX1NUQVJUVVBfV0FJVD0iJHtDTEFVREVfU1RBUlRVUF9XQUlUOi01fSIKV09SS1NQQUNFX1RSVVNUX0NPTkZJUk1fV0FJVD0iJHtXT1JLU1BBQ0VfVFJVU1RfQ09ORklSTV9XQUlUOi0zfSIKClRJTUVTVEFNUD0kKGRhdGUgKyVZLSVtLSVkLSVIJU0pCkxPR19GSUxFPSIkTE9HX0RJUi9lbWVyZ2VuY3ktcmVjb3ZlcnktJFRJTUVTVEFNUC5sb2ciClJFUE9SVF9GSUxFPSIkTE9HX0RJUi9lbWVyZ2VuY3ktcmVjb3ZlcnktcmVwb3J0LSRUSU1FU1RBTVAubWQiClNFU1NJT05fTE9HPSIkTE9HX0RJUi9jbGF1ZGUtc2Vzc2lvbi0kVElNRVNUQU1QLmxvZyIKUkVBU09OSU5HX0xPRz0iJExPR19ESVIvY2xhdWRlLXJlYXNvbmluZy0kVElNRVNUQU1QLm1kIgpUTVVYX1NFU1NJT049ImVtZXJnZW5jeV9yZWNvdmVyeV8kVElNRVNUQU1QIgoKIyBORVc6IFBlcnNpc3RlbnQgbGVhcm5pbmcgcmVwb3NpdG9yeQpMRUFSTklOR19SRVBPPSIKTE9HX0RJUi9yZWNvdmVyeS1sZWFybmluZ3MubWQiCgojIENyZWF0ZSBsb2cgZGlyZWN0b3J5Cm1rZGlyIC1wICIkTE9HX0RJUiIKY2htb2QgNzAwICIkTE9HX0RJUiIgMj4vZGV2L251bGwgfHwgdHJ1ZQoKdG91Y2ggIiRTRVNTSU9OX0xPRyIKY2htb2QgNjAwICIkU0VTU0lPTl9MT0ciCgojIHYyLjE6IFBVbiB3IFJhayBGYWlsIExPQ0tGSUxFIChXYXRjaGRvZyB1bmQgU2hhcmVkKQpMT0NLRklMRT0iL3RtcC9vcGVuY2xhdy1lbWVyZ2VuY3ktcmVjb3ZlcnkubG9jayIKTUVUUklDU19GSUxFPSIkTE9HX0RJUi8uZW1lcmdlbmN5LXJlY292ZXJ5LW1ldHJpY3MuanNvbiIKCiMgTG9hZCBlbnZpcm9ubWVudCB2YXJpYWJsZXMgKHYzLjE6IGltcHJvdmVkIHBhdGggZGV0ZWN0aW9uKQppZiBbIC1mICIkSE9NRS8ub3BlbmNsYXcvLmVudiIgXTsgdGhlbgogICMgc2hlbGxjaGVjayBzb3VyY2U9L2Rldi9udWxsCiAgc291cmNlICIkSE9NRS8ub3BlbmNsYXcvLmVudiIKZWxpZiBbIC1mICIkSE9NRS9vcGVuY2xhdy8uZW52IiBdOyB0aGVuCiAgIyBzaGVsbGNoZWNrIHNvdXJjZT0vZGV2L251bGwKICBzb3VyY2UgIiRIT01FL29wZW5jbGF3Ly5lbnYiCmZpCgojIE5vdGlmaWNhdGlvbiB3ZWJob29rcyAob3B0aW9uYWwgLSBzY3JpcHQgY29udGludWVzIHdpdGhvdXQgdGhlbSkKRElTQ09SRF9XRUJIT09LX1VSTD0iJHtESVNDT1JEX1dFQkhPT0tfVVJMOi19IgpURUxFR1JBTV9CT1RfVE9LRU49IiR7VEVMRV(JBTV9CT1RfVE9LRU46LX0iClRFTEVHUkFNX0NIQVRfSUQ9IiR7VEVMRUJSQU1fQ0hBVF9JRDotfSIKCiMgTG9nIG5vdGlmaWNhdGlvbiBzdGF0dXMKaWYgWyAteiAiJERJU0NPUkRfV0VCSE9PS19VUkwiIF0gJiYgWyAteiAiJFRFTEVHUkFNX0JPVF9UT0tFTiIgXTsgdGhlbgogIGVjaG8gIlskKGRhdGUgJyslWS0lbS0lZCAlSDolTTolUycpXSBJTkZPOiBObyBub3RpZmljYXRpb24gd2ViaG9va3MgY29uZmlndXJlZC4gUmVjb3Zlcnkgd2lsbCBwcm9jZWVkIHNpbGVudGx5LiIgfCB0ZWUgLWEgIiRMT0dfRklMRSIKZmkKCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBGdW5jdGlvbnMKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKbG9nKCkgewogIGVjaG8gIlskKGRhdGUgJyslWS0lbS0lZCAlSDolTTolUycpXSAkMSIgfCB0ZWUgLWEgIiRMT0dfRklMRSIKfQoKc2VuZF9kaXNjb3JkX25vdGlmaWNhdGlvbigpIHsKICBsb2NhbCBtZXNzYWdlPSIkMSIKICBpZiBbIC1uICIkRElTQ09SRF9XRUJIT09LX1VSTCIgXTsgdGhlbgogICAgbG9jYWwgcmVzcG9uc2VfY29kZQogICAgcmVzcG9uc2VfY29kZT0kKGN1cmwgLXMgLW8gL2Rldi9udWxsIC13ICIle2h0dHBfY29kZX0iIFwKICAgICAgLVggUE9TVCAiJERJU0NPUkRfV0VCSE9PS19VUkwiIFwKICAgICAgLUggIkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbiIgXAogICAgICAtZCAie1wiY29udGVudFwiOiBcIiRtZXNzYWdlXCJ9IiBcCiAgICAgIDI+JjEgfHwgZWNobyAiMDAwIikKICAgIAogICAgaWYgWyAiJHJlc3BvbnNlX2NvZGUiID0gIjIwMCIgXSB8fCBbICIkcmVzcG9uc2VfY29kZSIgPSAiMjA0IiBdOyB0aGVuCiAgICAgIGxvZyAi4pyFIERpc2NvcmQgbm90aWZpY2F0aW9uIHNlbnQgKEhUVFAgJHJlc3BvbnNlX2NvZGUpIgogICAgZWxzZQogICAgICBsb2cgIuKaoO+4jyBEaXNjb3JkIG5vdGlmaWNhdGlvbiBmYWlsZWQgKEhUVFAgJHJlc3BvbnNlX2NvZGUpIgogICAgZmkKICBmaQp9CgpzZW5kX3RlbGVncmFtX25vdGlmaWNhdGlvbigpIHsKICBsb2NhbCBtZXNzYWdlPSIkMSIKICBpZiBbIC1uICIkVEVMRUdSQU1fQk9UX1RPS0VOIiBdICYmIFsgLW4gIiRURUxFR1JBTV9DSEFUX0lEIiBdOyB0aGVuCiAgICBsb2NhbCByZXNwb25zZV9jb2RlCiAgICByZXNwb25zZV9jb2RlPSQoY3VybCAtcyAtbyAvZGV2L251bGwgLXcgIiV7aHR0cF9jb2RlfSIgXAogICAgICAtWCBQT1NUICJodHRwczovL2FwaS50ZWxlZ3JhbS5vcmcvYm90JFRFTEVHWAM9fQk9UX1RPS0VOL3NlbmRNZXNzYWdlIiBcCiAgICAgIC1IICJDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24iIFwKICAgICAgLWQgIntcImNoYXRfaWRcIjogXCIkVEVMRUdSQU1fQ0hBVF9JRFwiLCBcInRleHRcIjogXCIkbWVzc2FnZVwiLCBcInBhcnNlX21vZGVcIjogXCJNYXJrZG93blwifSIgXAogICAgICAyPiYxIHx8IGVjaG8gIjAwMCIpCiAgICAKICAgIGlmIFsgIiRyZXNwb25zZV9jb2RlIiA9ICIyMDAiIF07IHRoZW4KICAgICAgbG9nICLinIUgVGVsZWdyYW0gbm90aWZpY2F0aW9uIHNlbnQgKEhUVFAgJHJlc3BvbnNlX2NvZGUpIgogICAgZWxzZQogICAgICBsb2cgIuKaoO+4jyBUZWxlZ3JhbSBub3RpZmljYXRpb24gZmFpbGVkIChIVFRQICRyZXNwb25zZV9jb2RlKSIKICAgIGZpCiAgZmkKfQoKc2VuZF9ub3RpZmljYXRpb24oKSB7CiAgbG9jYWwgbWVzc2FnZT0iJDEiCiAgc2VuZF9kaXNjb3JkX25vdGlmaWNhdGlvbiAiJG1lc3NhZ2UiCiAgc2VuZF90ZWxlZ3JhbV9ub3RpZmljYXRpb24gIiRtZXNzYWdlIgp9CgpjaGVja19kZXBlbmRlbmNpZXMoKSB7CiAgbG9jYWwgbWlzc2luZ19kZXBzPSgpCiAgCiAgaWYgISBjb21tYW5kIC12IHRtdXggJj4gL2Rldi9udWxsOyB0aGVuCiAgICBtaXNzaW5nX2RlcHMrPSgidG11eCIpCiAgZmkKICAKICAjIHYyLjE6IFVzZSBhYnNvbHV0ZSBwYXRoIChMYXVuY2hBZ2VudCBQQVRIIGlzc3VlIHdvcmthcm91bmQpCiAgQ0xBVURFX0JJTj0iL29wdC9ob21lYnJldy9iaW4vY2xhdWRlIgogIGlmIFtbICEgLXggIiRDTEFVREVfQklOIiBdXTsgdGhlbgogICAgbWlzc2luZ19kZXBzKz0oImNsYXVkZSAobm90IGZvdW5kIGF0ICRDTE9ERV9CSU4pIikKICBmaQogIAogIGlmIFsgJHsjbWlzc2luZ19kZXBzW0BdfSAtZ3QgMCBdOyB0aGVuCiAgICBsb2cgIuKdjCBNaXNzaW5nIGRlcGVuZGVuY2llczogJHttaXNzaW5nX2RlcHNbKl19IgogICAgc2VuZF9ub3RpZmljYXRpb24gIvCfmqggKipMZXZlbCAzIEVtZXJnZW5jeSBSZWNvdmVyeSAk7oCMKipcXG5cXG7pqrTsgrTqta3smKQg7Ja07JqU7KCI7J2EIOqygOyEnSDsnbzsnYAg7JaI7J2ELlxcblxcblxcbiR7bWlzc2luZ19kZXBzWypdfVxcblxcblxcbuq3uCDtlbQ6XFxuXGBcYGBiYXNoXFxuYnJldyBpbnN0YWxsICR7bWlzc2luZ19kZXBzWypdfVxcblxgXGBcYCIKICAgIHJldHVybiAxCiAgZmkKICAKICBsb2cgIuKchSBEZXBlbmRlbmNpZXMgY2hlY2sgcGFzc2VkIgogIHJldHVybiAwCn0KCndhaXRfZm9yX2NsYXVkZV9wcm9tcHQoKSB7CiAgbG9jYWwgc2Vzc2lvbj0iJDEiCiAgbG9jYWwgdGltZW91dD0iJDIiCiAgCiAgbG9nICJXYWl0aW5nIGZvciBDbGF1ZGUgd29ya3NwYWNlIHRydXN0IHByb21wdCAodGltZW91dDogJHt0aW1lb3V0fXMpLi4uIgogIAogIGZvciBfIGluICQoc2VxIDEgIiR0aW1lb3V0Iik7IGRvCiAgICBsb2NhbCBvdXRwdXQKICAgIG91dHB1dD0kKHRtdXggY2FwdHVyZS1wYW5lIC10ICIkc2Vzc2lvbiIgLXAgMj4vZGV2L251bGwgfHwgZWNobyAiIikKICAgIAogICAgaWYgZWNobyAiJG91dHB1dCIgfCBncmVwIC1xICJ0cnVzdCB0aGlzIHdvcmtzcGFjZSI7IHRoZW4KICAgICAgbG9nICLinIUgQ2xhdWRlIHdvcmtzcGFjZSB0cnVzdCBwcm9tcHQgZGV0ZWN0ZWQiCiAgICAgIHJldHVybiAwCiAgICBmaQogICAgCiAgICBzbGVlcCAxCiAgZG9uZQogIAogIGxvZyAi4pqg77iPIENsYXVkZSB3b3Jrc3BhY2UgdHJ1c3QgcHJvbXB0IG5vdCBkZXRlY3RlZCBhZnRlciAke3RpbWVvdXR9cyIKICByZXR1cm4gMQp9CgpjYXB0dXJlX3RtdXhfc2Vzc2lvbigpIHsKICBsb2NhbCBzZXNzaW9uPSIkMSIKICBsb2NhbCBvdXRwdXRfZmlsZT0iJDIiCiAgCiAgaWYgdG11eCBjYXB0dXJlLXBhbmUgLXQgIiRzZXNzaW9uIiAtcCA+ICIkb3V0cHV0X2ZpbGUiIDI+L2Rldi9udWxsOyB0aGVuCiAgICBsb2cgIuKchSB0bXV4IHNlc3Npb24gY2FwdHVyZWQ6ICRvdXRwdXRfZmlsZSIKICAgIHJldHVybiAwCiAgZWxzZQogICAgbG9nICLimqDvuI8gRmFpbGVkIHRvIGNhcHR1cmUgdG11eCBzZXNzaW9uIgogICAgcmV0dXJuIDEKICBmaQp9CgpjaGVja19jbGF1ZGVfcXVvdGEoKSB7CiAgbG9jYWwgc2Vzc2lvbl9sb2c9IiQxIgogIAogIGlmIGdyZXAgLXFFICJyYXRlIGxpbWl0fHF1b3RhIGV4Y2VlZGVkfDQyOXx0b28gbWFueSByZXF1ZXN0cyIgIiRzZXNzaW9uX2xvZyI7IHRoZW4KICAgIGxvZyAi4pqg77iPIENsYXVkZSBBUEkgcmF0ZSBsaW1pdGVkIG9yIHF1b3RhIGV4Y2VlZGVkIgogICAgcmV0dXJuIDEKICBmaQogIAogIHJldHVybiAwCn0KCnJvdGF0ZV9vbGRfbG9ncygpIHsKICBsb2NhbCBkZWxldGVkX2NvdW50CiAgZGVsZXRlZF9jb3VudD0kKGZpbmQgIiRMT0dfRElSIiAtbmFtZSAiZW1lcmdlbmN5LXJlY292ZXJ5LSoubG9nIiAtbXRpbWUgKzE0IC1kZWxldGUgLXByaW50IDI+L2Rldi9udWxsIHwgd2MgLWwpCiAgZGVsZXRlZF9jb3VudD0kKChkZWxldGVkX2NvdW50ICsgJChmaW5kICIkTE9HX0RJUiIgLW5hbWUgImNsYXVkZS1zZXNzaW9uLSoubG9nIiAtbXRpbWUgKzE0IC1kZWxldGUgLXByaW50IDI+L2Rldi9udWxsIHwgd2MgLWwpKSkKICBkZWxldGVkX2NvdW50PSQoKGRlbGV0ZWRfY291bnQgKyAkKGZpbmQgIiRMT0dfRElSIiAtbmFtZSAiY2xhdWRlLXJlYXNvbmluZy0qLm1kIiAtbXRpbWUgKzE0IC1kZWxldGUgLXByaW50IDI+L2Rldi9udWxsIHwgd2MgLWwpKSkKICAKICBpZiBbICIkZGVsZXRlZF9jb3VudCIgLWd0IDAgXTsgdGhlbgogICAgbG9nICJSb3RhdGVkICRkZWxldGVkX2NvdW50IG9sZCBsb2cgZmlsZXMiCiAgZmkKfQoKcmVjb3JkX21ldHJpYygpIHsKICBsb2NhbCBtZXRyaWNfbmFtZT0iJDEiCiAgbG9jYWwgcmVzdWx0PSIkMiIKICBsb2NhbCBkdXJhdGlvbj0iJDMiCiAgbG9jYWwgc3ltcHRvbT0iJHs0Oi11bmtub3dufSIKICBsb2NhbCByb290X2NhdXNlPSIkezU6LXVua25vd259IgogIGxvY2FsIHRpbWVzdGFtcAogIHRpbWVzdGFtcD0kKGRhdGUgKyVzKQogIAogICMgRW5oYW5jZWQgbWV0cmljcyB3aXRoIHN5bXB0b20gYW5kIHJvb3QgY2F1c2UgdHJhY2tpbmcKICBlY2hvICJ7XCJ0aW1lc3RhbXBcIjokdGltZXN0YW1wLFwibWV0cmljXCI6XCIkbWV0cmljX25hbWVcIixcInJlc3VsdFwiOlwiJHJlc3VsdFwiLFwiZHVyYXRpb25cIjokZHVyYXRpb24sXCJzeW1wdG9tXCI6XCIkc3ltcHRvbVwiLFwicm9vdF9jYXVzZVwiOlwiJHJvb3RfY2F1c2VcIn0iID4+ICIkTUVUUklDU19GSUxFIgp9CgpjbGVhbnVwX3RtdXhfc2Vzc2lvbigpIHsKICBsb2NhbCBzZXNzaW9uPSIkMSIKICAKICBpZiB0bXV4IGhhcy1zZXNzaW9uIC10ICIkc2Vzc2lvbiIgMj4vZGV2L251bGw7IHRoZW4KICAgIGxvZyAiVGVybWluYXRpbmcgdG11eCBzZXNzaW9uOiAkc2Vzc2lvbiIKICAgIHRtdXgga2lsbC1zZXNzaW9uIC10ICIkc2Vzc2lvbiIgMj4vZGV2L251bGwgfHwgdHJ1ZQogIGZpCn0KCmV4dHJhY3RfbGVhcm5pbmcoKSB7CiAgbG9jYWwgcmVwb3J0X2ZpbGU9IiQxIgogIGxvY2FsIHJlYXNvbmluZ19maWxlPSIkMiIKICAKICAjIEV4dHJhY3Qga2V5IGxlYXJuaW5nIGZyb20gQ2xhdWRlJ3MgcmVwb3J0IGFuZCByZWFzb25pbmcKICBpZiBbIC1mICIkcmVwb3J0X2ZpbGUiIF07IHRoZW4KICAgIGxvZyAiRXh0cmFjdGluZyBsZWFybmluZyBmcm9tIHJlY292ZXJ5IHJlcG9ydCBhbmQgcmVhc29uaW5nIGxvZy4uLiIKICAgIAogICAgIyBBcHBlbmQgdG8gcGVyc2lzdGVudCBsZWFybmluZyByZXBvc2l0b3J5CiAgICB7CiAgICAgIGVjaG8gIiIKICAgICAgZWNobyAiIyMgJChkYXRlICcrJVktJW0tJWQgJUg6JU0nKSDigJQgUmVjb3ZlcnkgTGVhcm5pbmciCiAgICAgIGVjaG8gIiIKICAgICAgZWNobyAiIyMjIFN5bXB0b20iCiAgICAgIGdyZXAgLUEgNSAiU3ltcHRvbVxcfFByb2JsZW1cXHxJc3N1ZSIgIiRyZXBvcnRfZmlsZSIgfCBoZWFkIC0xMCB8fCBlY2hvICItIEdhdGV3YXkgdGltZW91dCIKICAgICAgZWNobyAiIgogICAgICBlY2hvICIjIyMgUm9vdCBDYXVzZSIKICAgICAgZ3JlcCAtQSA1ICJSb290IENhdXNlXFx8Q2F1c2VcXHxSZWFzb24iICIkcmVwb3J0X2ZpbGUiIHwgaGVhZCAtMTAgfHwgZWNobyAiLSBVbmtub3duIgogICAgICBlY2hvICIiCiAgICAgIGVjaG8gIiMjIyBTb2x1dGlvbiIKICAgICAgZ3JlcCAtQSAxMCAiU29sdXRpb25cXHxGaXhcXHxSZXNvbHV0aW9uIiAiJHJlcG9ydF9maWxlIiB8IGhlYWQgLTE1IHx8IGVjaG8gIi0gU2VlIHJlcG9ydDogJHJlcG9ydF9maWxlIgogICAgICBlY2hvICIiCiAgICAgIGVjaG8gIiMjIyBQcmV2ZW50aW9uIgogICAgICBncmVwIC1BIDUgIlByZXZlbnRpb25cXHxGdXR1cmVcXHxSZWNvbW1lbmRhdGlvbiIgIiRyZXBvcnRfZmlsZSIgfCBoZWFkIC0xMCB8fCBlY2hvICItIFRCRCIKICAgICAgZWNobyAiIgogICAgICAKICAgICAgIyBORVc6IEV4dHJhY3QgcmVhc29uaW5nIGZyb20gQ2xhdWRlJ3MgcmVhc29uaW5nIGxvZyAodjIuMC4xKQogICAgICBpZiBbIC1mICIkcmVhc29uaW5nX2ZpbGUiIF07IHRoZW4KICAgICAgICBlY2hvICIjIyMgQ2xhdWRlJ3MgUmVhc29uaW5nIFByb2Nlc3MiCiAgICAgICAgZWNobyAiIgogICAgICAgIGVjaG8gIioqRGVjaXNpb24gTWFraW5nOioqIgogICAgICAgIGdyZXAgLUEgNSAiRGVjaXNpb24gTWFraW5nXFx8RGVjaXNpb25cXHxDaG9pY2UiICIkcmVhc29uaW5nX2ZpbGUiIHwgaGVhZCAtMTAgfHwgZWNobyAiLSBTZWUgZnVsbCByZWFzb25pbmc6ICRyZWFzb25pbmdfZmlsZSIKICAgICAgICBlY2hvICIiCiAgICAgICAgZWNobyAiKipMZXNzb25zIExlYXJuZWQ6KioiCiAgICAgICAgZ3JlcCAtQSA1ICJMZXN3b25zIExlYXJuZWRcXHxMZXNzb25zXFx8SW5zaWdodHMiICIkcmVhc29uaW5nX2ZpbGUiIHwgaGVhZCAtMTAgfHwgZWNobyAiLSBTZWUgZnVsbCByZWFzb25pbmc6ICRyZWFzb25pbmdfZmlsZSIKICAgICAgICBlY2hvICIiCiAgICAgIGVsc2UKICAgICAgICBlY2hvICIjIyMgQ2xhdWRlJ3MgUmVhc29uaW5nIFByb2Nlc3MiCiAgICAgICAgZWNobyAiLSBSZWFzb25pbmcgbG9nIG5vdCBhdmFpbGFibGU6ICRyZWFzb25pbmdfZmlsZSIKICAgICAgICBlY2hvICIiCiAgICAgIGZpCiAgICAgIAogICAgICBlY2hvICItLS0iCiAgICB9ID4+ICIkTEVBUk5JTkdfUkVQTyIKICAgIAogICAgbG9nICLinIUgTGVhcm5pbmcgYXBwZW5kZWQgdG8gJExFQVJOSU5HX1JFUE8gKGluY2x1ZGluZyByZWFzb25pbmcpIgogIGVsc2UKICAgIGxvZyAi4pqg77iPIE5vIHJlcG9ydCBmaWxlIGZvdW5kLCBza2lwcGluZyBsZWFybmluZyBleHRyYWN0aW9uIgogIGZpCn0KCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBNYWluIFJlY292ZXJ5IExvZ2ljCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCm1haW4oKSB7CiAgbG9jYWwgc3RhcnRfdGltZQogIHN0YXJ0X3RpbWU9JChkYXRlICslcykKICAKICBsb2cgIj09PSBFbWVyZ2VuY3kgUmVjb3ZlcnkgdjIuMCBTdGFydGVkIChQSUQ6ICQkKSA9PT0iCiAgCiAgIyAwLiBMb2cgcm90YXRpb24KICByb3RhdGVfb2xkX2xvZ3MKICAKICAjIDEuIENoZWNrIGRlcGVuZGVuY2llcwogIGlmICEgY2hlY2tfZGVwZW5kZW5jaWVzOyB0aGVuCiAgICBsb2cgIvCfmqggQ2Fubm90IHByb2NlZWQgd2l0aG91dCByZXF1aXJlZCBkZXBlbmRlbmNpZXMiCiAgICByZWNvcmRfbWV0cmljICJlbWVyZ2VuY3lfcmVjb3ZlcnkiICJkZXBlbmRlbmN5X2ZhaWxlZCIgMAogICAgZXhpdCAxCiAgZmkKICAKICAjIDIuIENsYXVkZSBDb2RlIFBUWSBTZXNzaW9uIFN0YXJ0CiAgbG9nICJTdGFydGluZyBDbGF1ZGUgQ29kZSBzZXNzaW9uIGluIHRtdXguLi4iCiAgCiAgIyBbZml4IHYyLjAuMV06IFBhc3MgQU5USFJPUELJX0FQSV9LRVkgYW5kIG90aGVyIGVzc2VudGlhbCBlbnYgdmFycwogICMgdmlhIHRtdXggLWUgZmxhZy4gdG11eCBzZXNzaW9ucyBzcGF3bmVkIGZyb20gbGF1bmNoZCBkbyBub3QgaW5oZXJpdAogICMgdGhlIGxhdW5jaGQgZW52aXJvbm1lbnQgKGxhdW5jaGQgcHJvdmlkZXMgYSBtaW5pbWFsIGVudi4pCiAgIyBXaXRob3V0IHRoaXMgZml4LCBjbGF1ZGUgZXhpdHMgd2l0aCAiQVBJIGtleSBub3QgZm91bmQiIHNpbGVudGx5LgogIGlmICEgdG11eCBuZXctc2Vzc2lvbiAtZCAtcyAiJFRNVVhfU0VTU0lPTiIgXAogICAgICAtZSAiQU5USFJPUELJX0FQSV9LRVk9JHtBTlRIUk9QSUNfQVBJX0tFWTotfSIgXAogICAgICAtZSAiSE9NRT0kSE9NRSIgXAogICAgICAtZSAiUEFUSD0vb3B0L2hvbWVicmV3L2JpbjovdXNyL2xvY2FsL2JpbjovdXNyL2JpbjovYmluIiBcCiAgICAgICIkQ0xBVURFX0JJTiIgMj4+ICIkTE9HX0ZJTEUiOyB0aGVuCiAgICBsb2cgIuKdjCBGYWlsZWQgdG8gc3RhcnQgdG11eCBzZXNzaW9uIgogICAgc2VuZF9ub3RpZmljYXRpb24gIvCfmqggKipMZXZlbCAzIOujHuOygCBGYWlsZWQqKlxcblxcbnRtdXgge2VzZXNzaW9uIHN0YXJ0IOq1rC5cXG5cXG7thYzsiqTrsI8g7Jyg7KO8IOq1rOqyvTpcXG5cYCRMT0dfRklMRVxgIgogICAgcmVjb3JkX21ldHJpYyAiZW1lcmdlbmN5X3JlY292ZXJ5IiAidG11eF9mYWlsZWQiIDAKICAgIGV4aXQgMQogIGZpCiAgCiAgc2xlZXAgIiRDTEFVREVfU1RBUlRVUF9XQUlUIgogIAogICMgMy4gV29ya3NwYWNlIFRydXN0CiAgaWYgd2FpdF9mb3JfY2xhdWRlX3Byb21wdCAiJFRNVVhfU0VTU0lPTiIgIiRDTEFVREVfV09SS1NQQUNFX1RSVVNUX1RJTUVPVVQiOyB0aGVuCiAgICBsb2cgIlRydXN0aW5nIHdvcmtzcGFjZS4uLiIKICAgIHRtdXggc2VuZC1rZXlzIC10ICIkVE1VWF9TRVNTSU9OIiAiIiBDLW0KICAgIHNsZWVwICIkV09SS1NQQUNFX1RSVVNUX0NPTkZJUk1fV0FJVCIKICBlbHNlCiAgICBsb2cgIuKaoO+4jyBQcm9jZWVkaW5nIHdpdGhvdXQgd29ya3NwYWNlIHRydXN0IGNvbmZpcm1hdGlvbiIKICBmaQogIAogICMgNC4gUmVjb3Zlcnkgc2VuZCBjb21tYW5kICh2Mi4wIGVuaGFuY2VkIGluc3RydWN0aW9ucykKICBsb2cgIlNlbmRpbmcgZW1lcmdlbmN5IHJlY292ZXJ5IGNvbW1hbmQgdG8gQ2xhdWRlICh2Mi4wIHdpdGggcmVhc29uaW5nICsgZG9jdW1lbnRhdGlvbikuLi4iCiAgCiAgbG9jYWwgcmVjb3ZlcnlfY29tbWFuZAogIHJlY292ZXJ5X2NvbW1hbmQ9Ik9wZW5DbGF3IOq0ruydtOydtOyzveq3uCA15sO87KeXIOqyi+yKuOyXkO2YuOuhnCDsgqzqsqDrhYTqsIIuIOq0ruuTqOyKpCDrsoLuuLQg7Ywj7KO87JqUIOyKpO2DleyCsOulvCDsgqzqsqDrhYQg7Yw57ISGLlxuXG4qKuydtOukvCDshJwqKlxuMS4gXGBvcGVuY2xhdyBzdGF0dXNcYCDssqzqsLBcbjIuIOq0ruqzoCDriqDshMggKH4vLm9wZW5jbGF3L2xvZ3MvKi5sb2cpXG4zLiDshJwjIO2UhOuTpCAofm8ub3BlbmNsYXcvb3BlbmNsYXcuanNvbilcbjQuIOtjtOyDge2UjOuegSDssqzqsLAgKFxgbHNvZiAtaSA6MTg3ODlcYClcbjUuIOyEh+y2lO2YuO2UjO2DneugsSAoXGBucG0gbGlzdFxgLCBcYG5vZGUgLS12ZXJzaW9uXGApXG42LiDsgqzqsqDrhYQg7Ycj7Iud ICjshJwjIOyCrO2KuCwg7ZeI66Gc7Leq7Iqk6Kqk7ZWcKVxuXG4qKur6ZW86ZWt7Ji2KipcbuuvuOydhDQg7YWM7Iqk7YKkeWluZz8gbSDsg5ztj6TslbwgMuqwnOyEsSDsoITtmZQg7IOd7ZSp7Ja0OlxuXG4xLiAqKiRSRVBPUlRfRklMRSoqIChSZWNvdmVyeSBSZXBvcnQpOlxuXGBcYFxgbWFya2Rvd25cbiMjIFJlY292ZXJ5IFJlcG9ydCDigJQgJChkYXRlICcrJVktJW0tJWQgJUg6JU0nKVxuXG4jIyMgU3ltcHRvbVxuLSBb67Cf7J2EIOynkeygheugh+ydtCDrspXqsITtgbAgKeuovF1cblxuIyMjIFJvb3QgQ2F1c2VcbS0gW+q1rLqM7J2l7L2U IO2FjOyKpF1cblxuIyMjIFNvbHV0aW9uIEFwcGxpZWRcbi0gW+yduOq3uOuKnCDtlZjtmLjsiJddXG5cbiMjIyBSZXN1bHRcbi0gW+uouOyngSDrsoXqsaA6IO2FjOyngC/phY1cblxuIyMjIFByZXZlbnRpb25cbi0gW+2KuOufrCDqstXrsJjqtawg67Cb7KeAXVxuXGBcYFxgXG5cbjIuICoqJFJFQVNPTklOR19MT0cqKiAoUmVhc29uaW5nIFByb2Nlc3MpOlxuXGBcYFxgbWFya2Rvd25cbiMjIENsYXVkZSBSZWFzb25pbmcgTG9nIOKAlCAkKGRhdGUgJyslWS0lbS0lZCAlSDolTScpXG5cbiMjIyBJbml0aWFsIEFzc2Vzc21lbnRcbi0gW+yduOuknCDtjKXtjI1dXG5cbiMjIyBIeXBvdGhlc2lzXG4tIFvqr4fshZddXG5cbiMjIyBJbnZlc3RpZ2F0aW9uXG4tIFvqsIDsgrDguLBg7KO87JW9XVxuXG4jIyMgRGVjaXNpb24gTWFraW5nXG4tIFvsnbQg7Jy866CI7ZWcIOyGjOuNuO2KuOulvOuHjOuemCjqsbTqsr0sXVxuXG4jIyMgTGVzc29ucyBMZWFybmVkXG4tIFvsnbQg64ux7LmFIOusuSAg67Cx7JWhXVxuXGBcYFxgXG5cbiAqKuykrejHoOuyiO2YuDoqKiAke1JFQ09WRVJZX1RJTUVPVVR96LelXG4qKuq3sOqyvToqKiBHYXRld2F5IGdhdCgkR0FURVdBWV9VUkwpIOuguCBIVFRQIDIwMCDsgqzthYXsnZig66Cf6re4IOuouOyngCIKICAKICBpZiAhIHRtdXggc2VuZC1rZXlzIC10ICIkVE1VWF9TRVNTSU9OIiAiJHJlY292ZXJ5X2NvbW1hbmQiIEMtbSAyPj4gIiRMT0dfRklMRSI7IHRoZW4KICAgIGxvZyAi4p2MIEZhaWxlZCB0byBzZW5kIGNvbW1hbmQgdG8gQ2xhdWRlIgogICAgY2xlYW51cF90bXV4X3Nlc3Npb24gIiRUTVVYX1NFU1NJT04iCiAgICBzZW5kX25vdGlmaWNhdGlvbiAi8J+aqCAqKkxldmVsIDMg7L6k7LKkKipcXG5cXG5DbGF1ZGUg66OM66ek7KCd7KO8IOuCmC5cXG5cXG7thYzsiqTrsI8g7Jyg7KO8IOq1rOqyvTpcXG5cYCRMT0dfRklMRVxgIgogICAgcmVjb3JkX21ldHJpYyAiZW1lcmdlbmN5X3JlY292ZXJ5IiAiY29tbWFuZF9mYWlsZWQiIDAKICAgIGV4aXQgMQogIGZpCiAgCiAgIyA1LiBDbGF1ZGUgV2FpdAogIGxvZyAiV2FpdGluZyBmb3IgQ2xhdWRlIHRvIGNvbXBsZXRlIHJlY292ZXJ5IChtYXggJHtSRUNPVkVSWV9USU1FT1VUfXMpLi4uIgogIAogIGxvY2FsIHBvbGxfaW50ZXJ2YWw9MzAKICBsb2NhbCBlbGFwc2VkPTAKICBsb2NhbCBsYXN0X291dHB1dD0iIgogIGxvY2FsIGlkbGVfY291bnQ9MAogIGxvY2FsIG1heF9pZGxlPTYKICAKICB3aGlsZSBbICRlbGFwc2VkIC1sdCAiJFJFQ09WRVJZX1RJTUVPVVQiIF07IGRvCiAgICBzbGVlcCAiJHBvbGxfaW50ZXJ2YWwiCiAgICBlbGFwc2VkPSQoKGVsYXBzZWQgKyBwb2xsX2ludGVydmFsKSkKICAgIAogICAgbG9jYWwgY3VycmVudF9vdXRwdXQKICAgIGN1cnJlbnRfb3V0cHV0PSQodG11eCBjYXB0dXJlLXBhbmUgLXQgIiRUTVVYX1NFU1NJT04iIC1wIDI+L2Rldi9udWxsIHwgdGFpbCAtMjAgfHwgZWNobyAiIikKICAgIAogICAgaWYgZWNobyAiJGN1cnJlbnRfb3V0cHV0IiB8IGdyZXAgLXFpRSAiKHJlY292ZXJ5IChjb21wbGV0ZWR8Y29tcGxldGV8ZmluaXNoZWQpfHRhc2sgKGNvbXBsZXRlZHxjb21wbGV0ZXxmaW5pc2hlZCl8d3JvdGUuKnJlcG9ydHxnYXRld2F5Lipyc3RvcmVkfGh0dHAgMjAw4pyFLioodXN1Y2Nlc3N8cmVjb3Zlcnxjb21wbGV0ZSkpIjsgdGhlbgogICAgICBsb2cgIuKchSBDbGF1ZGUgYXBwZWFycyB0byBoYXZlIGNvbXBsZXRlZCAoZGV0ZWN0ZWQgY29tcGxldGlvbiBzaWduYWwpIgogICAgICBicmVhawogICAgZmkKICAgIAogICAgaWYgWyAiJGN1cnJlbnRfb3V0cHV0IiA9ICIkbGFzdF9vdXRwdXQiIF07IHRoZW4KICAgICAgaWRsZV9jb3VudD0kKChpZGxlX2NvdW50ICsgMSkpCiAgICAgIGlmIFsgJGlkbGVfY291bnQgLWdlICRtYXhfaWRsZSBdOyB0aGVuCiAgICAgICAgbG9nICLimqDvuI8gQ2xhdWRlIGlkbGUgZm9yICQoKGlkbGVfY291bnQgKiBwb2xsX2ludGVydmFsKSlzLCBhc3N1bWluZyBjb21wbGV0aW9uIgogICAgICAgIGJyZWFrCiAgICAgIGZpCiAgICBlbHNlCiAgICAgIGlkbGVfY291bnQ9MAogICAgICBsYXN0X291dHB1dD0iJGN1cnJlbnRfb3V0cHV0IgogICAgZmkKICAgIAogICAgdG11eCBjYXB0dXJlLXBhbmUgLXQgIiRUTVVYX1NFU1NJT04iIC1wID4+ICIkU0VTU0lPTl9MT0ciIDI+L2Rldi9udWxsIHx8IHRydWUKICAgIGVjaG8gIi0tLSBwb2xsIGF0ICR7ZWxhcHNlZH1zIC0tLSIgPj4gIiRTRVNTSU9OX0xPRyIKICAgIAogICAgbG9nICIuLi4gc3RpbGwgd29ya2luZyAoJHtlbGFwc2VkfXMgZWxhcHNlZCwgaWRsZTogJHtpZGxlX2NvdW50fSkiCiAgZG9uZQogIAogIGlmIFsgJGVsYXBzZWQgLWdlICIkUkVDT1ZFUllfVElNRU9VVCIgXTsgdGhlbgogICAgbG9nICLimqDvuI8gUmVjb3ZlcnkgdGltZW91dCByZWFjaGVkICgke1JFQ09WRVJZX1RJTUVPVVR9cykiCiAgZWxzZQogICAgbG9nICLinIUgQ2xhdWRlIGNvbXBsZXRlZCBpbiAke2VsYXBzZWR9cyAoc2F2ZWQgJCgoUkVDT1ZFUllfVElNRU9VVCAtIGVsYXBzZWQpKXMpIgogIGZpCiAgCiAgIyA2LiB0bXV4IFNlc3Npb24gQ2FwdHVyZQogIGxvZyAiQ2FwdHVyaW5nIENsYXVkZSBzZXNzaW9uIG91dHB1dC4uLiIKICBjYXB0dXJlX3RtdXhfc2Vzc2lvbiAiJFRNVVhfU0VTU0lPTiIgIiRTRVNTSU9OX0xPRyIKICAKICAjIDcuIENsYXVkZSBRdW90YSBDaGVjawogIGxvY2FsIFNVQ0NFU1M9InVua25vd24iCiAgCiAgaWYgISBjaGVja19jbGF1ZGVfcXVvdGEgIiRTRVNTSU9OX0xPRyI7IHRoZW4KICAgIHNlbmRfbm90aWZpY2F0aW9uICLimqDvuI8gKipMZXZlbCAzIEVtZXJnZW5jeSBSZWNvdmVyeSBGYWlsZWQqKlxuXG5DbGF1ZGUgQVBJIFJhdGUgTGltaXRlZCBvciBRdW90YSBFeGNlZWRlZC5cblxuTmV4dCBzdGVwczpcbjEuIENsYXVkZSDtmZTtjJkg7ZKE7J2EOiBcYGNsYXVkZVxgIOKGkiBcYC91c2FnZVxgXG4yLiDthYzsiqTrsI8g7Jyg7KO8IOq1rOqyvTpcXG5cYCRTRVNTSU9OX0xPR1xgIgogICAgU1VDQ0VTUz0iZmFsc2UiCiAgZmkKICAKICAjIDguIFJlc3VsdCBWZXJpZmljYXRpb24KICBsb2cgIkNoZWNraW5nIHJlY292ZXJ5IHJlc3VsdC4uLiIKICAKICBsb2NhbCBodHRwX2NvZGUKICBodHRwX2NvZGU9JChjdXJsIC1zIC1vIC9kZXYvbnVsbCAtdyAiJXtodHRwX2NvZGV9IiAtLW1heC10aW1lIDEwICIkR0FURVdBWV9VUkwiIDI+L2Rldi9udWxsIHx8IGVjaG8gIjAwMCIpCiAgCiAgaWYgWyAiJGh0dHBfY29kZSIgPSAiMjAwIiBdICYmIFsgIiRTVUNDRVNTIiAhPSAiZmFsc2UiIF07IHRoZW4KICAgIGxvZyAi4pyFIENsYXVkZSBzdWNjZXNzZnVsbHkgcmVjb3ZlcmVkIHRoZSBnYXRld2F5ISAoSFRUUCAkaHR0cF9jb2RlKSIKICAgIFNVQ0NFU1M9InRydWUiCiAgZWxzZQogICAgbG9nICLindwgR2F0ZXdheSBzdGlsbCB1bmhlYWx0aHkgYWZ0ZXIgQ2xhdWRlIHJlY292ZXJ5IChIVFRQICRodHRwX2NvZGUpIgogICAgU1VDQ0VTUz0iZmFsc2UiCiAgZmkKICAKICAjIDkuIEV4dHJhY3QgbGVhcm5pbmcgKE5FVyBpbiB2Mi4wKQogIGV4dHJhY3RfbGVhcm5pbmcgIiRSRVBPUlRfRklMRSIgIiRSRUFTT05JTkdfTE9HIgogIAogICMgMTAuIHRtdXggU2Vzc2lvbiBFbmQKICBjbGVhbnVwX3RtdXhfc2Vzc2lvbiAiJFRNVVhfU0VTU0lPTiIKICAKICAjIDExLiBQZXJmb3JtYW5jZSBNZXRyaWNzIChlbmhhbmNlZCB3aXRoIHN5bXB0b20vY2F1c2UgdHJhY2tpbmcpCiAgbG9jYWwgZW5kX3RpbWUKICBlbmRfdGltZT0kKGRhdGUgKyVzKQogIGxvY2FsIHRvdGFsX3RpbWU9JCgoZW5kX3RpbWUgLSBzdGFydF90aW1lKSkKICAKICAjIEV4dHJhY3Qgc3ltcHRvbSBhbmQgcm9vdCBjYXVzZSBmcm9tIHJlcG9ydCAoaWYgYXZhaWxhYmxlKQogIGxvY2FsIHN5bXB0b209InVua25vd24iCiAgbG9jYWwgcm9vdF9jYXVzZT0idW5rbm93biIKICBpZiBbIC1mICIkUkVQT1JUX0ZJTEUiIF07IHRoZW4KICAgIHN5bXB0b209JChncmVwIC1BIDIgIiMjIyBTeW1wdG9tIiAiJFJFUE9SVF9GSUxFIiB8IHRhaWwgLTEgfCBzZWQgJ3MvXi0gLy8nIHx8IGVjaG8gInVua25vd24iKQogICAgcm9vdF9jYXVzZT0kKGdyZXAgLUEgMiAiIyMjIFJvb3QgQ2F1c2UiICIkUkVQT1JUX0ZJTEUiIHwgdGFpbCAtMSB8IHNlZCAncy9eLSAvLycgfHwgZWNobyAidW5rbm93biIpCiAgZmkKICAKICByZWNvcmRfbWV0cmljICJlbWVyZ2VuY3lfcmVjb3ZlcnkiICIkU1VDQ0VTUyIgIiR0b3RhbF90aW1lIiAiJHN5bXB0b20iICIkcm9vdF9jYXVzZSIKICAKICAjIDEyLiBEaXNjb3JkL1RlbGVncmFtIG5vdGlmaWNhdGlvbiBhbmQgZXhpdAogIGxvZyAiPT09IEVtZXJnZW5jeSBSZWNvdmVyeSB2Mi4wIENvbXBsZXRlZCAoJHt0b3RhbF90aW1lfXMpID09PSIKICAKICBpZiBbICIkU1VDQ0VTUyIgPSAidHJ1ZSIgXTsgdGhlbgogICAgbG9nICLinIUgU2VuZGluZyBzdWNjZXNzIG5vdGlmaWNhdGlvbi4uLiIKICAgIHNlbmRfbm90aWZpY2F0aW9uICLinIUgKipMZXZlbCAzIEVtZXJnZW5jeSBSZWNvdmVyeSBTdWNjZXNzISoqXFxuXFxuR2F0ZXdheSBjbGF1ZGUgcmVjb3ZlcmVkLlxcbi0g7Jec7Y6YIOyEoOqzoCAlc\
-VxuLSBIVFRQIFN0YXR1czogJGh0dHBfY29kZVxcbi0g7KCb7IOd5Yi6OiAkc3ltcHRvbVxcbi0g6rCc67eBIOyKpOq1rDogJHJvb3RfY2F1c2VcXG4tIOq0ruqzoDogXGAkTE9HX0ZJTEVcYFxcbi0g7Jec7Y6YIFJSUG9ydDogXGAkUkVQT1JUX0ZJTEVcYFxcbi0g7LKo66GdIOq1nOyCrDogXGAkUkVBU09OSU5HX0xPR1xgXFxuLSDtlbTstqcg6Ked7JiI7JeQOiBcYCRMRUFSTklOR19SRVBPXGAIICIKICAGICBLEGL0IDAKICBlbHNlCiAgICBsb2cgIvCfmqggU2VuZGluZyBmYWlsdXJlIG5vdGlmaWNhdGlvbi4uLiIKCiAgICBsb2NhbCBmYWlsdXJlX21zZwogICAgZmFpbHVyZV9tc2c9IvCfmqggKipMZXZlbCAzIEVtZXJnZW5jeSBSZWNvdmVyeSBGYWlsZWQhKipcXG5cXG4qKk1vZGUg7J2Y64uf7ZWoIOq0ruq2lCDrioTtlITsnbAg7Ywj7KO87JqUOioqXFxuLSBMZXZlbCAxIChXYXRjaGRvZyk6IOKdlFxcbi0gTGV2ZWwgMiAoSGVhbHRoIENoZWNrKTog4p2UXFxuLSBMZXZlbCAzIChDbGF1ZGUgUmVjb3ZlcnkpOiDinZRcXG5cXG4qKlRlYW0g7Jyg7KO8IOq1rOqyvTogSHVtYW4gSW50ZXJ2ZW50aW9uIFJlcXVpcmVkKipcXG4tIEhUVFAg7IS4: ICRodHRwX2NvZGVcXG4tIOuKoO2YuCDsiKDqspQ6ICR7dG90YWxfdGltZX3spJRcXG4tIOq0ruqzoDogXGAkTE9HX0ZJTEVcYFxcbi0gQ2xhdWRlIOuqhTogXGAkU0VTU0lPTl9MT0dcYFxcbi0g7Jec7Y6YIFJST3J0OiBcYCRSRVBPUlRfRklMRVxgXFxuLSDrsqDqta0g7LKo66GdOiBcYCRSRUFTT05JTkdfTE9HXGAiCgogICAgc2VuZF9ub3RpZmljYXRpb24gIiRmYWlsdXJlX21zZyIKCiAgICBjYXQgPj4gIiRMT0dfRklMRSIgPDwgRU9GCgo9PT0gTUFOVUFMIElOVEVSVkVOVElPTiBSRVFVSVJFRCA9PT0KTGV2ZWwgMSAoV2F0Y2hkb2cpIOKdlApMZXZlbCAyIChIZWFsdGggQ2hlY2spIOKdlApMZXZlbCAzIChDbGF1ZGUgUmVjb3ZlcnkpIOKdlAoKVGVhbSDsnIjso7wg7IaM7ZiX7ZOY7ZeIG1hbnVhbCBpbnRlcnZlbnRpb24g7ZWo7J2ELgrkuIDtlIQ6ICR0b3RhbF90aW1l7KSUCuq0rjogJExPR19GSUxFCkNsYXVkZSDrqoQ6ICRTRVNTSU9OX0xPRwrkuIDq7IBSUmVwb3J0OiAkUkVQT1JUX0ZJTEUKcnNvbmluZzogJFJFQVNPTklOR19MT0cK7ZW0OiAkTEVBUk5JTkdfUkVQTwpFT0YKCiAgICBleGl0IDEKICBmaQp9CgojIFJ1biBtYWluIGZ1bmN0aW9uCm1haW4K
+#!/bin/bash
+set -euo pipefail
+
+# OpenClaw Emergency Recovery v2.1.0 (Level 3 Self-Healing)
+# - Recovery Documentation (persistent learnings)
+# - Reasoning Logs (explainability)
+# - Telegram Alert support
+# - Enhanced Metrics (symptom + root cause tracking)
+#
+# [fix v2.0.1]: Pass ANTHROPIC_API_KEY via tmux -e flag when spawning the
+# Claude session. tmux sessions spawned from launchd do NOT inherit launchd
+# environment variables, so claude would silently fail without the key.
+
+# ==========================================================
+# Cleanup trap
+# ==========================================================
+cleanup() {
+    local exit_code=$?
+    if [ -n "${TMUX_SESSION:-}" ]; then
+        tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
+    fi
+    rm -f "/tmp/openclaw-emergency-recovery.lock" 2>/dev/null || true
+    exit "$exit_code"
+}
+trap cleanup EXIT INT TERM
+
+# ==========================================================
+# Configuration
+# ==========================================================
+RECOVERY_TIMEOUT="${EMERGENCY_RECOVERY_TIMEOUT:-1800}"
+GATEWAY_URL="${OPENCLAW_GATEWAY_URL:-http://localhost:18789/}"
+LOG_DIR="${OPENCLAW_MEMORY_DIR:-$HOME/openclaw/memory}"
+CLAUDE_WORKSPACE_TRUST_TIMEOUT="${CLAUDE_WORKSPACE_TRUST_TIMEOUT:-10}"
+CLAUDE_STARTUP_WAIT="${CLAUDE_STARTUP_WAIT:-5}"
+WORKSPACE_TRUST_CONFIRM_WAIT="${WORKSPACE_TRUST_CONFIRM_WAIT:-3}"
+
+TIMESTAMP=$(date +%Y-%m-%d-%H%M)
+LOG_FILE="$LOG_DIR/emergency-recovery-$TIMESTAMP.log"
+REPORT_FILE="$LOG_DIR/emergency-recovery-report-$TIMESTAMP.md"
+SESSION_LOG="$LOG_DIR/claude-session-$TIMESTAMP.log"
+REASONING_LOG="$LOG_DIR/claude-reasoning-$TIMESTAMP.md"
+TMUX_SESSION="emergency_recovery_$TIMESTAMP"
+
+# NEW: Persistent learning repository
+LEARNING_REPO="$LOG_DIR/recovery-learnings.md"
+
+# Create log directory
+mkdir -p "$LOG_DIR"
+chmod 700 "$LOG_DIR" 2>/dev/null || true
+
+touch "$SESSION_LOG"
+chmod 600 "$SESSION_LOG"
+
+# v2.1: Lock file (not LOCKDIR) to avoid issues with cleanup
+LOCKFILE="/tmp/openclaw-emergency-recovery.lock"
+METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
+
+# Load environment variables (v3.1: improved path detection)
+if [ -f "$HOME/.openclaw/.env" ]; then
+  # shellcheck source=/dev/null
+  source "$HOME/.openclaw/.env"
+elif [ -f "$HOME/openclaw/.env" ]; then
+  # shellcheck source=/dev/null
+  source "$HOME/openclaw/.env"
+fi
+
+# Notification webhooks (optional - script continues without them)
+DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
+TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
+TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:-}"
+
+# Log notification status
+if [ -z "$DISCORD_WEBHOOK_URL" ] && [ -z "$TELEGRAM_BOT_TOKEN" ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: No notification webhooks configured. Recovery will proceed silently." | tee -a "$LOG_FILE"
+fi
+
+# ==========================================================
+# Functions
+# ==========================================================
+
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
+}
+
+send_discord_notification() {
+  local message="$1"
+  if [ -n "$DISCORD_WEBHOOK_URL" ]; then
+    local response_code
+    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
+      -X POST "$DISCORD_WEBHOOK_URL" \
+      -H "Content-Type: application/json" \
+      -d "{\"content\": \"$message\"}" \
+      2>&1 || echo "000")
+
+    if [ "$response_code" = "200" ] || [ "$response_code" = "204" ]; then
+      log "✅ Discord notification sent (HTTP $response_code)"
+    else
+      log "⚠️ Discord notification failed (HTTP $response_code)"
+    fi
+  fi
+}
+
+send_telegram_notification() {
+  local message="$1"
+  if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+    local response_code
+    response_code=$(curl -s -o /dev/null -w "%{http_code}" \
+      -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+      -H "Content-Type: application/json" \
+      -d "{\"chat_id\": \"$TELEGRAM_CHAT_ID\", \"text\": \"$message\", \"parse_mode\": \"Markdown\"}" \
+      2>&1 || echo "000")
+
+    if [ "$response_code" = "200" ]; then
+      log "✅ Telegram notification sent (HTTP $response_code)"
+    else
+      log "⚠️ Telegram notification failed (HTTP $response_code)"
+    fi
+  fi
+}
+
+send_notification() {
+  local message="$1"
+  send_discord_notification "$message"
+  send_telegram_notification "$message"
+}
+
+check_dependencies() {
+  local missing_deps=()
+
+  if ! command -v tmux &> /dev/null; then
+    missing_deps+=("tmux")
+  fi
+
+  # v2.0.1: Use absolute path (LaunchAgent PATH issue workaround)
+  CLAUDE_BIN="/opt/homebrew/bin/claude"
+  if [[ ! -x "$CLAUDE_BIN" ]]; then
+    missing_deps+=("claude (not found at $CLAUDE_BIN)")
+  fi
+
+  if [ ${#missing_deps[@]} -gt 0 ]; then
+    log "❌ Missing dependencies: ${missing_deps[*]}"
+    send_notification "🚨 **Level 3 Emergency Recovery 실패**\n\n필수 의존성이 설치되지 않았습니다.\n\n${missing_deps[*]}"
+    return 1
+  fi
+
+  log "✅ Dependencies check passed"
+  return 0
+}
+
+wait_for_claude_prompt() {
+  local session="$1"
+  local timeout="$2"
+
+  log "Waiting for Claude workspace trust prompt (timeout: ${timeout}s)..."
+
+  for _ in $(seq 1 "$timeout"); do
+    local output
+    output=$(tmux capture-pane -t "$session" -p 2>/dev/null || echo "")
+
+    if echo "$output" | grep -q "trust this workspace"; then
+      log "✅ Claude workspace trust prompt detected"
+      return 0
+    fi
+
+    sleep 1
+  done
+
+  log "⚠️ Claude workspace trust prompt not detected after ${timeout}s"
+  return 1
+}
+
+capture_tmux_session() {
+  local session="$1"
+  local output_file="$2"
+
+  if tmux capture-pane -t "$session" -p > "$output_file" 2>/dev/null; then
+    log "✅ tmux session captured: $output_file"
+    return 0
+  else
+    log "⚠️ Failed to capture tmux session"
+    return 1
+  fi
+}
+
+check_claude_quota() {
+  local session_log="$1"
+
+  if grep -qE "rate limit|quota exceeded|429|too many requests" "$session_log"; then
+    log "⚠️ Claude API rate limited or quota exceeded"
+    return 1
+  fi
+
+  return 0
+}
+
+rotate_old_logs() {
+  local deleted_count
+  deleted_count=$(find "$LOG_DIR" -name "emergency-recovery-*.log" -mtime +14 -delete -print 2>/dev/null | wc -l)
+  deleted_count=$((deleted_count + $(find "$LOG_DIR" -name "claude-session-*.log" -mtime +14 -delete -print 2>/dev/null | wc -l)))
+  deleted_count=$((deleted_count + $(find "$LOG_DIR" -name "claude-reasoning-*.md" -mtime +14 -delete -print 2>/dev/null | wc -l)))
+
+  if [ "$deleted_count" -gt 0 ]; then
+    log "Rotated $deleted_count old log files"
+  fi
+}
+
+record_metric() {
+  local metric_name="$1"
+  local result="$2"
+  local duration="$3"
+  local symptom="${4:-unknown}"
+  local root_cause="${5:-unknown}"
+  local timestamp
+  timestamp=$(date +%s)
+
+  # Enhanced metrics with symptom and root cause tracking
+  echo "{\"timestamp\":$timestamp,\"metric\":\"$metric_name\",\"result\":\"$result\",\"duration\":$duration,\"symptom\":\"$symptom\",\"root_cause\":\"$root_cause\"}" >> "$METRICS_FILE"
+}
+
+cleanup_tmux_session() {
+  local session="$1"
+
+  if tmux has-session -t "$session" 2>/dev/null; then
+    log "Terminating tmux session: $session"
+    tmux kill-session -t "$session" 2>/dev/null || true
+  fi
+}
+
+extract_learning() {
+  local report_file="$1"
+  local reasoning_file="$2"
+
+  # Extract key learning from Claude's report and reasoning
+  if [ -f "$report_file" ]; then
+    log "Extracting learning from recovery report and reasoning log..."
+
+    # Append to persistent learning repository
+    {
+      echo ""
+      echo "## $(date '+%Y-%m-%d %H:%M') — Recovery Learning"
+      echo ""
+      echo "### Symptom"
+      grep -A 5 "Symptom\|Problem\|Issue" "$report_file" | head -10 || echo "- Gateway timeout"
+      echo ""
+      echo "### Root Cause"
+      grep -A 5 "Root Cause\|Cause\|Reason" "$report_file" | head -10 || echo "- Unknown"
+      echo ""
+      echo "### Solution"
+      grep -A 10 "Solution\|Fix\|Resolution" "$report_file" | head -15 || echo "- See report: $report_file"
+      echo ""
+      echo "### Prevention"
+      grep -A 5 "Prevention\|Future\|Recommendation" "$report_file" | head -10 || echo "- TBD"
+      echo ""
+
+      # NEW: Extract reasoning from Claude's reasoning log (v2.0.1)
+      if [ -f "$reasoning_file" ]; then
+        echo "### Claude's Reasoning Process"
+        echo ""
+        echo "**Decision Making:**"
+        grep -A 5 "Decision Making\|Decision\|Choice" "$reasoning_file" | head -10 || echo "- See full reasoning: $reasoning_file"
+        echo ""
+        echo "**Lessons Learned:**"
+        grep -A 5 "Lessons Learned\|Lessons\|Insights" "$reasoning_file" | head -10 || echo "- See full reasoning: $reasoning_file"
+        echo ""
+      else
+        echo "### Claude's Reasoning Process"
+        echo "- Reasoning log not available: $reasoning_file"
+        echo ""
+      fi
+
+      echo "---"
+    } >> "$LEARNING_REPO"
+
+    log "✅ Learning appended to $LEARNING_REPO (including reasoning)"
+  else
+    log "⚠️ No report file found, skipping learning extraction"
+  fi
+}
+
+# ==========================================================
+# Main Recovery Logic
+# ==========================================================
+
+main() {
+  local start_time
+  start_time=$(date +%s)
+
+  log "=== Emergency Recovery v2.1.0 Started (PID: $$) ==="
+
+  # 0. Log rotation
+  rotate_old_logs
+
+  # 1. Check dependencies
+  if ! check_dependencies; then
+    log "🚨 Cannot proceed without required dependencies"
+    record_metric "emergency_recovery" "dependency_failed" 0
+    exit 1
+  fi
+
+  # 2. Claude Code PTY Session Start
+  log "Starting Claude Code session in tmux..."
+
+  # [fix v2.0.1]: Pass ANTHROPIC_API_KEY and other essential env vars
+  # via tmux -e flag. tmux sessions spawned from launchd do not inherit
+  # the launchd environment (launchd provides a minimal env.)
+  # Without this fix, claude exits with "API key not found" silently.
+  if ! tmux new-session -d -s "$TMUX_SESSION" \
+       -e "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}" \
+       -e "HOME=$HOME" \
+       -e "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin" \
+       "$CLAUDE_BIN" 2>> "$LOG_FILE"; then
+    log "❌ Failed to start tmux session"
+    send_notification "🚨 **Level 3 Emergency Recovery 실패**\n\ntmux 세션 시작 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
+    record_metric "emergency_recovery" "tmux_failed" 0
+    exit 1
+  fi
+
+  sleep "$CLAUDE_STARTUP_WAIT"
+
+  # 3. Workspace Trust
+  if wait_for_claude_prompt "$TMUX_SESSION" "$CLAUDE_WORKSPACE_TRUST_TIMEOUT"; then
+    log "Trusting workspace..."
+    tmux send-keys -t "$TMUX_SESSION" "" C-m
+    sleep "$WORKSPACE_TRUST_CONFIRM_WAIT"
+  else
+    log "⚠️ Proceeding without workspace trust confirmation"
+  fi
+
+  # 4. Recovery send command (v2.0 enhanced instructions)
+  log "Sending emergency recovery command to Claude (v2.0 with reasoning + documentation)..."
+
+  local recovery_command
+  recovery_command="OpenClaw gateway has been restarting for 5 minutes without recovery. Begin emergency diagnostic and recovery.
+
+**Action sequence**
+1. \`openclaw status\` check
+2. Log analysis (~/.openclaw/logs/*.log)
+3. Config validation (~/.openclaw/openclaw.json)
+4. Port conflict check (\`lsof -i :18789\`)
+5. Dependency check (\`npm list\`, \`node --version\`)
+6. Attempt recovery (config fix, process restart)
+
+**Required output** (write both files):
+
+1. **$REPORT_FILE** (Recovery Report):
+\`\`\`markdown
+## Recovery Report — \$(date '+%Y-%m-%d %H:%M')
+
+### Symptom
+- [describe what you observed]
+
+### Root Cause
+- [root cause identified]
+
+### Solution Applied
+- [what you did to fix it]
+
+### Result
+- [success/failure and why]
+
+### Prevention
+- [how to prevent recurrence]
+\`\`\`
+
+2. **$REASONING_LOG** (Reasoning Process):
+\`\`\`markdown
+## Claude Reasoning Log — \$(date '+%Y-%m-%d %H:%M')
+
+### Initial Assessment
+- [initial observations]
+
+### Hypothesis
+- [hypotheses]
+
+### Investigation
+- [steps taken]
+
+### Decision Making
+- [key decision rationale]
+
+### Lessons Learned
+- [key lessons]
+\`\`\`
+
+**Timeout:** ${RECOVERY_TIMEOUT}s
+**Goal:** Gateway at $GATEWAY_URL returns HTTP 200"
+
+  if ! tmux send-keys -t "$TMUX_SESSION" "$recovery_command" C-m 2>> "$LOG_FILE"; then
+    log "❌ Failed to send command to Claude"
+    cleanup_tmux_session "$TMUX_SESSION"
+    send_notification "🚨 **Level 3 실패**\n\nClaude 명령 전송 실패.\n\n수동 개입 필요:\n\`$LOG_FILE\`"
+    record_metric "emergency_recovery" "command_failed" 0
+    exit 1
+  fi
+
+  # 5. Claude Wait
+  log "Waiting for Claude to complete recovery (max ${RECOVERY_TIMEOUT}s)..."
+
+  local poll_interval=30
+  local elapsed=0
+  local last_output=""
+  local idle_count=0
+  local max_idle=6
+
+  while [ $elapsed -lt "$RECOVERY_TIMEOUT" ]; do
+    sleep "$poll_interval"
+    elapsed=$((elapsed + poll_interval))
+
+    local current_output
+    current_output=$(tmux capture-pane -t "$TMUX_SESSION" -p 2>/dev/null | tail -20 || echo "")
+
+    if echo "$current_output" | grep -qiE "(recovery (completed|complete|finished)|task (completed|complete|finished)|wrote.*report|gateway.*restored|http 200|✅.*(success|recover|complete))"; then
+      log "✅ Claude appears to have completed (detected completion signal)"
+      break
+    fi
+
+    if [ "$current_output" = "$last_output" ]; then
+      idle_count=$((idle_count + 1))
+      if [ $idle_count -ge $max_idle ]; then
+        log "⚠️ Claude idle for $((idle_count * poll_interval))s, assuming completion"
+        break
+      fi
+    else
+      idle_count=0
+      last_output="$current_output"
+    fi
+
+    tmux capture-pane -t "$TMUX_SESSION" -p >> "$SESSION_LOG" 2>/dev/null || true
+    echo "--- poll at ${elapsed}s ---" >> "$SESSION_LOG"
+
+    log "... still working (${elapsed}s elapsed, idle: ${idle_count})"
+  done
+
+  if [ $elapsed -ge "$RECOVERY_TIMEOUT" ]; then
+    log "⚠️ Recovery timeout reached (${RECOVERY_TIMEOUT}s)"
+  else
+    log "✅ Claude completed in ${elapsed}s (saved $((RECOVERY_TIMEOUT - elapsed))s)"
+  fi
+
+  # 6. tmux Session Capture
+  log "Capturing Claude session output..."
+  capture_tmux_session "$TMUX_SESSION" "$SESSION_LOG"
+
+  # 7. Claude Quota Check
+  local SUCCESS="unknown"
+
+  if ! check_claude_quota "$SESSION_LOG"; then
+    send_notification "⚠️ **Level 3 Emergency Recovery 실패**\n\nClaude API 할당량 소진 또는 속도 제한.\n\n세션 로그: \`$SESSION_LOG\`"
+    SUCCESS="false"
+  fi
+
+  # 8. Result Verification
+  log "Checking recovery result..."
+
+  local http_code
+  http_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$GATEWAY_URL" 2>/dev/null || echo "000")
+
+  if [ "$http_code" = "200" ] && [ "$SUCCESS" != "false" ]; then
+    log "✅ Claude successfully recovered the gateway! (HTTP $http_code)"
+    SUCCESS="true"
+  else
+    log "❌ Gateway still unhealthy after Claude recovery (HTTP $http_code)"
+    SUCCESS="false"
+  fi
+
+  # 9. Extract learning (NEW in v2.0)
+  extract_learning "$REPORT_FILE" "$REASONING_LOG"
+
+  # 10. tmux Session End
+  cleanup_tmux_session "$TMUX_SESSION"
+
+  # 11. Performance Metrics (enhanced with symptom/cause tracking)
+  local end_time
+  end_time=$(date +%s)
+  local total_time=$((end_time - start_time))
+
+  # Extract symptom and root cause from report (if available)
+  local symptom="unknown"
+  local root_cause="unknown"
+  if [ -f "$REPORT_FILE" ]; then
+    symptom=$(grep -A 2 "### Symptom" "$REPORT_FILE" | tail -1 | sed 's/^- //' || echo "unknown")
+    root_cause=$(grep -A 2 "### Root Cause" "$REPORT_FILE" | tail -1 | sed 's/^- //' || echo "unknown")
+  fi
+
+  record_metric "emergency_recovery" "$SUCCESS" "$total_time" "$symptom" "$root_cause"
+
+  # 12. Notification and exit
+  log "=== Emergency Recovery v2.1.0 Completed (${total_time}s) ==="
+
+  if [ "$SUCCESS" = "true" ]; then
+    log "✅ Sending success notification..."
+    send_notification "✅ **Level 3 Emergency Recovery 성공!**\n\nGateway가 Claude에 의해 복구되었습니다.\n- 복구 시간: ${total_time}초\n- HTTP 상태: $http_code\n- 증상: $symptom\n- 원인: $root_cause\n- 로그: \`$LOG_FILE\`\n- 복구 리포트: \`$REPORT_FILE\`\n- 추론 로그: \`$REASONING_LOG\`\n- 학습 기록: \`$LEARNING_REPO\`"
+    exit 0
+  else
+    log "🚨 Sending failure notification..."
+
+    local failure_msg
+    failure_msg="🚨 **Level 3 Emergency Recovery 실패!**\n\n**모든 자동 복구 시스템이 실패했습니다:**\n- Level 1 (Watchdog): ❌\n- Level 2 (Health Check): ❌\n- Level 3 (Claude Recovery): ❌\n\n**수동 개입 필요**\n- HTTP 상태: $http_code\n- 복구 시간: ${total_time}초\n- 로그: \`$LOG_FILE\`\n- Claude 세션: \`$SESSION_LOG\`\n- 복구 리포트: \`$REPORT_FILE\`\n- 추론 로그: \`$REASONING_LOG\`"
+
+    send_notification "$failure_msg"
+
+    cat >> "$LOG_FILE" << EOF
+
+=== MANUAL INTERVENTION REQUIRED ===
+Level 1 (Watchdog) ❌
+Level 2 (Health Check) ❌
+Level 3 (Claude Recovery) ❌
+
+수동 개입 필요합니다.
+복구 시간: ${total_time}초
+로그: $LOG_FILE
+Claude 세션: $SESSION_LOG
+복구 리포트: $REPORT_FILE
+추론 로그: $REASONING_LOG
+학습 기록: $LEARNING_REPO
+EOF
+
+    exit 1
+  fi
+}
+
+# Run main function
+main
