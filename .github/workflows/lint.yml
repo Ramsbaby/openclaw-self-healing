@@ -1,0 +1,29 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint shell scripts
+        run: |
+          echo "🔍 Checking bash syntax for all .sh files..."
+          FAILED=0
+          while IFS= read -r f; do
+            if bash -n "$f"; then
+              echo "  ✅ OK: $f"
+            else
+              echo "  ❌ FAIL: $f"
+              FAILED=1
+            fi
+          done < <(find . -name "*.sh" -not -path "./.git/*")
+          if [[ $FAILED -ne 0 ]]; then
+            echo ""
+            echo "❌ One or more scripts have syntax errors."
+            exit 1
+          fi
+          echo ""
+          echo "✅ All scripts passed bash -n syntax check."
