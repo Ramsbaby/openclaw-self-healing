@@ -9,6 +9,9 @@
 # Or with custom OpenClaw workspace:
 #   curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash -s -- --workspace ~/my-openclaw
 #
+# Preview without installing:
+#   curl -sSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash -s -- --dry-run
+#
 
 set -euo pipefail
 
@@ -17,6 +20,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Defaults
@@ -24,6 +28,7 @@ OPENCLAW_WORKSPACE="${OPENCLAW_WORKSPACE:-$HOME/openclaw}"
 OPENCLAW_CONFIG_DIR="${OPENCLAW_CONFIG_DIR:-$HOME/.openclaw}"
 REPO_URL="https://github.com/Ramsbaby/openclaw-self-healing"
 REPO_RAW="https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main"
+DRY_RUN=false
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -32,11 +37,16 @@ while [[ $# -gt 0 ]]; do
             OPENCLAW_WORKSPACE="$2"
             shift 2
             ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
         --help|-h)
-            echo "Usage: $0 [--workspace PATH]"
+            echo "Usage: $0 [--workspace PATH] [--dry-run]"
             echo ""
             echo "Options:"
             echo "  --workspace PATH    OpenClaw workspace directory (default: ~/openclaw)"
+            echo "  --dry-run           Preview what would be installed without making changes"
             exit 0
             ;;
         *)
@@ -52,6 +62,93 @@ echo "║     🦞 OpenClaw Self-Healing System Installer             ║"
 echo "║     \"The system that heals itself\"                        ║"
 echo "╚═══════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DRY-RUN MODE: simulate installation without making any changes
+# ─────────────────────────────────────────────────────────────────────────────
+if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${CYAN}╔═══════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║  🔍 DRY RUN — nothing will be installed or modified       ║${NC}"
+    echo -e "${CYAN}╚═══════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${BLUE}What this installer would do:${NC}"
+    echo ""
+
+    # Simulate prerequisite check
+    echo -e "${BLUE}[Pre-flight] Checking prerequisites...${NC}"
+    local_missing=()
+    command -v openclaw &>/dev/null  || local_missing+=("openclaw")
+    command -v tmux     &>/dev/null  || local_missing+=("tmux")
+    command -v claude   &>/dev/null  || local_missing+=("claude (Claude Code CLI)")
+    command -v curl     &>/dev/null  || local_missing+=("curl")
+    if [[ ${#local_missing[@]} -gt 0 ]]; then
+        echo -e "${YELLOW}   ⚠️  Missing prerequisites (install before running):${NC}"
+        for item in "${local_missing[@]}"; do
+            echo "      - $item"
+        done
+    else
+        echo -e "${GREEN}   ✅ All prerequisites present${NC}"
+    fi
+    echo ""
+
+    # Simulate directory creation
+    echo -e "${BLUE}[Step 1] Directories that would be created:${NC}"
+    echo "   📁 $OPENCLAW_WORKSPACE/scripts"
+    echo "   📁 $OPENCLAW_WORKSPACE/memory"
+    echo "   📁 $OPENCLAW_CONFIG_DIR"
+    echo "   📁 $OPENCLAW_CONFIG_DIR/skills/openclaw-self-healing/scripts"
+    echo "   📁 $OPENCLAW_CONFIG_DIR/logs"
+    echo "   📁 $OPENCLAW_CONFIG_DIR/watchdog"
+    echo "   📁 $HOME/Library/LaunchAgents"
+    echo ""
+
+    # Simulate script downloads
+    echo -e "${BLUE}[Step 2] Scripts that would be downloaded to${NC}"
+    echo "         $OPENCLAW_CONFIG_DIR/skills/openclaw-self-healing/scripts/ :"
+    echo "   📄 gateway-watchdog.sh          (Level 2 — reactive watchdog)"
+    echo "   📄 gateway-healthcheck.sh       (Level 2 — HTTP health polling)"
+    echo "   📄 emergency-recovery-v2.sh     (Level 3 — AI autonomous recovery)"
+    echo "   📄 emergency-recovery-monitor.sh (Level 3 — recovery session monitor)"
+    echo ""
+
+    # Simulate environment setup
+    echo -e "${BLUE}[Step 3] Environment file that would be created:${NC}"
+    echo "   📄 $OPENCLAW_CONFIG_DIR/.env"
+    echo "      → Discord webhook URL (optional, prompted)"
+    echo "      → OpenClaw gateway port (default: 18789)"
+    echo ""
+
+    # Simulate LaunchAgent installation
+    echo -e "${BLUE}[Step 4] LaunchAgents that would be installed:${NC}"
+    echo "   🔧 ai.openclaw.watchdog          → $HOME/Library/LaunchAgents/ai.openclaw.watchdog.plist"
+    echo "      Runs every 3 minutes (StartInterval=180)"
+    echo "   🔧 com.openclaw.healthcheck      → $HOME/Library/LaunchAgents/com.openclaw.healthcheck.plist"
+    echo "      Runs every 5 minutes (StartInterval=300)"
+    echo ""
+
+    # Tier cascade simulation
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${CYAN}  5-Tier Recovery Chain — would be activated:${NC}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    sleep 0.3
+    echo -e "  ${GREEN}✓${NC} Level 0: Pre-flight validation              ${GREEN}READY${NC}"
+    sleep 0.3
+    echo -e "  ${GREEN}✓${NC} Level 1: KeepAlive (instant restart)         ${GREEN}READY${NC}"
+    sleep 0.3
+    echo -e "  ${GREEN}✓${NC} Level 2: Watchdog + HealthCheck (3-5 min)    ${GREEN}READY${NC}"
+    sleep 0.3
+    echo -e "  ${GREEN}✓${NC} Level 3: AI Emergency Recovery (auto-trigger) ${GREEN}READY${NC}"
+    sleep 0.3
+    echo -e "  ${GREEN}✓${NC} Level 4: Discord/Telegram Human Alert         ${GREEN}READY${NC}"
+    echo ""
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "${YELLOW}  No changes were made.${NC}"
+    echo -e "${GREEN}  Run without --dry-run to install.${NC}"
+    echo ""
+    exit 0
+fi
 
 # Check OS — route Linux to dedicated installer
 check_os() {
