@@ -13,6 +13,7 @@
 [![Recovery Rate](https://img.shields.io/badge/autonomous_recovery-64%25-brightgreen)](README.md)
 [![LLM-Agnostic](https://img.shields.io/badge/AI-Claude%20%7C%20GPT--4%20%7C%20Gemini%20%7C%20Ollama-blueviolet)](README.md)
 [![Prometheus](https://img.shields.io/badge/metrics-Prometheus%20%2F%20Grafana-orange)](README.md)
+[![Lint](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/lint.yml/badge.svg)](https://github.com/Ramsbaby/openclaw-self-healing/actions/workflows/lint.yml)
 
 [🚀 Quick Start](#-quick-start) · [🎬 Demo](#-demo) · [🏗️ Architecture](#️-architecture) · [📖 Docs](docs/)
 
@@ -66,6 +67,39 @@ Your service crashes at midnight. A basic watchdog restarts it — but what if t
 | Zero vendor lock-in | ✅ | ✅ | ✅ MIT |
 
 The gap that matters: when a crash loop is caused by something that can't be fixed by restarting alone, every other tool pages you. This one tries to fix it first.
+
+---
+
+## ⚡ Try It First (Dry Run)
+
+Not ready to commit? Preview exactly what the installer will do — no changes made:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash -s -- --dry-run
+```
+
+Sample output:
+
+```
+╔═══════════════════════════════════════════════════════════╗
+║  🔍 DRY RUN — nothing will be installed or modified       ║
+╚═══════════════════════════════════════════════════════════╝
+
+[Pre-flight] All prerequisites present ✅
+
+[Step 1] Directories that would be created: ~/.openclaw/...
+[Step 2] Scripts that would be downloaded: gateway-watchdog.sh, ...
+[Step 3] Environment file: ~/.openclaw/.env
+[Step 4] LaunchAgents: ai.openclaw.watchdog, com.openclaw.healthcheck
+
+  ✓ Level 0: Pre-flight validation              READY
+  ✓ Level 1: KeepAlive (instant restart)         READY
+  ✓ Level 2: Watchdog + HealthCheck (3-5 min)    READY
+  ✓ Level 3: AI Emergency Recovery (auto-trigger) READY
+  ✓ Level 4: Discord/Telegram Human Alert         READY
+
+  Run without --dry-run to install.
+```
 
 ---
 
@@ -251,6 +285,7 @@ Implementation: [`scripts/lib/notify.sh`](scripts/lib/notify.sh)
 | `scripts/gateway-healthcheck.sh` | 2 | HTTP health polling + Level 3 escalation |
 | `scripts/emergency-recovery-v2.sh` | 3 | AI autonomous diagnosis and repair |
 | `scripts/emergency-recovery-monitor.sh` | 3 | Monitor active recovery sessions |
+| `scripts/incident-digest.sh` | ops | Weekly incident report with autonomy rate |
 | `scripts/lib/llm-gateway.sh` | 3 | LLM-agnostic wrapper (Claude/GPT-4/Gemini/Ollama) |
 | `scripts/lib/notify.sh` | all | Unified notification dispatcher (Discord/Slack/Telegram) |
 | `scripts/prometheus-exporter.py` | obs | Prometheus metrics HTTP server |
@@ -365,9 +400,40 @@ Implementation: [`scripts/prometheus-exporter.py`](scripts/prometheus-exporter.p
 
 ---
 
+## 📊 Weekly Incident Digest
+
+Generate a Markdown report of the last 7 days of incidents:
+
+```bash
+# Print to stdout
+bash scripts/incident-digest.sh
+
+# Print + post to Discord
+bash scripts/incident-digest.sh --discord
+```
+
+Sample output:
+
+```markdown
+## 📊 Weekly Incident Digest
+
+**Period**: 2026-03-18 → 2026-03-25
+
+| Metric | Value |
+|--------|-------|
+| Total incidents | 7 |
+| Auto-resolved | 5 (71%) |
+| Escalated to human | 2 |
+| Autonomy rate | 71% |
+
+✅ System performing well (autonomy rate on target)
+```
+
+---
+
 ## 🗺️ Roadmap
 
-**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)** · **Prometheus metrics exporter (v3.3)** · **Multi-channel notifications — Discord/Slack/Telegram (v3.4)** · **Docker Compose support (v3.4)**
+**✅ Done:** 4-tier architecture · Claude AI integration · `install.sh` automation · Linux systemd · Level 2→3 auto-escalation · Discord/Telegram alerts · Preflight validation (v3.2) · **LLM-agnostic layer — Claude, GPT-4, Gemini, Ollama (v3.3)** · **Prometheus metrics exporter (v3.3)** · **Multi-channel notifications — Discord/Slack/Telegram (v3.4)** · **Docker Compose support (v3.4)** · **`--dry-run` demo mode** · **Weekly incident digest**
 
 **🚧 Next:** Grafana dashboard template · Multi-node clusters
 
