@@ -17,6 +17,8 @@
 
 [🚀 Quick Start](#-quick-start) · [🎬 Demo](#-demo) · [🏗️ Architecture](#️-architecture) · [📖 Docs](docs/)
 
+[![한국어](https://img.shields.io/badge/lang-한국어-blue)](README.ko.md)
+
 </div>
 
 <p align="center">
