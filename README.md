@@ -125,9 +125,9 @@ curl -fsSL https://raw.githubusercontent.com/ramsbaby/openclaw-self-healing/main
 The installer walks you through everything:
 
 ```
-╔═══════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════╗
 ║  🦞 OpenClaw Self-Healing System Installer    ║
-╚═══════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════╝
 
 [1/6] Checking prerequisites...          ✅
 [2/6] Creating directories...            ✅
@@ -222,6 +222,20 @@ Based on an audit of 14 real incidents (Feb 2026):
 | 38+ crash loop | ⛔ Stopped by design (prevents infinite loops) |
 
 **9 of 14 incidents resolved fully autonomously.** The remaining 5 escalated correctly to Level 4 — the system worked as designed.
+
+---
+
+## ✅ Deployment Validation
+
+After installation, verify your self-healing system actually works:
+
+```bash
+bash scripts/validate-deployment.sh
+```
+
+This checks all 5 levels — binary paths, LaunchAgent status, watchdog health, AI recovery capability, and notification delivery. See [docs/DEPLOYMENT-VALIDATION.md](docs/DEPLOYMENT-VALIDATION.md) for the full manual checklist and common pitfalls.
+
+> **Pro tip:** Run this after every OS update or `brew upgrade` — path changes are the #1 cause of self-healing failures in production.
 
 ---
 
