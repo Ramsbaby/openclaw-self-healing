@@ -11,6 +11,9 @@ set -euo pipefail
 # Claude session. tmux sessions spawned from launchd do NOT inherit launchd
 # environment variables, so claude would silently fail without the key.
 
+# v2.1: Lock file (not LOCKDIR) to avoid issues with cleanup
+LOCKFILE="/tmp/openclaw-emergency-recovery.lock"
+
 # ==========================================================
 # Cleanup trap
 # ==========================================================
@@ -19,7 +22,7 @@ cleanup() {
     if [ -n "${TMUX_SESSION:-}" ]; then
         tmux kill-session -t "$TMUX_SESSION" 2>/dev/null || true
     fi
-    rm -f "/tmp/openclaw-emergency-recovery.lock" 2>/dev/null || true
+    rm -f "$LOCKFILE" 2>/dev/null || true
     exit "$exit_code"
 }
 trap cleanup EXIT INT TERM
@@ -51,8 +54,6 @@ chmod 700 "$LOG_DIR" 2>/dev/null || true
 touch "$SESSION_LOG"
 chmod 600 "$SESSION_LOG"
 
-# v2.1: Lock file (not LOCKDIR) to avoid issues with cleanup
-LOCKFILE="/tmp/openclaw-emergency-recovery.lock"
 METRICS_FILE="$LOG_DIR/.emergency-recovery-metrics.json"
 
 # Load environment variables (v3.1: improved path detection)
