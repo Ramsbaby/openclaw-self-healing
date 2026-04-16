@@ -96,7 +96,9 @@ CLAUDE_BIN="${CLAUDE_BIN:-$(command -v claude 2>/dev/null || echo "/opt/homebrew
 if [[ -x "$CLAUDE_BIN" ]]; then
     pass "Claude CLI found: $CLAUDE_BIN"
 else
-    LLM_PROVIDER=$(grep -oP 'OPENCLAW_LLM_PROVIDER=\K.*' "$ENV_FILE" 2>/dev/null || echo "claude")
+    # POSIX-compatible extraction (grep -oP is GNU-only, fails on macOS BSD grep)
+    LLM_PROVIDER=$(grep "^OPENCLAW_LLM_PROVIDER=" "$ENV_FILE" 2>/dev/null | cut -d= -f2- || echo "claude")
+    LLM_PROVIDER="${LLM_PROVIDER:-claude}"
     if [[ "$LLM_PROVIDER" == "claude" ]]; then
         fail "Claude CLI not found at $CLAUDE_BIN (required for default LLM provider)"
     else
