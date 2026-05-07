@@ -225,14 +225,24 @@ main() {
   local recovery_command
   recovery_command="OpenClaw 게이트웨이가 5분간 재시작했으나 복구되지 않았습니다. 긴급 진단 및 복구를 시작하세요.
 
-작업 순서:
+# MANDATORY FIRST STEPS (Read tool 호출 필수 — 진단 전 반드시 수행)
+- 진단·복구 시도 전에 다음 중 **최소 2개**를 Read tool로 직접 읽어라.
+- Read tool 호출 없이 진단할 경우 할루시네이션 위험 — 실제 시스템 상태를 모르면서 추측 처방하게 된다.
+- 본 단계 누락 시 결과는 신뢰할 수 없으며 $REPORT_FILE 에 'tool_use=0 (할루시네이션 의심)'으로 기록하라.
+
+  1. README.md  (전체 self-healing 4-tier chain — Level 1~3 흐름)
+  2. ~/.openclaw/openclaw.json  (현재 게이트웨이 설정)
+  3. ~/.openclaw/logs/*.log 최신 라인  (실제 에러 메시지)
+  4. ./scripts/gateway-watchdog.sh 또는 ./scripts/gateway-healthcheck.sh  (Level 1~2 동작)
+
+작업 순서 (위 MANDATORY 완료 후):
 1. \`openclaw status\` 체크
 2. 로그 분석 (~/.openclaw/logs/*.log)
 3. 설정 검증 (~/.openclaw/openclaw.json)
 4. 포트 충돌 체크 (\`lsof -i :18789\`)
 5. 의존성 체크 (\`npm list\`, \`node --version\`)
 6. 복구 시도 (설정 수정, 프로세스 재시작)
-7. 결과를 $REPORT_FILE 에 기록
+7. 결과를 $REPORT_FILE 에 기록 (Read tool 호출 횟수도 함께 기록)
 
 작업 제한시간: ${RECOVERY_TIMEOUT}초 이내
 목표: Gateway가 $GATEWAY_URL 에서 HTTP 200 응답하도록 복구"
