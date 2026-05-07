@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Changed
+- **emergency-recovery.sh** — Level 3 LLM prompt now includes a "MANDATORY FIRST STEPS"
+  block requiring Read tool calls (README.md / `~/.openclaw/openclaw.json` / recent logs /
+  watchdog scripts) **before** diagnosis. Reduces hallucination risk where Claude attempts
+  recovery without first reading actual system state. The prompt also asks Claude to log
+  the Read tool invocation count to the report file for post-incident audit.
+
+---
+
 ## [3.1.0] - 2026-02-21
 
 ### Fixed
