@@ -1,1 +1,283 @@
-IyEvdXNyL2Jpbi9lbnYgYmFzaAojIGdhdGV3YXktcHJlZmxpZ2h0LnNoIOKAlCBPcGVuQ2xhdyBHYXRld2F5IHByb2FjdGl2ZSBjb25maWcgdmFsaWRhdGlvbiArIEFJIGF1dG8tcmVjb3Zlcnkgd3JhcHBlcgojCiMgRmxvdzoKIyAgIDEuIFZhbGlkYXRlIGdhdGV3YXkgYmluYXJ5LCAuZW52IGtleXMsIGFuZCBKU09OIGNvbmZpZyBmaWxlcwojICAgMi4gT24gZmFpbHVyZSDihpIgc3Bhd24gdG11eCAnb3BlbmNsYXctcmVjb3ZlcnknIHNlc3Npb24gd2l0aCBBTlRIUk9QSUNfQVBJX0tFWSB2aWEgLWUgZmxhZwojICAgICAgICAgICAgICAgICAgIOKGkiBzZW5kIERpc2NvcmQvbnRmeSBhbGVydAojICAgICAgICAgICAgICAgICAgIOKGkiBleHBvbmVudGlhbCBiYWNrb2ZmICgzMHMg4oaSIDkwcyDihpIgMTgwcykg4oaSIGV4aXQgMSAobGF1bmNoZCByZXN0YXJ0cykKIyAgIDMuIE9uIHN1Y2Nlc3Mg4oaSIGV4ZWMgdGhlIGdhdGV3YXkgcHJvY2VzcyAoYmFzaCByZXBsYWNlZCBieSBnYXRld2F5OyBsYXVuY2hkIHRyYWNrcyBnYXRld2F5IFBJRCkKIwojIE1BWF9QUkVGTElHSFRfQVRURU1QVFM9MyBlbmZvcmNlZCB2aWEgc3RhdGUgZmlsZSB3aXRoIDYtaG91ciBhdXRvLXJlc2V0LgojCiMgRGlmZmVyZW5jZXMgZnJvbSBKYXJ2aXMgYm90LXByZWZsaWdodC5zaDoKIyAgIC0gT1BFTkNMQVdfSE9NRSBpbnN0ZWFkIG9mIEJPVF9IT01FCiMgICAtIHRtdXggc2Vzc2lvbjogJ29wZW5jbGF3LXJlY292ZXJ5JyAobWF0Y2hlcyBlbWVyZ2VuY3ktcmVjb3ZlcnktdjIuc2ggbmFtaW5nKQojICAgLSBDYWxscyBlbWVyZ2VuY3ktcmVjb3ZlcnktdjIuc2ggaW5zdGVhZCBvZiBib3QtaGVhbC5zaAojICAgLSBDaGVja3Mgb3BlbmNsYXcuanNvbiBpbiBhZGRpdGlvbiB0byAuZW52CgpzZXQgLWV1byBwaXBlZmFpbAoKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiMgQ29uZmlndXJhdGlvbgojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KT1BFTkNMQVdfSE9NRT0iJHtPUEVOQ0xBV19IT01FOi0kSE9NRS8ub3BlbmNsYXd9IgpPUEVOQ0xBV19TQ1JJUFQ9IiR7T1BFTkNMQVdfU0NSSVBUOi0kKGNvbW1hbmQgLXYgb3BlbmNsYXcgMj4vZGV2L251bGwgfHwgZWNobyAiL29wdC9ob21lYnJldy9iaW4vb3BlbmNsYXciKX0iCkVOVl9GSUxFPSIkT1BFTkNMQVdfSE9NRS8uZW52IgpDT05GSUdfRklMRT0iJE9QRU5DTEFXX0hPTUUvb3BlbmNsYXcuanNvbiIKTE9HX0RJUj0iJE9QRU5DTEFXX0hPTUUvbG9ncyIKTE9HX0ZJTEU9IiRMT0dfRElSL3ByZWZsaWdodC5sb2ciCkJBQ0tVUF9ESVI9IiRPUEVOQ0xBV19IT01FL3N0YXRlL2NvbmZpZy1iYWNrdXBzIgpTVEFURV9ESVI9IiRPUEVOQ0xBV19IT01FL3N0YXRlIgpIRUFMX0FUVEVNUFRTX0ZJTEU9IiRTVEFURV9ESVIvcHJlZmxpZ2h0LWhlYWwtYXR0ZW1wdHMiCkVNRVJHRU5DWV9SRUNPVkVSWV9TQ1JJUFQ9IiRIT01FLy5vcGVuY2xhdy9za2lsbHMvb3BlbmNsYXctc2VsZi1oZWFsaW5nL3NjcmlwdHMvZW1lcmdlbmN5LXJlY292ZXJ5LXYyLnNoIgoKTUFYX1BSRUZMSUdIVF9BVFRFTVBUUz0zCkJBQ0tPRkZfREVMQVlTPSgzMCA5MCAxODApCgojIEF1dG8tcmVzZXQgaGVhbCBjb3VudGVyIGFmdGVyIHRoaXMgbWFueSBzZWNvbmRzIG9mIHN0YWJpbGl0eSAoNiBob3VycykKSEVBTF9DT1VOVEVSX1JFU0VUX0FGVEVSPTIxNjAwCgpta2RpciAtcCAiJExPR19ESVIiICIkQkFDS1VQX0RJUiIgIiRTVEFURV9ESVIiCgojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBMb2dnaW5nCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpsb2coKSB7CiAgICBlY2hvICJbJChkYXRlICcrJVktJW0tJWQgJUg6JU06JVMnKV0gW3ByZWZsaWdodF0gJCoiIHwgdGVlIC1hICIkTE9HX0ZJTEUiCn0KCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQojIEFsZXJ0IGhlbHBlcnMKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CnNlbmRfZGlzY29yZF9hbGVydCgpIHsKICAgIGxvY2FsIG1zZz0iJDEiCiAgICBsb2NhbCB3ZWJob29rPSIiCiAgICBpZiBbWyAtZiAiJEVOVl9GSUxFIiBdXTsgdGhlbgogICAgICAgIHdlYmhvb2s9JChncmVwIC1FICdeRElTQ09SRF9XRUJIT09LX1VSTD0nICIkRU5WX0ZJTEUiIDI+L2Rldi9udWxsIHwgY3V0IC1kPSAtZjItIHwgdHIgLWQgJyInIHx8IHRydWUpCiAgICBmaQogICAgaWYgW1sgLXogIiR3ZWJob29rIiBdXTsgdGhlbgogICAgICAgIHdlYmhvb2s9IiR7RElTQ09SRF9XRUJIT09LX1VSTDotfSIKICAgIGZpCiAgICBpZiBbWyAtbiAiJHdlYmhvb2siIF1dOyB0aGVuCiAgICAgICAgY3VybCAtc2YgLS1tYXgtdGltZSA1IFwKICAgICAgICAgICAgLVggUE9TVCAiJHdlYmhvb2siIFwKICAgICAgICAgICAgLUggIkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbiIgXAogICAgICAgICAgICAtZCAie1wiY29udGVudFwiOiBcIiRtc2dcIn0iID4vZGV2L251bGwgMj4mMSB8fCB0cnVlCiAgICBmaQp9CgpzZW5kX250ZnlfYWxlcnQoKSB7CiAgICBsb2NhbCBtc2c9IiQxIgogICAgbG9jYWwgdG9waWM9IiIKICAgICMgUmVhZCBudGZ5IHRvcGljIGZyb20gbW9uaXRvcmluZy5qc29uIGlmIGl0IGV4aXN0cwogICAgbG9jYWwgbW9uaXRvcmluZ19qc29uPSIkT1BFTkNMQVdfSE9NRS9tb25pdG9yaW5nLmpzb24iCiAgICBpZiBbWyAtZiAiJG1vbml0b3JpbmdfanNvbiIgXV0gJiYgY29tbWFuZCAtdiBweXRob24zICY+L2Rldi9udWxsOyB0aGVuCiAgICAgICAgdG9waWM9JChweXRob24zIC1jICJpbXBvcnQganNvbjsgZD1qc29uLmxvYWQob3BlbignJG1vbml0b3JpbmdfanNvbicpKTsgcHJpbnQoZC5nZXQoJ250ZnknLHt9KS5nZXQoJ3RvcGljJywnJykpIiAyPi9kZXYvbnVsbCB8fCBlY2hvICIiKQogICAgZmkKICAgIGlmIFtbIC16ICIkdG9waWMiIF1dOyB0aGVuCiAgICAgICAgdG9waWM9IiR7TlRGWV9UT1BJQzotfSIKICAgIGZpCiAgICBpZiBbWyAtbiAiJHRvcGljIiBdXTsgdGhlbgogICAgICAgIGN1cmwgLXNmIC0tbWF4LXRpbWUgNSBcCiAgICAgICAgICAgIC1IICJUaXRsZTogT3BlbkNsYXcgR2F0ZXdheSBQcmVmbGlnaHQgRmFpbGVkIiBcCiAgICAgICAgICAgIC1IICJQcmlvcml0eTogdXJnZW50IiBcCiAgICAgICAgICAgIC1IICJUYWdzOiB4LHJvYm90IiBcCiAgICAgICAgICAgIC1kICIkbXNnIiBcCiAgICAgICAgICAgICJodHRwczovL250Znkuc2gvJHt0b3BpY30iID4vZGV2L251bGwgMj4mMSB8fCB0cnVlCiAgICBmaQp9CgpzZW5kX2FsZXJ0KCkgewogICAgbG9jYWwgbXNnPSIkMSIKICAgIHNlbmRfZGlzY29yZF9hbGVydCAi8J+aqCAqKk9wZW5DbGF3IFByZWZsaWdodCBGYWlsZWQqKlxcblxcbiR7bXNnfSIKICAgIHNlbmRfbnRmeV9hbGVydCAiJG1zZyIKfQoKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiMgRmFpbHVyZSBoYW5kbGVyOiBzcGF3biBBSSByZWNvdmVyeSBzZXNzaW9uIOKGkiBiYWNrb2ZmIOKGkiBleGl0IDEKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CmZhaWxfYW5kX2hlYWwoKSB7CiAgICBsb2NhbCByZWFzb249IiQxIgogICAgbG9nICJGQUlMOiAkcmVhc29uIgoKICAgICMg4pSA4pSAIFJlYWQgY3VycmVudCBhdHRlbXB0IGNvdW50IOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgAogICAgbG9jYWwgYXR0ZW1wdHM9MAogICAgaWYgW1sgLWYgIiRIRUFMX0FUVEVNUFRTX0ZJTEUiIF1dOyB0aGVuCiAgICAgICAgYXR0ZW1wdHM9JChjYXQgIiRIRUFMX0FUVEVNUFRTX0ZJTEUiIDI+L2Rldi9udWxsIHx8IGVjaG8gMCkKICAgIGZpCgogICAgIyDilIDilIAgQXV0by1yZXNldCBjb3VudGVyIGlmIGZpbGUgaXMgb2xkZXIgdGhhbiBIRUFMX0NPVU5URVJfUkVTRVRfQUZURVIg4pSA4pSA4pSA4pSACiAgICBpZiBbWyAtZiAiJEhFQUxfQVRURU1QVFNfRklMRSIgXV07IHRoZW4KICAgICAgICBsb2NhbCBsYXN0X210aW1lCiAgICAgICAgbGFzdF9tdGltZT0kKHN0YXQgLWYgJW0gIiRIRUFMX0FUVEVNUFRTX0ZJTEUiIDI+L2Rldi9udWxsIHx8IGVjaG8gMCkKICAgICAgICBsb2NhbCBhZ2U9JCgoICQoZGF0ZSArJXMpIC0gbGFzdF9tdGltZSApKQogICAgICAgIGlmICgoIGFnZSA+IEhFQUxfQ09VTlRFUl9SRVNFVF9BRlRFUiApKTsgdGhlbgogICAgICAgICAgICBsb2cgIjZoIGVsYXBzZWQg4oCUIHJlc2V0dGluZyBoZWFsIGNvdW50ZXIgKHdhczogJHthdHRlbXB0c30gYXR0ZW1wdHMpIgogICAgICAgICAgICBybSAtZiAiJEhFQUxfQVRURU1QVFNfRklMRSIKICAgICAgICAgICAgYXR0ZW1wdHM9MAogICAgICAgIGZpCiAgICBmaQoKICAgICMg4pSA4pSAIE1heCBhdHRlbXB0cyBleGNlZWRlZDogbG9uZyBzbGVlcCB0byBhdm9pZCBsYXVuY2hkIHNwYW0g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACiAgICBpZiAoKCBhdHRlbXB0cyA+PSBNQVhfUFJFRkxJR0hUX0FUVEVNUFRTICkpOyB0aGVuCiAgICAgICAgbG9nICJDUklUSUNBTDogRXhjZWVkZWQgJHtNQVhfUFJFRkxJR0hUX0FUVEVNUFRTfSBoZWFsIGF0dGVtcHRzIOKAlCBtYW51YWwgaW50ZXJ2ZW50aW9uIHJlcXVpcmVkIgogICAgICAgIHNlbmRfYWxlcnQgIlByZWZsaWdodCBhdXRvLWhlYWwgbGltaXQgcmVhY2hlZCAoJHtNQVhfUFJFRkxJR0hUX0FUVEVNUFRTfXgpLiBNYW51YWwgZml4IG5lZWRlZC5cXG5SZWFzb246ICR7cmVhc29ufVxcbkxvZzogJHtMT0dfRklMRX0iCiAgICAgICAgbG9nICJTbGVlcGluZyAzMDBzIHRvIHByZXZlbnQgbGF1bmNoZCByZXN0YXJ0IHN0b3JtLi4uIgogICAgICAgIHNsZWVwIDMwMAogICAgICAgIGV4aXQgMQogICAgZmkKCiAgICBlY2hvICQoKCBhdHRlbXB0cyArIDEgKSkgPiAiJEhFQUxfQVRURU1QVFNfRklMRSIKICAgIGxvZyAiSGVhbCBhdHRlbXB0ICQoKCBhdHRlbXB0cyArIDEgKSkvJHtNQVhfUFJFRkxJR0hUX0FUVEVNUFRTfTogJHtyZWFzb259IgoKICAgICMg4pSA4pSAIFNwYXduIEFJIHJlY292ZXJ5IHNlc3Npb24gdmlhIHRtdXgg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACiAgICAjIElNUE9SVEFOVDogUGFzcyBBTlRIUk9QSUNfQVBJX0tFWSB2aWEgLWUgZmxhZy4KICAgICMgdG11eCBzZXNzaW9ucyBzcGF3bmVkIGZyb20gbGF1bmNoZCBkbyBOT1QgaW5oZXJpdCBsYXVuY2hkIGVudiB2YXJzLAogICAgIyBzbyB0aGUgQVBJIGtleSBtdXN0IGJlIGZvcndhcmRlZCBleHBsaWNpdGx5LgogICAgaWYgY29tbWFuZCAtdiB0bXV4ICY+L2Rldi9udWxsOyB0aGVuCiAgICAgICAgaWYgdG11eCBoYXMtc2Vzc2lvbiAtdCBvcGVuY2xhdy1yZWNvdmVyeSAyPi9kZXYvbnVsbDsgdGhlbgogICAgICAgICAgICBsb2cgIlJlY292ZXJ5IHNlc3Npb24gJ29wZW5jbGF3LXJlY292ZXJ5JyBhbHJlYWR5IHJ1bm5pbmcg4oCUIHdhaXRpbmcgZm9yIGl0IHRvIGZpbmlzaCIKICAgICAgICBlbHNlCiAgICAgICAgICAgIGxvZyAiU3Bhd25pbmcgQUkgcmVjb3ZlcnkgdG11eCBzZXNzaW9uOiBvcGVuY2xhdy1yZWNvdmVyeSIKICAgICAgICAgICAgaWYgW1sgLXggIiRFTUVSR0VOQ1lfUkVDT1ZFUllfU0NSSVBUIiBdXTsgdGhlbgogICAgICAgICAgICAgICAgdG11eCBuZXctc2Vzc2lvbiAtZCAtcyBvcGVuY2xhdy1yZWNvdmVyeSBcCiAgICAgICAgICAgICAgICAgICAgLWUgIkFOVEhST1BJQ19BUElfS0VZPSR7QU5USFJPUElDX0FQSV9LRVk6LX0iIFwKICAgICAgICAgICAgICAgICAgICAtZSAiT1BFTkNMQVdfSE9NRT0kT1BFTkNMQVdfSE9NRSIgXAogICAgICAgICAgICAgICAgICAgIC1lICJIT01FPSRIT01FIiBcCiAgICAgICAgICAgICAgICAgICAgLWUgIlBBVEg9L29wdC9ob21lYnJldy9iaW46L3Vzci9sb2NhbC9iaW46L3Vzci9iaW46L2JpbiIgXAogICAgICAgICAgICAgICAgICAgICJiYXNoICcke0VNRVJHRU5DWV9SRUNPVkVSWV9TQ1JJUFR9JyIgXAogICAgICAgICAgICAgICAgICAgIDI+L2Rldi9udWxsIHx8IGxvZyAiV0FSTjogRmFpbGVkIHRvIHNwYXduIHRtdXggcmVjb3Zlcnkgc2Vzc2lvbiIKICAgICAgICAgICAgZWxzZQogICAgICAgICAgICAgICAgIyBGYWxsYmFjazogb3BlbiBhIGNsYXVkZSBpbnRlcmFjdGl2ZSBzZXNzaW9uIGRpcmVjdGx5CiAgICAgICAgICAgICAgICB0bXV4IG5ldy1zZXNzaW9uIC1kIC1zIG9wZW5jbGF3LXJlY292ZXJ5IFwKICAgICAgICAgICAgICAgICAgICAtZSAiQU5USFJPUElDX0FQSV9LRVk9JHtBTlRIUk9QSUNfQVBJX0tFWTotfSIgXAogICAgICAgICAgICAgICAgICAgIC1lICJPUEVOQ0xBV19IT01FPSRPUEVOQ0xBV19IT01FIiBcCiAgICAgICAgICAgICAgICAgICAgLWUgIkhPTUU9JEhPTUUiIFwKICAgICAgICAgICAgICAgICAgICAtZSAiUEFUSD0vb3B0L2hvbWVicmV3L2JpbjovdXNyL2xvY2FsL2JpbjovdXNyL2JpbjovYmluIiBcCiAgICAgICAgICAgICAgICAgICAgIi9vcHQvaG9tZWJyZXcvYmluL2NsYXVkZSIgXAogICAgICAgICAgICAgICAgICAgIDI+L2Rldi9udWxsIHx8IGxvZyAiV0FSTjogRmFpbGVkIHRvIHNwYXduIHRtdXggY2xhdWRlIHNlc3Npb24iCiAgICAgICAgICAgIGZpCiAgICAgICAgZmkKICAgIGVsc2UKICAgICAgICBsb2cgIldBUk46IHRtdXggbm90IGZvdW5kIOKAlCBhbGVydCBvbmx5LCBubyBBSSByZWNvdmVyeSBzZXNzaW9uIgogICAgZmkKCiAgICBzZW5kX2FsZXJ0ICJQcmVmbGlnaHQgdmFsaWRhdGlvbiBmYWlsZWQuIEFJIHJlY292ZXJ5IHNlc3Npb24gc3RhcnRlZC5cXG5SZWFzb246ICR7cmVhc29ufVxcbkF0dGVtcHQ6ICQoKCBhdHRlbXB0cyArIDEgKSkvJHtNQVhfUFJFRkxJR0hUX0FUVEVNUFRTfVxcbkxvZzogJHtMT0dfRklMRX0iCgogICAgIyDilIDilIAgRXhwb25lbnRpYWwgYmFja29mZiBiZWZvcmUgZXhpdCAxIChsYXVuY2hkIHdpbGwgcmVzdGFydCB1cykg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACiAgICBsb2NhbCBkZWxheV9pZHg9JCgoIGF0dGVtcHRzIDwgJHsjQkFDS09GRl9ERUxBWVNbQF19ID8gYXR0ZW1wdHMgOiAkeyNCQUNLT0ZGX0RFTEFZU1tAXX0gLSAxICkpCiAgICBsb2NhbCBzbGVlcF9zZWM9IiR7QkFDS09GRl9ERUxBWVNbJGRlbGF5X2lkeF19IgogICAgbG9nICJXYWl0aW5nICR7c2xlZXBfc2VjfXMgYmVmb3JlIGV4aXQgMSAoYXR0ZW1wdCAkKCggYXR0ZW1wdHMgKyAxICkpLyR7TUFYX1BSRUZMSUdIVF9BVFRFTVBUU30pLi4uIgogICAgc2xlZXAgIiRzbGVlcF9zZWMiCiAgICBleGl0IDEKfQoKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiMgTWFpbiB2YWxpZGF0aW9uCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpsb2cgIj09PSBQcmVmbGlnaHQgdmFsaWRhdGlvbiBzdGFydGVkID09PSIKCiMgTG9hZCAuZW52IGVhcmx5IHNvIHN1YnNlcXVlbnQgY2hlY2tzIGNhbiB1c2UgZXhwb3J0ZWQgdmFycwppZiBbWyAtZiAiJEVOVl9GSUxFIiBdXTsgdGhlbgogICAgIyBzaGVsbGNoZWNrIHNvdXJjZT0vZGV2L251bGwKICAgIHNldCArdQogICAgc291cmNlICIkRU5WX0ZJTEUiCiAgICBzZXQgLXUKZmkKCiMg4pSA4pSAIDEuIENoZWNrIG9wZW5jbGF3IGJpbmFyeSAvIGdhdGV3YXkgZW50cnkgcG9pbnQg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACiMgRGV0ZXJtaW5lIHRoZSBhY3R1YWwgZ2F0ZXdheSBzdGFydCBjb21tYW5kLgojIG9wZW5jbGF3IG1heSBiZSBhIENMSSB3cmFwcGVyOyB3ZSBqdXN0IG5lZWQgaXQgdG8gYmUgZXhlY3V0YWJsZS4KR0FURVdBWV9DTUQ9IiR7T1BFTkNMQVdfU0NSSVBUfSIKaWYgW1sgISAteCAiJEdBVEVXQVlfQ01EIiBdXTsgdGhlbgogICAgIyBUcnkgY29tbW9uIGluc3RhbGwgbG9jYXRpb25zCiAgICBmb3IgY2FuZGlkYXRlIGluIFwKICAgICAgICAiL29wdC9ob21lYnJldy9iaW4vb3BlbmNsYXciIFwKICAgICAgICAiL3Vzci9sb2NhbC9iaW4vb3BlbmNsYXciIFwKICAgICAgICAiJEhPTUUvLm9wZW5jbGF3L2Jpbi9vcGVuY2xhdyIgXAogICAgICAgICIkSE9NRS8ub3BlbmNsYXcvZ2F0ZXdheS9pbmRleC5qcyIKICAgIGRvCiAgICAgICAgaWYgW1sgLXggIiRjYW5kaWRhdGUiIF1dOyB0aGVuCiAgICAgICAgICAgIEdBVEVXQVlfQ01EPSIkY2FuZGlkYXRlIgogICAgICAgICAgICBicmVhawogICAgICAgIGZpCiAgICBkb25lCmZpCgppZiBbWyAhIC14ICIkR0FURVdBWV9DTUQiIF1dOyB0aGVuCiAgICBmYWlsX2FuZF9oZWFsICJHYXRld2F5IGJpbmFyeSBub3QgZm91bmQgb3Igbm90IGV4ZWN1dGFibGUuIFRyaWVkOiAke09QRU5DTEFXX1NDUklQVH0gYW5kIGNvbW1vbiBwYXRocy4iCmZpCmxvZyAiR2F0ZXdheSBiaW5hcnkgT0s6ICRHQVRFV0FZX0NNRCIKCiMg4pSA4pSAIDIuIENoZWNrIG5vZGUgYmluYXJ5IChnYXRld2F5IGlzIGEgTm9kZS5qcyBwcm9jZXNzKSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKTk9ERV9CSU49IiR7Tk9ERV9CSU46LSQoY29tbWFuZCAtdiBub2RlIDI+L2Rldi9udWxsIHx8IGVjaG8gIi9vcHQvaG9tZWJyZXcvYmluL25vZGUiKX0iCmlmIFtbICEgLXggIiROT0RFX0JJTiIgXV07IHRoZW4KICAgIGZhaWxfYW5kX2hlYWwgIm5vZGUgYmluYXJ5IG5vdCBmb3VuZDogJHtOT0RFX0JJTn0iCmZpCmxvZyAiTm9kZSBiaW5hcnkgT0s6ICROT0RFX0JJTiAoJCgkTk9ERV9CSU4gLS12ZXJzaW9uIDI+L2Rldi9udWxsIHx8IGVjaG8gJ3ZlcnNpb24gdW5rbm93bicpKSIKCiMg4pSA4pSAIDMuIENoZWNrIC5lbnYgZmlsZSBleGlzdHMg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmlmIFtbICEgLWYgIiRFTlZfRklMRSIgXV07IHRoZW4KICAgIGZhaWxfYW5kX2hlYWwgIi5lbnYgbWlzc2luZzogJHtFTlZfRklMRX0g4oCUIGNyZWF0ZSBpdCB3aXRoIE9QRU5DTEFXX0dBVEVXQVlfVE9LRU4gYW5kIG90aGVyIHJlcXVpcmVkIGtleXMiCmZpCmxvZyAiLmVudiBwcmVzZW50OiAkRU5WX0ZJTEUiCgojIOKUgOKUgCA0LiBDaGVjayByZXF1aXJlZCAuZW52IGtleXMgYXJlIHNldCBhbmQgbm9uLWVtcHR5IOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApSRVFVSVJFRF9FTlZfS0VZUz0oCiAgICBPUEVOQ0xBV19HQVRFV0FZX1RPS0VOICAgIyBHYXRld2F5IGF1dGhlbnRpY2F0aW9uIHRva2VuCiAgICBBTlRIUk9QSUNfQVBJX0tFWSAgICAgICAgIyBDbGF1ZGUgQUkg4oCUIHJlcXVpcmVkIGZvciBMZXZlbCAzIGVtZXJnZW5jeSByZWNvdmVyeQopCk1JU1NJTkdfS0VZUz0oKQpmb3Iga2V5IGluICIke1JFUVVJUkVEX0VOVl9LRVlTW0BdfSI7IGRvCiAgICBpZiAhIGdyZXAgLXFFICJeJHtrZXl9PS4rIiAiJEVOVl9GSUxFIiAyPi9kZXYvbnVsbDsgdGhlbgogICAgICAgIE1JU1NJTkdfS0VZUys9KCIka2V5IikKICAgIGZpCmRvbmUKaWYgW1sgJHsjTUlTU0lOR19LRVlTW0BdfSAtZ3QgMCBdXTsgdGhlbgogICAgZmFpbF9hbmRfaGVhbCAiLmVudiBtaXNzaW5nIG9yIGVtcHR5IGtleXM6ICR7TUlTU0lOR19LRVlTWypdfSIKZmkKbG9nICIuZW52IHJlcXVpcmVkIGtleXMgcHJlc2VudDogJHtSRVFVSVJFRF9FTlZfS0VZU1sqXX0iCgojIOKUgOKUgCA1LiBWYWxpZGF0ZSBKU09OIGNvbmZpZyBmaWxlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKSlNPTl9DT05GSUdTPSgpCmlmIFtbIC1mICIkQ09ORklHX0ZJTEUiIF1dOyB0aGVuCiAgICBKU09OX0NPTkZJR1MrPSgiJENPTkZJR19GSUxFIikKZmkKIyBBbHNvIGNoZWNrIGFueSBhZGRpdGlvbmFsIEpTT04gZmlsZXMgaW4gY29uZmlnIGRpcgpmb3IgZXh0cmFfanNvbiBpbiBcCiAgICAiJE9QRU5DTEFXX0hPTUUvY29uZmlnLmpzb24iIFwKICAgICIkT1BFTkNMQVdfSE9NRS9jaGFubmVscy5qc29uIgpkbwogICAgaWYgW1sgLWYgIiRleHRyYV9qc29uIiBdXTsgdGhlbgogICAgICAgIEpTT05fQ09ORklHUys9KCIkZXh0cmFfanNvbiIpCiAgICBmaQpkb25lCgpmb3IganNvbl9maWxlIGluICIke0pTT05fQ09ORklHU1tAXX0iOyBkbwogICAgaWYgISAiJE5PREVfQklOIiAtZSAiSlNPTi5wYXJzZShyZXF1aXJlKCdmcycpLnJlYWRGaWxlU3luYygnJHtqc29uX2ZpbGV9JywndXRmOCcpKSIgMj4vZGV2L251bGw7IHRoZW4KICAgICAgICBmYWlsX2FuZF9oZWFsICJKU09OIHBhcnNlIGVycm9yOiAkKGJhc2VuYW1lICIke2pzb25fZmlsZX0iKSDigJQgZml4IHN5bnRheCBiZWZvcmUgZ2F0ZXdheSBjYW4gc3RhcnQiCiAgICBmaQogICAgbG9nICJKU09OIHZhbGlkOiAkKGJhc2VuYW1lICIke2pzb25fZmlsZX0iKSIKZG9uZQoKIyDilIDilIAgNi4gQmFja3VwIGN1cnJlbnQgdmFsaWQgY29uZmlncyAoc28gcmVjb3ZlcnkgY2FuIHJlc3RvcmUga25vd24tZ29vZCBzdGF0ZSkg4pSACmxvZyAiQmFja2luZyB1cCB2YWxpZCBjb25maWdzLi4uIgpmb3IganNvbl9maWxlIGluICIke0pTT05fQ09ORklHU1tAXX0iOyBkbwogICAgY3AgIiRqc29uX2ZpbGUiICIkQkFDS1VQX0RJUi8kKGJhc2VuYW1lICIke2pzb25fZmlsZX0iKS5iYWNrdXAiCmRvbmUKaWYgW1sgLWYgIiRFTlZfRklMRSIgXV07IHRoZW4KICAgIGNwICIkRU5WX0ZJTEUiICIkQkFDS1VQX0RJUi8uZW52LmJhY2t1cCIKZmkKbG9nICJCYWNrdXBzIHNhdmVkIHRvOiAkQkFDS1VQX0RJUiIKCiMg4pSA4pSAIDcuIEFsbCBjaGVja3MgcGFzc2VkIOKGkiByZXNldCBoZWFsIGNvdW50ZXIg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACnJtIC1mICIkSEVBTF9BVFRFTVBUU19GSUxFIgpsb2cgIkFsbCBwcmVmbGlnaHQgY2hlY2tzIHBhc3NlZCDigJQgaGVhbCBjb3VudGVyIHJlc2V0IgoKIyDilIDilIAgOC4gZXhlYyB0aGUgZ2F0ZXdheSAocmVwbGFjZXMgYmFzaDsgbGF1bmNoZCB0cmFja3MgdGhlIGdhdGV3YXkgUElEKSDilIDilIDilIDilIDilIDilIAKbG9nICJQcmVmbGlnaHQgcGFzc2VkIOKGkiBzdGFydGluZyBnYXRld2F5IHZpYSBleGVjIgpsb2cgIj09PSBQcmVmbGlnaHQgY29tcGxldGUgPT09IgoKIyBleGVjIHJlcGxhY2VzIHRoaXMgYmFzaCBwcm9jZXNzIHNvIGxhdW5jaGQgS2VlcEFsaXZlIHRyYWNrcyB0aGUgZ2F0ZXdheSBQSUQgZGlyZWN0bHkuCmV4ZWMgIiRHQVRFV0FZX0NNRCIgZ2F0ZXdheSBzdGFydAo=
+#!/usr/bin/env bash
+# gateway-preflight.sh — OpenClaw Gateway proactive config validation + AI auto-recovery wrapper
+#
+# Flow:
+#   1. Validate gateway binary, .env keys, and JSON config files
+#   2. On failure → spawn tmux 'openclaw-recovery' session with ANTHROPIC_API_KEY via -e flag
+#                   → send Discord/ntfy alert
+#                   → exponential backoff (30s → 90s → 180s) → exit 1 (launchd restarts)
+#   3. On success → exec the gateway process (bash replaced by gateway; launchd tracks gateway PID)
+#
+# MAX_PREFLIGHT_ATTEMPTS=3 enforced via state file with 6-hour auto-reset.
+#
+# Differences from Jarvis bot-preflight.sh:
+#   - OPENCLAW_HOME instead of BOT_HOME
+#   - tmux session: 'openclaw-recovery' (matches emergency-recovery-v2.sh naming)
+#   - Calls emergency-recovery-v2.sh instead of bot-heal.sh
+#   - Checks openclaw.json in addition to .env
+
+set -euo pipefail
+
+# ============================================================================
+# Configuration
+# ============================================================================
+OPENCLAW_HOME="${OPENCLAW_HOME:-$HOME/.openclaw}"
+OPENCLAW_SCRIPT="${OPENCLAW_SCRIPT:-$(command -v openclaw 2>/dev/null || echo "/opt/homebrew/bin/openclaw")}"
+ENV_FILE="$OPENCLAW_HOME/.env"
+CONFIG_FILE="$OPENCLAW_HOME/openclaw.json"
+LOG_DIR="$OPENCLAW_HOME/logs"
+LOG_FILE="$LOG_DIR/preflight.log"
+BACKUP_DIR="$OPENCLAW_HOME/state/config-backups"
+STATE_DIR="$OPENCLAW_HOME/state"
+HEAL_ATTEMPTS_FILE="$STATE_DIR/preflight-heal-attempts"
+EMERGENCY_RECOVERY_SCRIPT="$HOME/.openclaw/skills/openclaw-self-healing/scripts/emergency-recovery-v2.sh"
+
+MAX_PREFLIGHT_ATTEMPTS=3
+BACKOFF_DELAYS=(30 90 180)
+
+# Auto-reset heal counter after this many seconds of stability (6 hours)
+HEAL_COUNTER_RESET_AFTER=21600
+
+mkdir -p "$LOG_DIR" "$BACKUP_DIR" "$STATE_DIR"
+
+# ============================================================================
+# Logging
+# ============================================================================
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [preflight] $*" | tee -a "$LOG_FILE"
+}
+
+# ============================================================================
+# Alert helpers
+# ============================================================================
+send_discord_alert() {
+    local msg="$1"
+    local webhook=""
+    if [[ -f "$ENV_FILE" ]]; then
+        webhook=$(grep -E '^DISCORD_WEBHOOK_URL=' "$ENV_FILE" 2>/dev/null | cut -d= -f2- | tr -d '"' || true)
+    fi
+    if [[ -z "$webhook" ]]; then
+        webhook="${DISCORD_WEBHOOK_URL:-}"
+    fi
+    if [[ -n "$webhook" ]]; then
+        curl -sf --max-time 5 \
+            -X POST "$webhook" \
+            -H "Content-Type: application/json" \
+            -d "{\"content\": \"$msg\"}" >/dev/null 2>&1 || true
+    fi
+}
+
+send_ntfy_alert() {
+    local msg="$1"
+    local topic=""
+    # Read ntfy topic from monitoring.json if it exists
+    local monitoring_json="$OPENCLAW_HOME/monitoring.json"
+    if [[ -f "$monitoring_json" ]] && command -v python3 &>/dev/null; then
+        topic=$(python3 -c "import json; d=json.load(open('$monitoring_json')); print(d.get('ntfy',{}).get('topic',''))" 2>/dev/null || echo "")
+    fi
+    if [[ -z "$topic" ]]; then
+        topic="${NTFY_TOPIC:-}"
+    fi
+    if [[ -n "$topic" ]]; then
+        curl -sf --max-time 5 \
+            -H "Title: OpenClaw Gateway Preflight Failed" \
+            -H "Priority: urgent" \
+            -H "Tags: x,robot" \
+            -d "$msg" \
+            "https://ntfy.sh/${topic}" >/dev/null 2>&1 || true
+    fi
+}
+
+send_alert() {
+    local msg="$1"
+    send_discord_alert "🚨 **OpenClaw Preflight Failed**\\n\\n${msg}"
+    send_ntfy_alert "$msg"
+}
+
+# ============================================================================
+# Failure handler: spawn AI recovery session → backoff → exit 1
+# ============================================================================
+fail_and_heal() {
+    local reason="$1"
+    log "FAIL: $reason"
+
+    # ── Read current attempt count ────────────────────────────────────────────
+    local attempts=0
+    if [[ -f "$HEAL_ATTEMPTS_FILE" ]]; then
+        attempts=$(cat "$HEAL_ATTEMPTS_FILE" 2>/dev/null || echo 0)
+    fi
+
+    # ── Auto-reset counter if file is older than HEAL_COUNTER_RESET_AFTER ────
+    if [[ -f "$HEAL_ATTEMPTS_FILE" ]]; then
+        local last_mtime
+        last_mtime=$(stat -f %m "$HEAL_ATTEMPTS_FILE" 2>/dev/null || echo 0)
+        local age=$(( $(date +%s) - last_mtime ))
+        if (( age > HEAL_COUNTER_RESET_AFTER )); then
+            log "6h elapsed — resetting heal counter (was: ${attempts} attempts)"
+            rm -f "$HEAL_ATTEMPTS_FILE"
+            attempts=0
+        fi
+    fi
+
+    # ── Max attempts exceeded: long sleep to avoid launchd spam ──────────────
+    if (( attempts >= MAX_PREFLIGHT_ATTEMPTS )); then
+        log "CRITICAL: Exceeded ${MAX_PREFLIGHT_ATTEMPTS} heal attempts — manual intervention required"
+        send_alert "Preflight auto-heal limit reached (${MAX_PREFLIGHT_ATTEMPTS}x). Manual fix needed.\\nReason: ${reason}\\nLog: ${LOG_FILE}"
+        log "Sleeping 300s to prevent launchd restart storm..."
+        sleep 300
+        exit 1
+    fi
+
+    echo $(( attempts + 1 )) > "$HEAL_ATTEMPTS_FILE"
+    log "Heal attempt $(( attempts + 1 ))/${MAX_PREFLIGHT_ATTEMPTS}: ${reason}"
+
+    # ── Spawn AI recovery session via tmux ───────────────────────────────────
+    # IMPORTANT: Pass ANTHROPIC_API_KEY via -e flag.
+    # tmux sessions spawned from launchd do NOT inherit launchd env vars,
+    # so the API key must be forwarded explicitly.
+    if command -v tmux &>/dev/null; then
+        if tmux has-session -t openclaw-recovery 2>/dev/null; then
+            log "Recovery session 'openclaw-recovery' already running — waiting for it to finish"
+        else
+            log "Spawning AI recovery tmux session: openclaw-recovery"
+            if [[ -x "$EMERGENCY_RECOVERY_SCRIPT" ]]; then
+                tmux new-session -d -s openclaw-recovery \
+                    -e "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}" \
+                    -e "OPENCLAW_HOME=$OPENCLAW_HOME" \
+                    -e "HOME=$HOME" \
+                    -e "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin" \
+                    "bash '${EMERGENCY_RECOVERY_SCRIPT}'" \
+                    2>/dev/null || log "WARN: Failed to spawn tmux recovery session"
+            else
+                # Fallback: open a claude interactive session directly
+                tmux new-session -d -s openclaw-recovery \
+                    -e "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}" \
+                    -e "OPENCLAW_HOME=$OPENCLAW_HOME" \
+                    -e "HOME=$HOME" \
+                    -e "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin" \
+                    "/opt/homebrew/bin/claude" \
+                    2>/dev/null || log "WARN: Failed to spawn tmux claude session"
+            fi
+        fi
+    else
+        log "WARN: tmux not found — alert only, no AI recovery session"
+    fi
+
+    send_alert "Preflight validation failed. AI recovery session started.\\nReason: ${reason}\\nAttempt: $(( attempts + 1 ))/${MAX_PREFLIGHT_ATTEMPTS}\\nLog: ${LOG_FILE}"
+
+    # ── Exponential backoff before exit 1 (launchd will restart us) ──────────
+    local delay_idx=$(( attempts < ${#BACKOFF_DELAYS[@]} ? attempts : ${#BACKOFF_DELAYS[@]} - 1 ))
+    local sleep_sec="${BACKOFF_DELAYS[$delay_idx]}"
+    log "Waiting ${sleep_sec}s before exit 1 (attempt $(( attempts + 1 ))/${MAX_PREFLIGHT_ATTEMPTS})..."
+    sleep "$sleep_sec"
+    exit 1
+}
+
+# ============================================================================
+# Main validation
+# ============================================================================
+log "=== Preflight validation started ==="
+
+# Load .env early so subsequent checks can use exported vars
+if [[ -f "$ENV_FILE" ]]; then
+    set +u
+    # shellcheck source=/dev/null
+    source "$ENV_FILE"
+    set -u
+fi
+
+# ── 1. Check openclaw binary / gateway entry point ───────────────────────────
+# Determine the actual gateway start command.
+# openclaw may be a CLI wrapper; we just need it to be executable.
+GATEWAY_CMD="${OPENCLAW_SCRIPT}"
+if [[ ! -x "$GATEWAY_CMD" ]]; then
+    # Try common install locations
+    for candidate in \
+        "/opt/homebrew/bin/openclaw" \
+        "/usr/local/bin/openclaw" \
+        "$HOME/.openclaw/bin/openclaw" \
+        "$HOME/.openclaw/gateway/index.js"
+    do
+        if [[ -x "$candidate" ]]; then
+            GATEWAY_CMD="$candidate"
+            break
+        fi
+    done
+fi
+
+if [[ ! -x "$GATEWAY_CMD" ]]; then
+    fail_and_heal "Gateway binary not found or not executable. Tried: ${OPENCLAW_SCRIPT} and common paths."
+fi
+log "Gateway binary OK: $GATEWAY_CMD"
+
+# ── 2. Check node binary (gateway is a Node.js process) ──────────────────────
+NODE_BIN="${NODE_BIN:-$(command -v node 2>/dev/null || echo "/opt/homebrew/bin/node")}"
+if [[ ! -x "$NODE_BIN" ]]; then
+    fail_and_heal "node binary not found: ${NODE_BIN}"
+fi
+log "Node binary OK: $NODE_BIN ($($NODE_BIN --version 2>/dev/null || echo 'version unknown'))"
+
+# ── 3. Check .env file exists ─────────────────────────────────────────────────
+if [[ ! -f "$ENV_FILE" ]]; then
+    fail_and_heal ".env missing: ${ENV_FILE} — create it with OPENCLAW_GATEWAY_TOKEN and other required keys"
+fi
+log ".env present: $ENV_FILE"
+
+# ── 4. Check required .env keys are set and non-empty ────────────────────────
+REQUIRED_ENV_KEYS=(
+    OPENCLAW_GATEWAY_TOKEN   # Gateway authentication token
+    ANTHROPIC_API_KEY        # Claude AI — required for Level 3 emergency recovery
+)
+MISSING_KEYS=()
+for key in "${REQUIRED_ENV_KEYS[@]}"; do
+    if ! grep -qE "^${key}=.+" "$ENV_FILE" 2>/dev/null; then
+        MISSING_KEYS+=("$key")
+    fi
+done
+if [[ ${#MISSING_KEYS[@]} -gt 0 ]]; then
+    fail_and_heal ".env missing or empty keys: ${MISSING_KEYS[*]}"
+fi
+log ".env required keys present: ${REQUIRED_ENV_KEYS[*]}"
+
+# ── 5. Validate JSON config files ─────────────────────────────────────────────
+JSON_CONFIGS=()
+if [[ -f "$CONFIG_FILE" ]]; then
+    JSON_CONFIGS+=("$CONFIG_FILE")
+fi
+# Also check any additional JSON files in config dir
+for extra_json in \
+    "$OPENCLAW_HOME/config.json" \
+    "$OPENCLAW_HOME/channels.json"
+do
+    if [[ -f "$extra_json" ]]; then
+        JSON_CONFIGS+=("$extra_json")
+    fi
+done
+
+for json_file in "${JSON_CONFIGS[@]}"; do
+    if ! "$NODE_BIN" -e "JSON.parse(require('fs').readFileSync('${json_file}','utf8'))" 2>/dev/null; then
+        fail_and_heal "JSON parse error: $(basename "${json_file}") — fix syntax before gateway can start"
+    fi
+    log "JSON valid: $(basename "${json_file}")"
+done
+
+# ── 6. Backup current valid configs (so recovery can restore known-good state) ─
+log "Backing up valid configs..."
+for json_file in "${JSON_CONFIGS[@]}"; do
+    cp "$json_file" "$BACKUP_DIR/$(basename "${json_file}").backup"
+done
+if [[ -f "$ENV_FILE" ]]; then
+    cp "$ENV_FILE" "$BACKUP_DIR/.env.backup"
+fi
+log "Backups saved to: $BACKUP_DIR"
+
+# ── 7. All checks passed → reset heal counter ────────────────────────────────
+rm -f "$HEAL_ATTEMPTS_FILE"
+log "All preflight checks passed — heal counter reset"
+
+# ── 8. exec the gateway (replaces bash; launchd tracks the gateway PID) ──────
+log "Preflight passed → starting gateway via exec"
+log "=== Preflight complete ==="
+
+# exec replaces this bash process so launchd KeepAlive tracks the gateway PID directly.
+exec "$GATEWAY_CMD" gateway start

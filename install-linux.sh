@@ -94,7 +94,7 @@ detect_distro() {
 
 # Check prerequisites
 check_prerequisites() {
-    echo -e "${BLUE}[1/7] Checking prerequisites...${NC}"
+    echo -e "${BLUE}[1/9] Checking prerequisites...${NC}"
 
     local missing=()
     local install_hints=()

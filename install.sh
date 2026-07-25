@@ -105,10 +105,13 @@ if [[ "$DRY_RUN" == "true" ]]; then
     # Simulate script downloads
     echo -e "${BLUE}[Step 2] Scripts that would be downloaded to${NC}"
     echo "         $OPENCLAW_CONFIG_DIR/skills/openclaw-self-healing/scripts/ :"
-    echo "   📄 gateway-watchdog.sh          (Level 2 — reactive watchdog)"
-    echo "   📄 gateway-healthcheck.sh       (Level 2 — HTTP health polling)"
-    echo "   📄 emergency-recovery-v2.sh     (Level 3 — AI autonomous recovery)"
+    echo "   📄 gateway-preflight.sh          (Level 0 — config validation wrapper)"
+    echo "   📄 gateway-watchdog.sh           (Level 2 — reactive watchdog)"
+    echo "   📄 gateway-healthcheck.sh        (Level 2 — HTTP health polling)"
+    echo "   📄 emergency-recovery-v2.sh      (Level 3 — AI autonomous recovery)"
     echo "   📄 emergency-recovery-monitor.sh (Level 3 — recovery session monitor)"
+    echo "   📄 lib/notify.sh                 (Discord / Slack / Telegram dispatcher)"
+    echo "   📄 lib/llm-gateway.sh            (Claude / GPT-4 / Gemini / Ollama router)"
     echo ""
 
     # Simulate environment setup
@@ -128,19 +131,21 @@ if [[ "$DRY_RUN" == "true" ]]; then
 
     # Tier cascade simulation
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${CYAN}  5-Tier Recovery Chain — would be activated:${NC}"
+    echo -e "${CYAN}  5-Tier Recovery Chain — resulting state:${NC}"
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     sleep 0.3
-    echo -e "  ${GREEN}✓${NC} Level 0: Pre-flight validation              ${GREEN}READY${NC}"
+    echo -e "  ${YELLOW}○${NC} Level 0: Pre-flight validation                ${YELLOW}SCRIPT INSTALLED${NC}"
+    echo -e "     ${YELLOW}↳ activate by pointing your gateway launch unit at gateway-preflight.sh${NC}"
     sleep 0.3
-    echo -e "  ${GREEN}✓${NC} Level 1: KeepAlive (instant restart)         ${GREEN}READY${NC}"
+    echo -e "  ${YELLOW}○${NC} Level 1: KeepAlive (instant restart)          ${YELLOW}PROVIDED BY GATEWAY${NC}"
+    echo -e "     ${YELLOW}↳ owned by your OpenClaw Gateway service, not by this installer${NC}"
     sleep 0.3
-    echo -e "  ${GREEN}✓${NC} Level 2: Watchdog + HealthCheck (3-5 min)    ${GREEN}READY${NC}"
+    echo -e "  ${GREEN}✓${NC} Level 2: Watchdog + HealthCheck (3-5 min)     ${GREEN}ACTIVE${NC}"
     sleep 0.3
-    echo -e "  ${GREEN}✓${NC} Level 3: AI Emergency Recovery (auto-trigger) ${GREEN}READY${NC}"
+    echo -e "  ${GREEN}✓${NC} Level 3: AI Emergency Recovery (auto-trigger) ${GREEN}ACTIVE${NC}"
     sleep 0.3
-    echo -e "  ${GREEN}✓${NC} Level 4: Discord/Telegram Human Alert         ${GREEN}READY${NC}"
+    echo -e "  ${GREEN}✓${NC} Level 4: Discord/Telegram Human Alert         ${GREEN}ACTIVE${NC}"
     echo ""
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
@@ -177,7 +182,7 @@ check_os() {
 
 # Check prerequisites
 check_prerequisites() {
-    echo -e "${BLUE}[1/6] Checking prerequisites...${NC}"
+    echo -e "${BLUE}[1/8] Checking prerequisites...${NC}"
     
     local missing=()
     

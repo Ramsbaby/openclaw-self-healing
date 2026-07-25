@@ -9,12 +9,115 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **install.sh / install-linux.sh** — script download base URL pointed at
+  `$REPO_RAW/skills/openclaw-self-healing/scripts`, which returns 404. Scripts live at
+  `$REPO_RAW/scripts`. Combined with `curl -sSL` (no `-f`), every download silently wrote
+  a 404 HTML body to disk as a "script" and the installer still declared success. Now uses
+  the correct base URL, `curl -fsSL`, and aborts with a non-zero exit on any failed download.
+- **install.sh / install-linux.sh** — `gateway-preflight.sh` (Level 0), `lib/notify.sh` and
+  `lib/llm-gateway.sh` were documented but never downloaded. They are now installed.
+- **scripts/gateway-preflight.sh** — the file had been committed base64-encoded since it was
+  introduced, so Level 0 could never run (`command not found` on the single encoded line).
+  Restored to plain shell. This also brings it under ShellCheck coverage, which previously
+  skipped it via the "not a shell script" branch in `.github/workflows/shellcheck.yml`.
+- **install.sh** — prerequisite step printed `[1/6]` while the remaining seven steps printed
+  `[n/8]`; `install-linux.sh` printed `[1/7]` against `[n/9]`.
+- **launchagent/com.openclaw.healthcheck.plist** — `ProgramArguments` pointed at
+  `$HOME/openclaw/scripts/`, but installers place scripts under
+  `$HOME/.openclaw/skills/openclaw-self-healing/scripts/`.
+
 ### Changed
 - **emergency-recovery.sh** — Level 3 LLM prompt now includes a "MANDATORY FIRST STEPS"
   block requiring Read tool calls (README.md / `~/.openclaw/openclaw.json` / recent logs /
   watchdog scripts) **before** diagnosis. Reduces hallucination risk where Claude attempts
   recovery without first reading actual system state. The prompt also asks Claude to log
   the Read tool invocation count to the report file for post-incident audit.
+- **install.sh** — `--dry-run` output now lists every script that is actually downloaded,
+  and reports Level 0 as `SCRIPT INSTALLED` and Level 1 as `PROVIDED BY GATEWAY` rather
+  than `READY`. Neither level is scheduled by the installer.
+- **.env.example** — added `SLACK_WEBHOOK_URL` and `NOTIFICATION_CHANNEL` (both consumed by
+  `lib/notify.sh`; `NOTIFICATION_CHANNEL` is also read by `docker-compose.yml`), plus
+  `OPENCLAW_METRICS_PORT` and `HEALTH_CHECK_HTTP_TIMEOUT`. Header version synced to 3.4.
+- **SKILL.md** — version synced to 3.4.0; script table and setup steps corrected to the
+  paths the installers actually use.
+- **README.md / README.ko.md** — full rewrite for accuracy. Fixed broken links to
+  `docs/configuration.md` and `docs/architecture.md` (neither file exists), unified the
+  "4-tier"/"5-Tier" naming to five levels (0–4), corrected the watchdog backoff sequence to
+  `10s → 30s → 90s → 180s → 300s → 600s` (300 was missing), replaced the invented installer
+  transcript with real output, and added a "Known Gaps" section documenting the Level 2
+  alert path, the unwired LLM router, the hardcoded Claude binary path, and the
+  `validate-deployment.sh` path mismatch.
+
+---
+
+## [3.4.0] - 2026-03-25
+
+### Added
+- **Unified multi-channel notification library** (`scripts/lib/notify.sh`) — one
+  `send_notification "title" "body" "level"` entry point dispatching to Discord, Slack or
+  Telegram. Channel is forced via `NOTIFICATION_CHANNEL` or auto-detected from whichever
+  webhook variable is set. (#3)
+- **Docker Compose support** — `docker-compose.yml` runs `openclaw-gateway` plus a
+  `self-healing-watchdog` sidecar that starts only once the gateway healthcheck passes.
+  Guide in `docs/DOCKER.md`. (#1)
+- **`--dry-run` mode for install.sh** — previews directories, downloads, environment file
+  and LaunchAgents without writing anything.
+- **Weekly incident digest** (`scripts/incident-digest.sh`) — Markdown summary of the last
+  7 days with autonomy rate; `--discord` posts it to the configured channel.
+- **CI syntax lint** (`.github/workflows/lint.yml`) — `bash -n` across every `.sh` file.
+- **Korean README** (`README.ko.md`) and a language badge on the English README.
+- **Architecture and hero SVG diagrams** under `docs/assets/`.
+
+### Changed
+- **gateway-healthcheck.sh** — replaced its Discord-only sender with `lib/notify.sh`,
+  falling back to a no-op when the library is absent.
+
+### Fixed
+- **emergency-recovery-v2.sh** — the committed file was base64-encoded and unrunnable;
+  replaced with clean v2.1.0 source.
+
+---
+
+## [3.3.0] - 2026-03-18
+
+### Added
+- **LLM-agnostic recovery layer** (`scripts/lib/llm-gateway.sh`) — `ask_llm()` wrapper
+  supporting Claude Code CLI, OpenAI (`gpt-4o`), Google Gemini (`gemini-2.0-flash`) and
+  Ollama (`llama3.2`), selected via `OPENCLAW_LLM_PROVIDER` with optional
+  `OPENCLAW_LLM_MODEL` override.
+  **Note:** the library ships but is not yet called by any recovery script — Level 3 still
+  drives the Claude Code CLI directly. See "Known Gaps" in the README.
+- **Prometheus metrics exporter** (`scripts/prometheus-exporter.py`,
+  `scripts/start-metrics-exporter.sh`) — eight gauges on `:9090/metrics`, port overridable
+  via `OPENCLAW_METRICS_PORT`. Subcommands: `start`, `stop`, `restart`, `status`.
+
+### Changed
+- **.env.example** — added the LLM provider configuration block.
+- **README.md** — added a recovery-rate badge and an OpenClaw Gateway description.
+
+---
+
+## [3.2.0] - 2026-03-11
+
+### Added
+- **Level 0: Preflight validation** (`scripts/gateway-preflight.sh`) — validates the
+  gateway binary, `node`, `.env` presence and required keys, and every JSON config before
+  the gateway starts, then backs up known-good configs and `exec`s the gateway so launchd
+  and systemd keep tracking the real PID. On failure it opens a `tmux` AI recovery session
+  and backs off 30s → 90s → 180s, capped at `MAX_PREFLIGHT_ATTEMPTS=3` with a 6-hour
+  counter reset.
+
+### Fixed
+- **emergency-recovery-v2.sh** — `ANTHROPIC_API_KEY` was silently missing inside `tmux`
+  sessions spawned from launchd, because those sessions do not inherit the launchd
+  environment. The key is now forwarded explicitly via `tmux -e`.
+- **ShellCheck CI** — resolved SC2155 / SC2034 / SC2064 / SC2015 warnings across all scripts.
+
+### Changed
+- **gateway-watchdog.sh v4.2** — runs `openclaw doctor --fix` automatically after repeated
+  `exit_1` crashes, so a config schema mismatch after a version bump self-repairs instead of
+  causing permanent paralysis. Guarded by `CONFIG_FIX_COUNTER` at a maximum of 2 attempts. (#7)
 
 ---
 
@@ -195,6 +298,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Production-tested (verified recovery Feb 5, 2026)
 - World's first Claude Code as emergency doctor
 
+[3.4.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v3.3.0...v3.4.0
+[3.3.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v3.2.0...v3.3.0
+[3.2.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v3.1.0...v3.2.0
+[3.1.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v2.1.0...v3.1.0
+[2.1.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v2.0.2...v2.1.0
+[2.0.2]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v2.0.1...v2.0.2
+[2.0.1]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.4...v2.0.0
 [1.3.4]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.3.0...v1.3.4
 [1.3.0]: https://github.com/Ramsbaby/openclaw-self-healing/compare/v1.2.2...v1.3.0

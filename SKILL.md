@@ -1,7 +1,7 @@
 ---
 name: openclaw-self-healing
-version: 2.0.1
-description: 4-tier autonomous self-healing system for OpenClaw Gateway with persistent learning, reasoning logs, and multi-channel alerts. Features Claude Code as Level 3 emergency doctor for AI-powered diagnosis and repair.
+version: 3.4.0
+description: Five-level autonomous self-healing system for OpenClaw Gateway with preflight config validation, persistent learning, reasoning logs, and multi-channel alerts. Features Claude Code as the Level 3 emergency doctor for AI-powered diagnosis and repair.
 metadata:
   {
     "openclaw":
@@ -28,7 +28,7 @@ metadata:
               "kind": "brew",
               "package": "jq",
               "bins": ["jq"],
-              "label": "Install jq (brew) - for metrics dashboard",
+              "label": "Install jq (brew) - required by install-linux.sh",
             },
           ],
       },
@@ -39,77 +39,97 @@ metadata:
 
 > **"The system that heals itself — or calls for help when it can't."**
 
-A 4-tier autonomous self-healing system for OpenClaw Gateway.
+A five-level autonomous self-healing system for OpenClaw Gateway.
 
 ## Architecture
 
 ```
-Level 1: Watchdog (180s)     → Process monitoring (OpenClaw built-in)
-Level 2: Health Check (300s) → HTTP 200 + 3 retries
-Level 3: Claude Recovery     → 30min AI-powered diagnosis 🧠
-Level 4: Discord Alert       → Human escalation
+Level 0: Preflight            → Validate binary/.env/JSON, then exec the gateway
+Level 1: KeepAlive            → Instant restart (owned by the gateway service unit)
+Level 2: Watchdog (180s)      → PID + HTTP + memory, exponential backoff
+         Health Check (300s)  → HTTP 200 + 3 retries → Level 3 escalation
+Level 3: Claude Recovery      → 30min AI-powered diagnosis in a tmux PTY session
+Level 4: Multi-channel Alert  → Human escalation
 ```
 
-## What's Special (v2.0)
+## What's Special
 
-- **World's first** Claude Code as Level 3 emergency doctor
-- **Persistent Learning** - Automatic recovery documentation (symptom → cause → solution → prevention)
-- **Reasoning Logs** - Explainable AI decision-making process
-- **Multi-Channel Alerts** - Discord + Telegram support
-- **Metrics Dashboard** - Success rate, recovery time, trending analysis
-- Production-tested (verified recovery Feb 5-6, 2026)
-- macOS LaunchAgent integration
+- Claude Code CLI as the Level 3 emergency doctor, with a mandatory "read real state
+  before diagnosing" prompt block to curb hallucinated fixes
+- **Preflight validation (Level 0)** — catches config corruption before the gateway starts
+- **Persistent learning** — recovery documentation (symptom → cause → solution → prevention)
+- **Reasoning logs** — the AI's decision-making process is written to disk
+- **Multi-channel alerts** — Discord, Slack and Telegram via `scripts/lib/notify.sh`
+- **Prometheus metrics** — eight gauges for Grafana dashboards and alert rules
+- Production-tested: 9 of 14 real incidents resolved autonomously (64%)
+- macOS LaunchAgent and Linux systemd integration
 
 ## Quick Setup
 
-### 1. Install Dependencies
+### Recommended: one-line installer
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ramsbaby/openclaw-self-healing/main/install.sh | bash
+```
+
+Preview first with `bash -s -- --dry-run`. The installer handles dependencies check,
+directories, script download, `.env` generation and LaunchAgent/systemd registration.
+
+### Manual setup
+
+#### 1. Install dependencies
 
 ```bash
 brew install tmux
 npm install -g @anthropic-ai/claude-code
 ```
 
-### 2. Configure Environment
+#### 2. Configure environment
 
 ```bash
-# Copy template to OpenClaw config directory
 cp .env.example ~/.openclaw/.env
-
-# Edit and add your Discord webhook (optional)
-nano ~/.openclaw/.env
+chmod 600 ~/.openclaw/.env
+nano ~/.openclaw/.env    # add your webhook and gateway token
 ```
 
-### 3. Install Scripts
+#### 3. Install scripts
+
+Scripts must live where the LaunchAgents and escalation paths expect them:
 
 ```bash
-# Copy scripts
-cp scripts/*.sh ~/openclaw/scripts/
-chmod +x ~/openclaw/scripts/*.sh
+DEST=~/.openclaw/skills/openclaw-self-healing/scripts
+mkdir -p "$DEST/lib"
+cp scripts/*.sh "$DEST/"
+cp scripts/lib/*.sh "$DEST/lib/"
+chmod 700 "$DEST"/*.sh "$DEST"/lib/*.sh
 
-# Install LaunchAgent
 cp launchagent/com.openclaw.healthcheck.plist ~/Library/LaunchAgents/
 launchctl load ~/Library/LaunchAgents/com.openclaw.healthcheck.plist
 ```
 
-### 4. Verify
+#### 4. Verify
 
 ```bash
-# Check Health Check is running
 launchctl list | grep openclaw.healthcheck
-
-# View logs
-tail -f ~/openclaw/memory/healthcheck-$(date +%Y-%m-%d).log
+bash scripts/validate-deployment.sh
+tail -f ~/.openclaw/logs/watchdog.log
 ```
 
 ## Scripts
 
 | Script | Level | Description |
 |--------|-------|-------------|
+| `gateway-preflight.sh` | 0 | Config validation before start; `exec`s the gateway on success |
+| `gateway-watchdog.sh` | 2 | PID + HTTP + memory monitoring, backoff, `doctor --fix`, L3 escalation |
 | `gateway-healthcheck.sh` | 2 | HTTP 200 check + 3 retries + escalation |
-| `emergency-recovery.sh` | 3 | Claude Code PTY session for AI diagnosis (v1) |
-| `emergency-recovery-v2.sh` | 3 | Enhanced with learning + reasoning logs (v2) ⭐ |
-| `emergency-recovery-monitor.sh` | 4 | Discord/Telegram notification on failure |
-| `metrics-dashboard.sh` | - | Visualize recovery statistics (NEW) |
+| `emergency-recovery-v2.sh` | 3 | Claude PTY session with learning + reasoning logs (the one L0/L2 call) |
+| `emergency-recovery.sh` | 3 | Earlier v1 recovery script; not installed by the installers |
+| `emergency-recovery-monitor.sh` | 4 | Alerts when a recovery session fails |
+| `lib/notify.sh` | 4 | Discord / Slack / Telegram dispatcher |
+| `lib/llm-gateway.sh` | — | LLM provider router; not yet called by any script |
+| `validate-deployment.sh` | ops | Post-install verification of all five levels |
+| `incident-digest.sh` | ops | Weekly incident report |
+| `prometheus-exporter.py` | ops | Metrics HTTP server (requires `python3`) |
 
 ## Configuration
 
@@ -118,9 +138,16 @@ All settings via environment variables in `~/.openclaw/.env`:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DISCORD_WEBHOOK_URL` | (none) | Discord webhook for alerts |
+| `SLACK_WEBHOOK_URL` | (none) | Slack webhook, `lib/notify.sh` only |
+| `NOTIFICATION_CHANNEL` | auto-detect | Force `discord` / `slack` / `telegram` |
 | `OPENCLAW_GATEWAY_URL` | `http://localhost:18789/` | Gateway health check URL |
+| `OPENCLAW_GATEWAY_TOKEN` | (none) | Required by Level 0 preflight |
+| `ANTHROPIC_API_KEY` | (none) | Required by Levels 0 and 3 |
 | `HEALTH_CHECK_MAX_RETRIES` | `3` | Restart attempts before escalation |
+| `OPENCLAW_WATCHDOG_ESCALATE_TO_L3_AFTER` | `1800` | Continuous-failure seconds before Level 3 |
 | `EMERGENCY_RECOVERY_TIMEOUT` | `1800` | Claude recovery timeout (30 min) |
+
+See `.env.example` for the full annotated list.
 
 ## Testing
 
@@ -128,7 +155,7 @@ All settings via environment variables in `~/.openclaw/.env`:
 
 ```bash
 # Run manually
-bash ~/openclaw/scripts/gateway-healthcheck.sh
+bash ~/.openclaw/skills/openclaw-self-healing/scripts/gateway-healthcheck.sh
 
 # Expected output:
 # ✅ Gateway healthy

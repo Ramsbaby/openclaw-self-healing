@@ -10,7 +10,7 @@
 		<string>/bin/bash</string>
 		<string>--login</string>
 		<string>-c</string>
-		<string>$HOME/openclaw/scripts/gateway-healthcheck.sh</string>
+		<string>$HOME/.openclaw/skills/openclaw-self-healing/scripts/gateway-healthcheck.sh</string>
 	</array>
 	
 	<key>RunAtLoad</key>
