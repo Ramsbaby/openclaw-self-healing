@@ -187,19 +187,45 @@ download_scripts() {
     echo -e "${BLUE}[3/9] Downloading scripts...${NC}"
 
     local scripts=(
+        "gateway-preflight.sh"
         "gateway-watchdog.sh"
         "gateway-healthcheck.sh"
         "emergency-recovery-v2.sh"
         "emergency-recovery-monitor.sh"
     )
 
-    # Download from skills directory structure
-    local base_url="$REPO_RAW/skills/openclaw-self-healing/scripts"
+    # Shared libraries (notifications, LLM routing)
+    local libs=(
+        "notify.sh"
+        "llm-gateway.sh"
+    )
 
+    # Scripts live at repo root under scripts/ (not under skills/)
+    local base_url="$REPO_RAW/scripts"
+    local dest_dir="$OPENCLAW_CONFIG_DIR/skills/openclaw-self-healing/scripts"
+
+    mkdir -p "$dest_dir/lib"
+
+    # NOTE: -f makes curl fail on HTTP errors. Without it a 404 body would be
+    # written to disk as a "script" and silently pass the later syntax check.
     for script in "${scripts[@]}"; do
         echo "   Downloading $script..."
-        curl -sSL "$base_url/$script" -o "$OPENCLAW_CONFIG_DIR/skills/openclaw-self-healing/scripts/$script"
-        chmod 700 "$OPENCLAW_CONFIG_DIR/skills/openclaw-self-healing/scripts/$script"
+        if ! curl -fsSL "$base_url/$script" -o "$dest_dir/$script"; then
+            echo -e "${RED}❌ Failed to download $script from $base_url/$script${NC}" >&2
+            rm -f "$dest_dir/$script"
+            exit 1
+        fi
+        chmod 700 "$dest_dir/$script"
+    done
+
+    for lib in "${libs[@]}"; do
+        echo "   Downloading lib/$lib..."
+        if ! curl -fsSL "$base_url/lib/$lib" -o "$dest_dir/lib/$lib"; then
+            echo -e "${RED}❌ Failed to download lib/$lib from $base_url/lib/$lib${NC}" >&2
+            rm -f "$dest_dir/lib/$lib"
+            exit 1
+        fi
+        chmod 700 "$dest_dir/lib/$lib"
     done
 
     echo -e "${GREEN}✅ Scripts downloaded${NC}"
