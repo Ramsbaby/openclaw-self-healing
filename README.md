@@ -1,3 +1,5 @@
+> **Status (2026-10-13):** not actively maintained. Last updated 2026-07-25 and built against OpenClaw before 2.0 — not verified on OpenClaw 2.0 (2026.9+). Issues are read, but replies may be slow.
+
 <div align="center">
 
 # OpenClaw Self-Healing System
