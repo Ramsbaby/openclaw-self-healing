@@ -561,6 +561,7 @@ Honest list of things the code does not do yet. PRs welcome on any of these.
 |---|---|
 | [Quick Start](docs/QUICKSTART.md) | Step-by-step installation |
 | [Self-Healing System](docs/self-healing-system.md) | Design rationale for the recovery ladder (Korean) |
+| [Blog: single-server auto-recovery](https://blog.ramsbaby.com/ai/dop-c02-jarvis-ops-resilience/) | Watchdog, circuit breaker and approval gate in practice (Korean) |
 | [Linux Setup](docs/LINUX_SETUP.md) | systemd user units, no sudo required |
 | [Docker](docs/DOCKER.md) | Docker Compose setup |
 | [Deployment Validation](docs/DEPLOYMENT-VALIDATION.md) | Post-install checklist |
